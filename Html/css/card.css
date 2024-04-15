@@ -1,0 +1,386 @@
+body {
+	margin: 0px;
+}
+
+.page_of_items {
+	page-break-after: always;
+	text-align: center;
+	padding: 10px;
+	overflow: hidden;
+	position: relative;
+}
+
+.page_of_items.tokens.back {
+	padding-top: 16px;
+	padding-left: 12px;
+}
+
+.card {
+	margin-left: 0.00px;
+	margin-top: 0.00px;
+	display: inline-block;
+	margin: 2px;
+	overflow: hidden;
+}
+
+
+.card.small {
+	width: 180px;
+	height: 252px;
+}
+
+.card.front {
+	background: radial-gradient(#ffffff, #f0f0f0);
+}
+
+/* Bonus cards */
+.card.front.bonus .title {
+	margin-top: 28px;
+	margin-right: 10px;
+	margin-left: 10px;
+	font-family: 'Courier';
+	font-size: 30px;
+}
+
+.card.front.bonus .when {
+	margin-top: 20px;
+	margin-right: 10px;
+	margin-left: 10px;
+	font-family: 'Courier';
+	font-style: italic;
+	font-size: 14px;
+}
+
+.card.front.bonus .what {
+	margin-top: 20px;
+	margin-right: 10px;
+	margin-left: 10px;
+	font-family: 'Courier';
+	font-size: 16px;
+}
+
+/* Agenda cards */
+.card.front.agenda .title {
+	margin-top: 28px;
+	margin-right: 10px;
+	margin-left: 10px;
+	font-family: 'Courier';
+	font-size: 30px;
+}
+
+.card.front.agenda .flavor {
+	margin-top: 20px;
+	margin-right: 10px;
+	margin-left: 10px;
+	font-family: 'Courier';
+	font-style: italic;
+	font-size: 14px;
+}
+
+.card.front.agenda .goal {
+	margin-top: 20px;
+	margin-right: 10px;
+	margin-left: 10px;
+	font-family: 'Courier';
+	font-size: 16px;
+}
+
+.card.front.agenda .goal.tiny {
+	font-size: 10px;
+}
+
+/* Power cards */
+.card.front.power .title {
+	margin-top: 28px;
+	margin-right: 10px;
+	margin-left: 10px;
+	font-family: 'Courier';
+	font-size: 30px;
+}
+
+.card.front.power .power {
+	margin-top: 20px;
+	margin-right: 10px;
+	margin-left: 10px;
+	font-family: 'Courier';
+	font-size: 16px;
+}
+
+.card.front.power .timing {
+	margin-top: 20px;
+	margin-right: 10px;
+	margin-left: 10px;
+	font-family: 'Courier';
+	font-style: italic;
+	font-size: 14px;
+}
+
+/* Action cards */
+.card.front.action .title {
+	margin-top: 28px;
+	margin-right: 10px;
+	margin-left: 10px;
+	font-family: 'Courier';
+	font-size: 30px;
+}
+
+.card.front.action .action {
+	margin-top: 20px;
+	margin-right: 10px;
+	margin-left: 10px;
+	font-family: 'Courier';
+	font-size: 24px;
+}
+
+
+/* Event cards */
+.card.front.event .title {
+	margin-top: 28px;
+	font-size: 24px;
+	margin-left: 10px;
+	margin-right: 10px;
+	font-family: 'Courier';
+}
+
+.card.front.event .flavor {
+	margin-top: 20px;
+	font-style: italic;
+	font-size: 14px;
+	margin-left: 10px;
+	margin-right: 10px;
+	font-family: 'Courier';
+}
+
+.card.front.event .event {
+	margin-top: 20px;
+	margin-right: 10px;
+	margin-left: 10px;
+	font-size: 18px;
+	font-family: 'Courier';
+}
+
+.card.front.event .resolutionOrder {
+	margin-top: 20px;
+	margin-right: 10px;
+	margin-left: 10px;
+	font-size: 18px;
+	font-family: 'Courier';
+}
+
+.card.front.event .event div.list {
+	font-size: 12px;
+	margin-bottom: 15px;
+}
+
+.card.front.event .up {
+	color: green;
+}
+
+.card.front.event .down {
+	color: red;
+}
+
+/* Shares cards */
+.card.front.shares .prefix {
+	margin-top: 28px;
+	margin-right: 10px;
+	margin-left: 10px;
+	font-family: 'Courier';
+	font-size: 30px;
+	font-style: italic;
+}
+
+.card.front.shares .value {
+	margin-top: 20px;
+	margin-right: 10px;
+	margin-left: 10px;
+	font-family: 'Courier';
+	font-style: bold;
+	font-size: 48px;
+}
+
+.card.front.shares .suffix {
+	margin-top: 20px;
+	margin-right: 10px;
+	margin-left: 10px;
+	font-family: 'Courier';
+	font-size: 30px;
+	font-style: italic;
+}
+
+/* Card backs*/
+.card.back {
+	border: 1px solid #000000;
+	box-sizing: border-box;
+	position: relative;
+}
+
+
+.card.back .inset {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 90%;
+	height: 90%;
+	transform: translate(-50%, -50%);
+	border-radius: 25px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.card.back .inset .title {
+	transform-origin: center;
+	font-family: 'Courier';
+	font-size: 54px;
+	text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.5);
+}
+
+.card.back.small .inset .title {
+	font-size: 36px;
+}
+
+.salted_image {
+	width: 40%;
+	height: 40%;
+	left: 4%;
+	top: 4%;
+	position: absolute;
+	margin-left: 0.00px;
+	margin-top: 0.00px;
+	z-index: 2;
+}
+
+.roasted_image {
+	width: 40%;
+	height: 40%;
+	right: 4%;
+	bottom: 4%;
+	position: absolute;
+	margin-left: 0.00px;
+	margin-top: 0.00px;
+	z-index: 2;
+}
+
+.nut_image {
+	width: 80%;
+	height: 80%;
+	left: 10%;
+	top: 10%;
+	position: absolute;
+	margin-left: 0.00px;
+	margin-top: 0.00px;
+	z-index: 1;
+}
+
+.nutDesc {
+	overflow: hidden;
+	width: 50px;
+	height: 50px;
+	display: inline-block;
+	position: relative;
+	page-break-inside: avoid;
+	margin: 1px;
+	border: 1.33px solid #000000;
+	border-radius: 10px;
+}
+
+.card .nutDesc {
+	background: radial-gradient(#fff 40%, #aaa 100%);
+}
+
+.no {
+	border-radius: 50%;
+	border: 3px solid red;
+	z-index: 3;
+	box-sizing:border-box;
+	filter: drop-shadow(1px 1px 1px #222);
+}
+
+.no_slash {
+	width: 3px;
+    transform: translate(-50%, 0) rotate(45deg);
+    background: red;
+    height: 100%;
+    position: absolute;
+    left: 50%;
+	filter: drop-shadow(1px 1px 1px #222);
+}
+
+.trash_image {
+	width: 80%;
+	height: 80%;
+	left: 10%;
+	top: 10%;
+	position: absolute;
+	margin-left: 0.00px;
+	margin-top: 0.00px;
+	z-index: 1;
+}
+
+.card.front.order .title {
+	margin-top: 20px;
+	font-family: 'Courier';
+	font-size: 36px;
+}
+
+.card.front.order .standardMargin {
+	margin-top: 6px;
+}
+
+.card.front.order .managerReward {
+	font-family: 'Courier';
+	color: green;
+}
+
+.card.front.order .employeeReward {
+	font-family: 'Courier';
+	color: green;
+}
+
+.card.front.order .nutDescs {
+}
+
+.card.front.order .trashes {
+}
+
+.card.front.order .meeples {
+	display: flex;
+	justify-content: center;
+	padding-top: 10px;
+}
+
+.card.front.order .meeple {
+	border-radius: 50%;
+	border: 1.33px solid #000000;
+	margin-top: auto;
+	margin-bottom: auto;
+	margin-left: 5px;
+	margin-right: 5px;
+	display: block;
+}
+
+.card.front.order .meeple.large {
+	height: 40px;
+	width: 40px;
+}
+
+.card.front.order .meeple.small {
+	height: 30px;
+	width: 30px;
+}
+
+.card.front.order .backstab_wrapper {
+	height: 30px;
+	width: 70%;
+	margin: 0 auto;
+	margin-top: 20px;
+	border: 1.33px solid #000000;
+	border-radius: 10px;
+}
+
+.card.front.order .backstab {
+	width: auto;
+	height: 100%;
+}
+

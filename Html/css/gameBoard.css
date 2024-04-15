@@ -1,0 +1,212 @@
+body {
+	margin: 0px;
+}
+
+.page_of_items {
+	page-break-after: always;
+	text-align: left;
+	padding: 10px;
+	overflow: hidden;
+}
+
+.row {
+	width: 100%;
+	position: relative;
+    display: flex;
+	align-items: center;
+	background-image:linear-gradient(0deg, #fee, #fff, #fee);
+	background-image: url("../images/Factory/Concrete.png");
+	break-inside: avoid;
+	border: 1.33px solid rgba(0, 0, 0, .5);
+	box-sizing: border-box;
+    width: fit-content;
+    overflow: hidden;
+}
+
+.row .sideBar {
+	font-family: 'Courier';
+	text-align: center;
+	height: 100%;
+	width: 360px;
+	padding-right: 20px;
+	position: relative;
+    display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.row .unusable {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.25);
+}
+
+.row .sideBar .title {
+    font-size: 24px;
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+
+.row .sideBar .instructions {
+    font-size: 16px;
+}
+
+.row.squirrels .sideBar .instructions .irow.wide .emoji {
+	width: 80%;
+}
+
+.row.squirrels .sideBar .instructions .irow .emoji {
+    font-size: 24px;
+	width: 50%;
+	display: inline-block;
+}
+
+.row .sideBar .usage {
+	width: 60px;
+}
+
+.row .sideBar .usage .used,.skipped {
+	border: 1.33px solid #000000;
+	border-radius: 10px;
+	margin: 5px;
+	padding: 5px;
+
+}
+
+.row .content {
+    display: flex;
+	height: 100%;
+	border-right: 1px solid;
+	position: relative;
+}
+
+.row .content .slot {
+	height: 100%;
+    display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+}
+
+.element {
+	border: 1.33px solid #000000;
+	border-radius: 50%;
+	box-sizing: border-box;
+	break-inside: avoid;
+}
+
+.row .content .slot .element {
+	background-color: white;
+	z-index: 2;
+	box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.row .content .slot .number {
+	break-inside: avoid;
+	font-size: 36px;
+	font-family: 'Courier';
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+	font-weight: bold;
+}
+
+
+.belt {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	z-index: 1;
+}
+
+.beltSegment {
+	position: absolute;
+	background: linear-gradient(#84838f, #545264);
+	box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+	border-radius: 3px;
+}
+
+.belt .beltSegment {
+	transform: translate(-50%, -50%);
+}
+
+.row .content .card {
+	border-style: dotted;
+	border-width: 4px;
+	border-radius: 10px;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+.row.orders {
+	height: 340px;
+}
+
+.row .content .crossTileContainer {
+	height: 100%;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+}
+
+.row .content .crossTileContainer.right {
+	left: 50%;
+}
+
+.row .content .crossTileContainer.left {
+	left: -50%;
+}
+
+.row .content .crossTileContainer .crossTileSpace {
+	border-style: dotted;
+	border-width: 4px;
+	border-radius: 10px;
+	box-sizing: border-box;
+	position: absolute;
+}
+
+.elementsContainer .element {
+	margin: 3px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+	position: relative;
+}
+
+.elementsContainer .element .image {
+	width: 80%;
+	height: 80%;
+	position: absolute;
+	top: 10%;
+	left: 10%;
+	z-index: 2;
+}
+
+.elementsContainer .element .name {
+	top: 30%;
+	left: 10%;
+	font-family: 'Courier';
+	z-index: 3;
+	background: radial-gradient(ellipse at center, rgba(255, 255, 255, 1) 20%, rgba(255, 255, 255, 0) 40%);
+	font-size: 24px;
+	font-weight: bold;
+	display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+    padding: 50px;
+}
+
+.crossTile {
+    border: 1.33px solid #000000;
+    border-radius: 10px;
+	box-sizing: border-box;
+    display: inline-flex;
+	break-inside: avoid;
+	margin: 5px;
+	position: relative;
+}
