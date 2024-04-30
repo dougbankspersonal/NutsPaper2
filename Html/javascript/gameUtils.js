@@ -6,6 +6,40 @@ define([
 	var cardHeight = 336
 	var cardWidth = 240
 
+	var nutTypes = [
+		"Peanut", 
+		"Almond", 
+		"Walnut", 
+		"Pistachio",
+	]
+
+	var saltedTypes = [
+		"Salted", 
+		"Unsalted", 
+	]
+
+	var roastedTypes = [
+		"Roasted", 
+		"Raw", 
+	]
+
+	var saltedImages = [
+		"images/NutProps/Salted.Y.png",
+		"images/NutProps/Salted.Y.png",
+	]
+	var roastedImages = [
+		"images/NutProps/Roasted.Y.png",
+		"images/NutProps/Roasted.Y.png",
+	]
+	var nutTypeImages = [
+		"images/NutProps/Nut.Peanut.png",
+		"images/NutProps/Nut.Almond.png",
+		"images/NutProps/Nut.Walnut.png",
+		"images/NutProps/Nut.Pistachio.png",
+	]
+
+	var wildImage = "images/Order/Order.Wild.png"
+
 	function addDiv(parent, className, id, opt_innerHTML = "") {
 		var node = domConstruct.create("div", {
 			innerHTML: opt_innerHTML,
@@ -76,46 +110,6 @@ define([
 		return Math.floor(Math.random() * max);
 	}
 
-
-	var saltedImages = [
-		"images/Order/Order.Wild.png",
-		"images/NutProps/Salted.Y.png",
-		"images/NutProps/Salted.Y.png",
-	]
-	var roastedImages = [
-		"images/Order/Order.Wild.png",
-		"images/NutProps/Roasted.Y.png",
-		"images/NutProps/Roasted.Y.png",
-	]
-	var nutTypeImages = [
-		"images/Order/Order.Wild.png",
-		"images/NutProps/Nut.Peanut.png",
-		"images/NutProps/Nut.Almond.png",
-	]
-
-	function addNoOnTop(textContent, extraClass) {
-		var extra = `<div class="no ${extraClass}"><div class="no_slash"></div></div>`
-		return textContent + extra
-	}
-
-	function addNutDesc(parent, salted, roasted, nutType) {
-		var saltedImage = saltedImages[salted]
-		var roastedImage = roastedImages[roasted]
-		var nutTypeImage = nutTypeImages[nutType]
-
-		var content = `<img class="nut_image" alt="" src="${nutTypeImage}" title=""><img class="salted_image" alt="" src="${saltedImage}" title=""><img class="roasted_image" alt="" src="${roastedImage}" title="">`
-
-		if (salted == 2) {
-			content = addNoOnTop(content, "salted_image")
-		}
-		if (roasted == 2) {
-			content = addNoOnTop(content, "roasted_image")
-		}
-
-		var nutDescNode = addDiv(parent, "nutDesc", "nutDesc", content)
-		return nutDescNode
-	}
-
     // This returned object becomes the defined value of this module
     return {
 		addDiv: addDiv,
@@ -126,5 +120,19 @@ define([
 		addNutDesc: addNutDesc,
 		cardHeight: cardHeight,
 		cardWidth: cardWidth,
+
+		nutTypes: nutTypes,
+		numNutTypes: nutTypes.length,
+		nutTypeImages: nutTypeImages,
+
+		saltedTypes: saltedTypes,
+		numSaltedTypes: saltedTypes.length,
+		saltedImages: saltedImages,
+
+		roastedTypes: roastedTypes,
+		numRoastedTypes: roastedTypes.length,
+		roastedImages: roastedImages,
+
+		wildImage: wildImage,
 	};
 });

@@ -21,19 +21,19 @@
 			// package so we can load Dojo from the CDN whilst still
 			// being able to load local modules
 			packages: [
-				{ name: "dojo", location: "../../dojo" },
+				{ name: "dojo", location: "../../bower_componentsn/dojo" },
 				{ name: "javascript", location: "javascript" }
 			]
 		};
 	</script>
 	<!-- load Dojo -->
-	<script src="../../dojo/dojo.js"></script>
+	<script src="../../bower_components/dojo/dojo.js"></script>
 
     <script>
 		require([
-		'javascript/tokens',
-		], function (tokens, dojo) {
-			tokens.makeTokens()
+		'javascript/cards',
+		], function (cards, dojo) {
+			cards.makeCards("Order", "#808080", cards.numOrderCards, cards.makeOrderCard)
 		});
     </script>
 </body>
