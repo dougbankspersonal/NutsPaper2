@@ -318,7 +318,7 @@ define([
 	// Order Cards
 	var numOrderCardsEachType = 4
 
-	var allPosssibleOrder0QCardDescs = {}
+	var allPosssibleOrder0QCardDescs = []
 	for (let i = 0; i < gameUtils.numNutTypes; i++) 
 	{
 		for (let j = 0; j < gameUtils.numSaltedTypes; j++)
@@ -330,12 +330,12 @@ define([
 					saltedType: j,
 					roastedType: k,
 				}
-				allPosssibleOrderQCardDescs.push(desc)
+				allPosssibleOrder0QCardDescs.push(desc)
 			}
 		}
 	}
 
-	var allPosssibleOrder1QCardDescs = {}
+	var allPosssibleOrder1QCardDescs = []
 	for (let i = 0; i < gameUtils.numNutTypes; i++) 
 	{
 		for (let j = 0; j < gameUtils.numSaltedTypes; j++)
@@ -374,7 +374,7 @@ define([
 	}
 
 
-	var allPosssibleOrder2QCardDescs = {}
+	var allPosssibleOrder2QCardDescs = []
 	for (let i = 0; i < gameUtils.numNutTypes; i++) 
 	{
 		var desc = {
@@ -408,9 +408,6 @@ define([
 	var numPossibleOrder2QCards = allPosssibleOrder2QCardDescs.length
 	var numOrderCards = (numPossibleOrder0QCards + numPossibleOrder1QCards + numPossibleOrder2QCards) * numOrderCardsEachType
 	
-	var baseOrderNumber = 13010
-
-
 	function makeFeatureCountByFeatureType(count) {
 		var nutTypeFeatureCount = []
 		nutTypeFeatureCount.push(numOrderCardsEachType/3 * count)
@@ -459,9 +456,9 @@ define([
 	}
 
 	function addNutDesc(node, desc) {
-		var nutPropsNode = gameUtils.addDiv(node, "nutProps standardMargin", "nutProps")
-
-		var content = `<img class="nut_image" alt="" src="${nutTypeImage}" title=""><img class="salted_image" alt="" src="${saltedImage}" title=""><img class="roasted_image" alt="" src="${roastedImage}" title="">`
+		var wrapper = gameUtils.addDiv(node, "wrapper", "wrapper")
+		var nutPropsTopNode = gameUtils.addDiv(wrapper, "nutProps", "nutProps")
+		var nutPropsBottomNode = gameUtils.addDiv(wrapper, "nutProps standardMargin", "nutProps")
 
 		var nutType = desc.nutType
 		var saltedType = desc.saltedType
@@ -472,19 +469,18 @@ define([
 		var roastedTypeImage = roastedType == -1 ? gameUtils.wildImage: gameUtils.roastedTypeImages[roastedType]
 
 		var prop 
-		prop = gameUtils.addDiv(node, "nutProp nutType", "nutType", content)
+		prop = gameUtils.addDiv(nutPropsTopNode, "nutProp nutType", "nutType")
 		gameUtils.addImage(prop, "nutType", "nutType", nutTypeImage)
-		prop = gameUtils.addDiv(node, "nutProp saltedType", "saltedType", content)
+		prop = gameUtils.addDiv(nutPropsBottomNode, "nutProp saltedType", "saltedType")
 		gameUtils.addImage(prop, "saltedType", "saltedType", saltedTypeImage)
-		prop = gameUtils.addDiv(node, "nutProp roastedType", "roastedType", content)
+		prop = gameUtils.addDiv(nutPropsBottomNode, "nutProp roastedType", "roastedType")
 		gameUtils.addImage(prop, "roastedType", "roastedType", roastedTypeImage)
-		return nutDescsNode
+		return wrapper
 	}
 
 	function makeNthOrderCard(parent, index)
 	{
 		var realIndex = Math.floor(index/numOrderCardsEachType)
-		var orderNumber = baseOrderNumber + index
 
 		var desc
 		if (realIndex < numPossibleOrder0QCards)
@@ -506,8 +502,8 @@ define([
 			}
 		}
 		var node = makeCardFront(parent, `order`, "order.".concat(index.toString()))
-		gameUtils.addDiv(node, "title", "title", "Order #" + orderNumber.toString())
 		addNutDesc(node, desc)
+		return node
 	}
 
 	function makeCardBack(parent, title, color, opt_extraClass) {

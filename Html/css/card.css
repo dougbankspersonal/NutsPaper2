@@ -10,7 +10,7 @@ body {
 	position: relative;
 }
 
-.page_of_items.tokens.back {
+.page_of_items.back {
 	padding-top: 16px;
 	padding-left: 12px;
 }
@@ -240,91 +240,37 @@ body {
 	font-size: 36px;
 }
 
-.salted_image {
-	width: 40%;
-	height: 40%;
-	left: 4%;
-	top: 4%;
-	position: absolute;
-	margin-left: 0.00px;
-	margin-top: 0.00px;
-	z-index: 2;
-}
-
-.roasted_image {
-	width: 40%;
-	height: 40%;
-	right: 4%;
-	bottom: 4%;
-	position: absolute;
-	margin-left: 0.00px;
-	margin-top: 0.00px;
-	z-index: 2;
-}
-
-.nut_image {
-	width: 80%;
-	height: 80%;
-	left: 10%;
-	top: 10%;
-	position: absolute;
-	margin-left: 0.00px;
-	margin-top: 0.00px;
-	z-index: 1;
-}
-
-.nutDesc {
-	overflow: hidden;
-	width: 50px;
-	height: 50px;
-	display: inline-block;
+.card.front.order {
 	position: relative;
-	page-break-inside: avoid;
-	margin: 1px;
-	border: 1.33px solid #000000;
-	border-radius: 10px;
 }
 
-.card .nutDesc {
-	background: radial-gradient(#fff 40%, #aaa 100%);
-}
-
-.no {
-	border-radius: 50%;
-	border: 3px solid red;
-	z-index: 3;
-	box-sizing:border-box;
-	filter: drop-shadow(1px 1px 1px #222);
-}
-
-.no_slash {
-	width: 3px;
-    transform: translate(-50%, 0) rotate(45deg);
-    background: red;
-    height: 100%;
-    position: absolute;
-    left: 50%;
-	filter: drop-shadow(1px 1px 1px #222);
-}
-
-.trash_image {
-	width: 80%;
-	height: 80%;
-	left: 10%;
-	top: 10%;
+.card.front.order .wrapper {
 	position: absolute;
-	margin-left: 0.00px;
-	margin-top: 0.00px;
-	z-index: 1;
+	top: 50%;
+	width: 100%;
+	-ms-transform: translateY(-50%);
+	transform: translateY(-50%);
 }
 
-.card.front.order .title {
-	margin-top: 20px;
-	font-family: 'Courier';
-	font-size: 36px;
+.card.front.order .nutProps {
+	display: flex;
+	margin-bottom: 20px;
 }
 
-.card.front.order .standardMargin {
-	margin-top: 6px;
+.card.front.order div.nutProp {
+	height: 80px;
+	width: 80px;
+	margin: auto;
 }
 
+.card.front.order div.nutProp.nutType {
+	height: 100px;
+	width: 100px;
+}
+
+.card.front.order div.nutProp img{
+	max-width:100%;
+	max-height:100%;
+	width: auto;
+	height: auto;
+}

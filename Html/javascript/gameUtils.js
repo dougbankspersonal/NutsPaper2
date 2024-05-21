@@ -23,19 +23,19 @@ define([
 		"Raw", 
 	]
 
-	var saltedImages = [
+	var saltedTypeImages = [
 		"images/NutProps/Salted.Y.png",
-		"images/NutProps/Salted.Y.png",
+		"images/NutProps/Salted.N.png",
 	]
-	var roastedImages = [
+	var roastedTypeImages = [
 		"images/NutProps/Roasted.Y.png",
-		"images/NutProps/Roasted.Y.png",
+		"images/NutProps/Roasted.N.png",
 	]
 	var nutTypeImages = [
-		"images/NutProps/Nut.Peanut.png",
-		"images/NutProps/Nut.Almond.png",
-		"images/NutProps/Nut.Walnut.png",
-		"images/NutProps/Nut.Pistachio.png",
+		"images/NutProps/Simple.Peanut.png",
+		"images/NutProps/Simple.Almond.png",
+		"images/NutProps/Simple.Walnut.png",
+		"images/NutProps/Simple.Pistachio.png",
 	]
 
 	var wildImage = "images/Order/Order.Wild.png"
@@ -117,7 +117,6 @@ define([
 		addPage: addPage,
 		blendHexColors: blendHexColors,
 		getRandomInt: getRandomInt,
-		addNutDesc: addNutDesc,
 		cardHeight: cardHeight,
 		cardWidth: cardWidth,
 
@@ -127,11 +126,11 @@ define([
 
 		saltedTypes: saltedTypes,
 		numSaltedTypes: saltedTypes.length,
-		saltedImages: saltedImages,
+		saltedTypeImages: saltedTypeImages,
 
 		roastedTypes: roastedTypes,
 		numRoastedTypes: roastedTypes.length,
-		roastedImages: roastedImages,
+		roastedTypeImages: roastedTypeImages,
 
 		wildImage: wildImage,
 	};
