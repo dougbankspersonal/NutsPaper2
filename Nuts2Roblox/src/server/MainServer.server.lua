@@ -1,6 +1,6 @@
 local ReplicatedStorage =  game:GetService("ReplicatedStorage")
 local ServerStartUp = require(ReplicatedStorage.RobloxBoardGame.ServerStartUp)
-local RBGConfig = require(ReplicatedStorage.Nuts.RBGConfig)
+local GameDetails = require(ReplicatedStorage.Nuts.GameDetails)
 
-ServerStartUp.StartUp(RBGConfig)
+ServerStartUp.StartUp(GameDetails.gameDetails)
 
