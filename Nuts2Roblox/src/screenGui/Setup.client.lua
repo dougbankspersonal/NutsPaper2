@@ -1,6 +1,10 @@
-local screenGui = script.Parent
+local screenGui = script.Parent.Parent
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local ClientStartUp = require(ReplicatedStorage.RobloxBoardGame.ClientStartUp)
-local GameDetails = require(ReplicatedStorage.Nuts.GameDetails)
 
-ClientStartUp.StartUp(screenGui, GameDetails.gameDetails)
+local RobloxBoardGameClient = script.Parent.Parent.RobloxBoardGameClient
+local ClientStartUp = require(RobloxBoardGameClient.StartupFiles.ClientStartUp)
+local GameDetailsDeclaration = require(ReplicatedStorage.Nuts.GameDetailsDeclaration)
+
+assert(screenGui:IsA("ScreenGui"), "screenGui should exist and be a screenGui")
+
+ClientStartUp.StartUp(screenGui, GameDetailsDeclaration)

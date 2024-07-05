@@ -1,6 +1,7 @@
 local ReplicatedStorage =  game:GetService("ReplicatedStorage")
-local ServerStartUp = require(ReplicatedStorage.RobloxBoardGame.ServerStartUp)
-local GameDetails = require(ReplicatedStorage.Nuts.GameDetails)
+local RobloxBoardGameServer = script.Parent.Parent.RobloxBoardGameServer
+local ServerStartUp = require(RobloxBoardGameServer.StartupFiles.ServerStartUp)
+local GameDetailsDeclaration = require(ReplicatedStorage.Nuts.GameDetailsDeclaration)
 
-ServerStartUp.StartUp(GameDetails.gameDetails)
+ServerStartUp.StartUp(GameDetailsDeclaration)
 
