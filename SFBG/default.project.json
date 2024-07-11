@@ -25,7 +25,7 @@
 				"$path": "../../RobloxBoardGame/src/Server/default.project.json"
 			}
 		},
-    
+
 		"StarterGui": {
 			"$className": "StarterGui",
 			"MainScreenGui": {
@@ -36,7 +36,7 @@
         "RobloxBoardGameClient": {
           "$path": "../../RobloxBoardGame/src/Client/default.project.json"
         }
-			}
+      }
     },
 
     "Workspace": {

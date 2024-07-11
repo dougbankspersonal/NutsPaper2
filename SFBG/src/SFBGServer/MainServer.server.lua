@@ -12,4 +12,3 @@ assert(GameInstanceFunctionsDeclaration.gameInstanceFunctionsByGameId ~= nil, "G
 
 ServerStartUp.ServerStartUp(GameDetailsDeclaration.gameDetailsByGameId,
     GameInstanceFunctionsDeclaration.gameInstanceFunctionsByGameId)
-
