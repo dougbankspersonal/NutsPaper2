@@ -33,6 +33,28 @@ local gameDetailsByGameId: CommonTypes.GameDetailsByGameId = {
     [GameDetailsDeclaration.nutsGameId] = nutsGameDetails,
 }
 
-GameDetailsDeclaration.gameDetailsByGameId = gameDetailsByGameId
+local mockGameId = GameDetailsDeclaration.nutsGameId + 100
+local function addMockGame()
+    local gameId = mockGameId
+    mockGameId = mockGameId + 1
+    local mockGameDetails = {
+        gameId = mockGameId,
+        name = "Mock Game " .. gameId,
+        description = "This is a mock game",
+        minPlayers = 2,
+        maxPlayers = 3,
+    }
+    gameDetailsByGameId[gameId] = mockGameDetails
+end
+
+GameDetailsDeclaration.addMockGames = function()
+    for _ = 1, 10 do
+        addMockGame()
+    end
+end
+
+GameDetailsDeclaration.getGameDetailsByGameId = function(): CommonTypes.GameDetailsByGameId
+    return gameDetailsByGameId
+end
 
 return GameDetailsDeclaration

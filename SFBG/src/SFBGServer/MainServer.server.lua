@@ -6,9 +6,14 @@ local GameDetailsDeclaration = require(ReplicatedStorage.SFBGShared.GameDetailsD
 local SFBGServer = script.Parent
 local GameInstanceFunctionsDeclaration = require(SFBGServer.GameInstanceFunctionsDeclaration)
 
-assert(GameDetailsDeclaration.gameDetailsByGameId ~= nil, ", GameDetailsDeclaration.gameDetailsByGameId is nil")
-assert(GameInstanceFunctionsDeclaration.gameInstanceFunctionsByGameId ~= nil, "GameDetailsDeclaration.gameDetailsByGameId is nil")
+assert(GameDetailsDeclaration.getGameDetailsByGameId() ~= nil, ", GameDetailsDeclaration.getGameDetailsByGameId() is nil")
+assert(GameInstanceFunctionsDeclaration.getGameInstanceFunctionsByGameId() ~= nil, "GameDetailsDeclaration.getGameInstanceFunctionsByGameId() is nil")
 
+GameDetailsDeclaration.addMockGames()
+GameInstanceFunctionsDeclaration.addMockGames()
 
-ServerStartUp.ServerStartUp(GameDetailsDeclaration.gameDetailsByGameId,
-    GameInstanceFunctionsDeclaration.gameInstanceFunctionsByGameId)
+print("Doug: GameDetailsDeclaration.getGameDetailsByGameId() = ", GameDetailsDeclaration.getGameDetailsByGameId())
+print("Doug: GameInstanceFunctionsDeclaration.getGameInstanceFunctionsByGameId() = ", GameInstanceFunctionsDeclaration.getGameInstanceFunctionsByGameId())
+
+ServerStartUp.ServerStartUp(GameDetailsDeclaration.getGameDetailsByGameId(),
+    GameInstanceFunctionsDeclaration.getGameInstanceFunctionsByGameId())

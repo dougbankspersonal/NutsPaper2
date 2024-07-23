@@ -6,10 +6,12 @@ There must be a 1-1 mapping between elements in this table and the games in Game
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RobloxBoardGameShared = ReplicatedStorage.RobloxBoardGameShared
-local CommonTypes = require(RobloxBoardGameShared.Types.CommonTypes)  
+local CommonTypes = require(RobloxBoardGameShared.Types.CommonTypes)
 local GameDetailsDeclaration = require(ReplicatedStorage.SFBGShared.GameDetailsDeclaration)
 
 local GameInstanceFunctionsDeclaration = {}
+
+local gameInstanceFunctionsByGameId = {}
 
 local nutsGameInstanceFunctions: CommonTypes.GameInstanceFunctions = {
     onPlay = function()
@@ -19,12 +21,43 @@ local nutsGameInstanceFunctions: CommonTypes.GameInstanceFunctions = {
         assert(false, "FIXME(dbanks) Implement nutsGameInstanceFunctions.onEnd")
     end,
     onPlayerLeft = function(userId: CommonTypes.UserId)
-        assert(false, "FIXME(dbanks) Implement nutsGameInstanc.onPlayerLeft")
+        assert(false, "FIXME(dbanks) Implement nutsGameInstanceFunctions.onPlayerLeft")
     end,
 }
 
-GameInstanceFunctionsDeclaration.gameInstanceFunctionsByGameId = {
+gameInstanceFunctionsByGameId = {
     [GameDetailsDeclaration.nutsGameId] = nutsGameInstanceFunctions,
 } :: CommonTypes.GameInstanceFunctionsByGameId
+
+GameInstanceFunctionsDeclaration.addMockGames = function()
+    local gameDetailsByGameId = GameDetailsDeclaration.getGameDetailsByGameId()
+    print("Doug: addMockGames gameDetailsByGameId = ", gameDetailsByGameId)
+
+    print("Doug: addMockGames 001")
+    for gameId, _ in gameDetailsByGameId do
+        print("Doug: addMockGames 002 gameId = ", gameId)
+        if gameId ~= GameDetailsDeclaration.nutsGameId then
+            print("Doug: addMockGames 003")
+            local mockGameInstanceFunctions = {
+                onPlay = function()
+                    assert(false, "FIXME(dbanks) Implement mockGame.onPlay")
+                end,
+                onEnd = function()
+                    assert(false, "FIXME(dbanks) Implement mockGame.onEnd")
+                end,
+                onPlayerLeft = function(userId: CommonTypes.UserId)
+                    assert(false, "FIXME(dbanks) Implement mockGame.onPlayerLeft")
+                end,
+            }
+            gameInstanceFunctionsByGameId[gameId] = mockGameInstanceFunctions
+        end
+    end
+
+    print("Doug: addMockGames gameInstanceFunctionsByGameId = ", gameInstanceFunctionsByGameId)
+end
+
+GameInstanceFunctionsDeclaration.getGameInstanceFunctionsByGameId = function()
+    return gameInstanceFunctionsByGameId
+end
 
 return GameInstanceFunctionsDeclaration

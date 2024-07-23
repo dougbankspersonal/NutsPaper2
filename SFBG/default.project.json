@@ -33,9 +33,17 @@
         "SFBGClient": {
           "$path": "src/SFBGClient"
         },
-        "RobloxBoardGameClient": {
-          "$path": "../../RobloxBoardGame/src/Client/default.project.json"
+        "RobloxBoardGameStarterGui": {
+          "$path": "../../RobloxBoardGame/src/StarterGui/default.project.json"
         }
+      }
+    },
+
+    "StarterPlayer": {
+      "$className": "StarterPlayer",
+      "StarterPlayerScripts": {
+        "$className": "StarterPlayerScripts",
+        "$path": "../../RobloxBoardGame/src/StarterPlayerScripts/default.project.json"
       }
     },
 
