@@ -31,13 +31,9 @@ gameInstanceFunctionsByGameId = {
 
 GameInstanceFunctionsDeclaration.addMockGames = function()
     local gameDetailsByGameId = GameDetailsDeclaration.getGameDetailsByGameId()
-    print("Doug: addMockGames gameDetailsByGameId = ", gameDetailsByGameId)
 
-    print("Doug: addMockGames 001")
     for gameId, _ in gameDetailsByGameId do
-        print("Doug: addMockGames 002 gameId = ", gameId)
         if gameId ~= GameDetailsDeclaration.nutsGameId then
-            print("Doug: addMockGames 003")
             local mockGameInstanceFunctions = {
                 onPlay = function()
                     assert(false, "FIXME(dbanks) Implement mockGame.onPlay")
@@ -52,8 +48,6 @@ GameInstanceFunctionsDeclaration.addMockGames = function()
             gameInstanceFunctionsByGameId[gameId] = mockGameInstanceFunctions
         end
     end
-
-    print("Doug: addMockGames gameInstanceFunctionsByGameId = ", gameInstanceFunctionsByGameId)
 end
 
 GameInstanceFunctionsDeclaration.getGameInstanceFunctionsByGameId = function()

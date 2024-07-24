@@ -12,8 +12,5 @@ assert(GameInstanceFunctionsDeclaration.getGameInstanceFunctionsByGameId() ~= ni
 GameDetailsDeclaration.addMockGames()
 GameInstanceFunctionsDeclaration.addMockGames()
 
-print("Doug: GameDetailsDeclaration.getGameDetailsByGameId() = ", GameDetailsDeclaration.getGameDetailsByGameId())
-print("Doug: GameInstanceFunctionsDeclaration.getGameInstanceFunctionsByGameId() = ", GameInstanceFunctionsDeclaration.getGameInstanceFunctionsByGameId())
-
 ServerStartUp.ServerStartUp(GameDetailsDeclaration.getGameDetailsByGameId(),
     GameInstanceFunctionsDeclaration.getGameInstanceFunctionsByGameId())
