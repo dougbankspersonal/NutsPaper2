@@ -12,5 +12,7 @@ assert(GameInstanceFunctionsDeclaration.getGameInstanceFunctionsByGameId() ~= ni
 GameDetailsDeclaration.addMockGames()
 GameInstanceFunctionsDeclaration.addMockGames()
 
-ServerStartUp.ServerStartUp(GameDetailsDeclaration.getGameDetailsByGameId(),
-    GameInstanceFunctionsDeclaration.getGameInstanceFunctionsByGameId())
+local gameDetailsByGameId = GameDetailsDeclaration.getGameDetailsByGameId()
+local gameInstanceFunctionsByGameId = GameInstanceFunctionsDeclaration.getGameInstanceFunctionsByGameId()
+
+ServerStartUp.ServerStartUp(gameDetailsByGameId, gameInstanceFunctionsByGameId)

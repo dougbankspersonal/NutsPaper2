@@ -31,12 +31,13 @@ local nutsGameOptions = {
         gameOptionId = "Schmooze_boolean",
         description = "Players attend may gain powerful advantages by bribing the right people.",
     },
+    --[[
     {
         name = "Squirrel Movement Variants",
         gameOptionId = "Squirrel_variants",
         description = "Adjust how the squirrel move.",
         opt_variants = SquirrelMovementGameOptionVariants,
-    },
+    },]]
 } :: {CommonTypes.GameOption}
 
 local nutsGameDetails: CommonTypes.GameDetails = {
