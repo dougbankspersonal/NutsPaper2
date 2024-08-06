@@ -110,63 +110,32 @@ define([
 		{
 			title: "The Low-Sodium Lobby",
 			flavor: "This radical faction will stop at nothing to eliminate salt from our diets.",
-			goal: "$5 for each Unsalted icon on your Shipped Orders",
+			goal: "Bonus for each of your Shipped Unsalted Nuts",
 		},
 		{
 			title: "Big Salt",
 			flavor: "A coalition of the salt vendors of the world.",
-			goal: "$5 for each Salted icon on your Shipped Orders",
+			goal: "Bonus for each of your Shipped Salted Nuts",
 		},
 		{
 			title: "The Nature Commune",
 			flavor: "Surprisingly wealthy hippies who passionately advocate for eating raw foods.",
-			goal: "$5 for each Raw icon on your Shipped Orders",
+			goal: "Bonus for each of your Shipped Raw Nuts",
 		},
 		{
 			title: "The Secret Order of the Flame",
 			flavor: "A mysterious cabal dedicated to the use of fire.",
-			goal: "$5 for each Roasted icon on your Shipped Orders",
+			goal: "Bonus for each of your Shipped Roasted Nuts",
 		},
 		{
 			title: "People who say<br>\"All-mond\"",
 			flavor: "The more people are talking about Almonds, the better...",
-			goal: "$5 for each Almond icon on your Shipped Orders",
+			goal: "Bonus for each of your Shipped Almonds",
 		},
 		{
 			title: "The Georgia Boosters",
 			flavor: "An association of ruthless peanut farmers.",
-			goal: "$5 for each Peanut icon on your Shipped Orders",
-		},
-		{
-			title: "The Harbingers of the Nutpocalypse",
-			flavor: "These weirdos just hate nuts.",
-			goal: "$30 for each Order ruined by Poop.",
-		},
-		{
-			title: "Sisters of Amorphous Uncertainty",
-			flavor: "Question lead to bliss.",
-			goal: "$2 for each '?' icon on your Shipped Orders",
-		},
-		{
-			title: "Association of OCD Accountants",
-			flavor: "They just like things a certain way.",
-			goal: "$15 for each of your Shipped Orders with Order number ending in '0' or '5'",
-		},
-		{
-			title: "Wealthy Math Nerds 1",
-			flavor: "A Secret Society who likes to see things in sets.",
-			goal: "$30 for each set of Single, Double, and Triple Orders in your Shipped Orders",
-		},
-		{
-			title: "Wealthy Math Nerds 2",
-			flavor: "A Secret Society who likes to see things in sets.",
-			goal: "$30 for each set of 3 same-sized Orders in your Shipped Orders.<br><br>Limit one per size",
-		},
-		{
-			title: "Sons of Uplift",
-			flavor: "\"No one should suffer...\"",
-			goal: "For each Player, get the total number of Nuts (not Orders!) Shipped<br><br>Find the difference (D) between the highest and lowest numbers<br><br>D < 4: $80<br><br>4 <= D < 9: $40<br><br>D >= 9: $10",
-			extraClasses: "tiny",
+			goal: "Bonus for each of your Shipped Peanuts",
 		},
 	]
 
@@ -319,7 +288,7 @@ define([
 	var numOrderCardsEachType = 4
 
 	var allPosssibleOrder0QCardDescs = []
-	for (let i = 0; i < gameUtils.numNutTypes; i++) 
+	for (let i = 0; i < gameUtils.numNutTypes; i++)
 	{
 		for (let j = 0; j < gameUtils.numSaltedTypes; j++)
 		{
@@ -336,7 +305,7 @@ define([
 	}
 
 	var allPosssibleOrder1QCardDescs = []
-	for (let i = 0; i < gameUtils.numNutTypes; i++) 
+	for (let i = 0; i < gameUtils.numNutTypes; i++)
 	{
 		for (let j = 0; j < gameUtils.numSaltedTypes; j++)
 		{
@@ -348,7 +317,7 @@ define([
 			allPosssibleOrder1QCardDescs.push(desc)
 		}
 	}
-	for (let i = 0; i < gameUtils.numNutTypes; i++) 
+	for (let i = 0; i < gameUtils.numNutTypes; i++)
 	{
 		for (let j = 0; j < gameUtils.numRoastedTypes; j++)
 		{
@@ -360,14 +329,14 @@ define([
 			allPosssibleOrder1QCardDescs.push(desc)
 		}
 	}
-	for (let i = 0; i < gameUtils.numRoastedTypes; i++) 
+	for (let i = 0; i < gameUtils.numRoastedTypes; i++)
 	{
 		for (let j = 0; j < gameUtils.numSaltedTypes; j++)
 		{
 			var desc = {
 				nutType: -1,
 				saltedType: j,
-				roastedType: i,				
+				roastedType: i,
 			}
 			allPosssibleOrder1QCardDescs.push(desc)
 		}
@@ -375,7 +344,7 @@ define([
 
 
 	var allPosssibleOrder2QCardDescs = []
-	for (let i = 0; i < gameUtils.numNutTypes; i++) 
+	for (let i = 0; i < gameUtils.numNutTypes; i++)
 	{
 		var desc = {
 			nutType: i,
@@ -384,7 +353,7 @@ define([
 		}
 		allPosssibleOrder2QCardDescs.push(desc)
 	}
-	for (let i = 0; i < gameUtils.numSaltedTypes; i++) 
+	for (let i = 0; i < gameUtils.numSaltedTypes; i++)
 	{
 		var desc = {
 			nutType: -1,
@@ -393,7 +362,7 @@ define([
 		}
 		allPosssibleOrder2QCardDescs.push(desc)
 	}
-	for (let i = 0; i < gameUtils.numRoastedTypes; i++) 
+	for (let i = 0; i < gameUtils.numRoastedTypes; i++)
 	{
 		var desc = {
 			nutType: -1,
@@ -407,7 +376,7 @@ define([
 	var numPossibleOrder1QCards = allPosssibleOrder1QCardDescs.length
 	var numPossibleOrder2QCards = allPosssibleOrder2QCardDescs.length
 	var numOrderCards = (numPossibleOrder0QCards + numPossibleOrder1QCards + numPossibleOrder2QCards) * numOrderCardsEachType
-	
+
 	function makeFeatureCountByFeatureType(count) {
 		var nutTypeFeatureCount = []
 		nutTypeFeatureCount.push(numOrderCardsEachType/3 * count)
@@ -468,7 +437,7 @@ define([
 		var saltedTypeImage = saltedType == -1 ? gameUtils.wildImage: gameUtils.saltedTypeImages[saltedType]
 		var roastedTypeImage = roastedType == -1 ? gameUtils.wildImage: gameUtils.roastedTypeImages[roastedType]
 
-		var prop 
+		var prop
 		prop = gameUtils.addDiv(nutPropsTopNode, "nutProp nutType", "nutType")
 		gameUtils.addImage(prop, "nutType", "nutType", nutTypeImage)
 		prop = gameUtils.addDiv(nutPropsBottomNode, "nutProp saltedType", "saltedType")
@@ -493,12 +462,12 @@ define([
 			if (realIndex < numPossibleOrder1QCards)
 			{
 				desc = allPosssibleOrder1QCardDescs[realIndex]
-			} 
+			}
 			else
 			{
 				realIndex -= numPossibleOrder1QCards
 				desc = allPosssibleOrder2QCardDescs[realIndex]
-	
+
 			}
 		}
 		var node = makeCardFront(parent, `order`, "order.".concat(index.toString()))

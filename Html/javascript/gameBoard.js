@@ -10,22 +10,35 @@ define([
 	var beltSegmentZIndex = 0
 	var rowZUIndex = 0
 
-	var standardRowHeight = 100;
+	var standardRowHeight = 140;
 	var ordersRowHeight = gameUtils.cardHeight + 20;
-	var numbersRowHeight = 100;
 
 	var slotWidth = 240;
 	var horizontalSpaceBetweenSlots = 10;
+
+	var cellsPerStrip = 3
+	var cellsPerRow = 9
 
 	// Visual aid for all this:
 	// Total width of slot:
 	// +-a-+-----b-----+-a-+
 	// Where a is horizontalSpaceBetweenSlots/2 and b slotWidth.
 	var totalSlotWidth = slotWidth + horizontalSpaceBetweenSlots
-	var crossTileVerticalInset = 5
-	var crossTileHorizontalInset = 10
+	var crossTileVerticalInset = 10
+	var crossTileHorizontalInset = 20
 
-	var numMiddleRows = 5
+	var rowCount = 0
+	var numberRow = rowCount++
+	var dispenserRow = rowCount++
+	var conveyorRow1 = rowCount++
+	var squirrelRow = rowCount++
+	var conveyorRow2 = rowCount++
+	var roasterRow = rowCount++
+	var conveyorRow3 = rowCount++
+	var salterRow = rowCount++
+	var conveyorRow4 = rowCount++
+	var ordersRow = rowCount++
+
 	var maxRowsPerPage = 5
 
 	// For a cross tile, it lays across two side by side slots:
@@ -37,7 +50,7 @@ define([
 	var crossTileWidth = totalSlotWidth * 2 - 2 * crossTileHorizontalInset
 	var crossTileHeight = standardRowHeight - 2 * crossTileVerticalInset
 
-	var elementHeight = 60
+	var elementHeight = standardRowHeight - 20
 
 	// A belt comes in the middle of a slot:
 	// So from far left that's a + b/2
@@ -69,6 +82,9 @@ define([
 		var sideBar = gameUtils.addDiv(parent, "sideBar", "sideBar")
 		var wrapper = gameUtils.addDiv(sideBar, "wrapper", "wrapper")
 		gameUtils.addDiv(wrapper, "title", "title", sideBarInfo.title)
+		if (sideBarInfo.subtitle) {
+			gameUtils.addDiv(wrapper, "subtitle", "subtitle", sideBarInfo.subtitle)
+		}
 		if (sideBarInfo.instructions)
 		{
 			gameUtils.addDiv(wrapper, "instructions", "instructions", sideBarInfo.instructions)
@@ -168,60 +184,90 @@ define([
 	}
 
 	var elementNumber = 0
+
+	function addStandardSlotWithNumbers(parent) {
+		var standardSlot = addStandardSlot(parent)
+		elementNumber++;
+		var number = gameUtils.addDiv(standardSlot, "number", "number", elementNumber)
+		domStyle.set(number, {
+			"width": `${elementHeight}px`,
+			"height": `${elementHeight}px`,
+		})
+		return standardSlot
+	}
+
 	function addStandardSlotWithElementAndBelt(parent, opt_configs) {
 		var hideBeltTop = opt_configs && opt_configs.hideBeltTop ? true : false
-		var useNumbers = opt_configs && opt_configs.useNumbers ? true : false
 		var customClasses = opt_configs && opt_configs.customClasses ? opt_configs.customClasses : null
 		var tweakElement = opt_configs && opt_configs.tweakElement ? opt_configs.tweakElement : null
+		var skipElement = opt_configs && opt_configs.skipElement ? true : false
+
 		var standardSlot = addStandardSlot(parent)
 
-		if (useNumbers) {
-			elementNumber++;
-			var number = gameUtils.addDiv(standardSlot, "number", "number", elementNumber)
-			domStyle.set(number, {
-				"width": `${elementHeight}px`,
-				"height": `${elementHeight}px`,
-			})
-		} else {
+		if (!skipElement) {
 			var element = addElement(standardSlot, customClasses)
-			addStraightBelt(standardSlot, hideBeltTop)
 			if (tweakElement) {
 				tweakElement(element)
 			}
 		}
+		addStraightBelt(standardSlot, hideBeltTop)
 
 		return standardSlot
 	}
 
-	function addRowWithElements(pageNode, opt_configs) {
+	function addNCellRowWithElements(numCells, pageNode, opt_configs) {
 		var row, content = addRow(pageNode, opt_configs)
 
-		addStandardSlotWithElementAndBelt(content, opt_configs)
-		addStandardSlotWithElementAndBelt(content, opt_configs)
+		if (opt_configs && opt_configs.sideBarInfo) {
+			numCells = numCells - 1
+		}
+
+		for (let i = 0; i < numCells; i++) {
+			addStandardSlotWithElementAndBelt(content, opt_configs)
+		}
 		return row
 	}
 
-	function addNumbersRow(pageNode, opt_sideBarInfo) {
-		return addRowWithElements(pageNode, {
-			classes: "numbers",
-			sideBarInfo: opt_sideBarInfo,
-			useNumbers: true,
-			customHeight: numbersRowHeight,
-		})
+	function addNCellRowWithNumbers(numCells, pageNode, opt_configs) {
+		var row, content = addRow(pageNode,  opt_configs)
+
+		if (opt_configs && opt_configs.sideBarInfo) {
+			numCells = numCells - 1
+		}
+
+		for (let i = 0; i < numCells; i++) {
+			addStandardSlotWithNumbers(content, opt_configs)
+		}
+		return row
 	}
 
-	function tweakCardElement(node)
-	{
+	function addNCellRowWithConveyors(numCells, pageNode, opt_configs) {
+		var row, content = addRow(pageNode, opt_configs)
+
+		if (opt_configs && opt_configs.sideBarInfo) {
+			numCells = numCells - 1
+		}
+
+		var configs = opt_configs ? opt_configs : {}
+		configs.skipElement = true
+		for (let i = 0; i < numCells; i++) {
+			addStandardSlotWithElementAndBelt(content, configs)
+		}
+		return row
+	}
+
+	function tweakCardElement(node)	{
 		domStyle.set(node, {
 			"width": `${gameUtils.cardWidth}px`,
 			"height": `${gameUtils.cardHeight}px`,
 		})
 	}
 
-	function addOrdersRow(pageNode, opt_sideBarInfo) {
-		return addRowWithElements(pageNode, {
+	function addNCellOrdersRow(numCells, pageNode, opt_configs) {
+		var sideBarInfo = opt_configs && opt_configs.sideBarInfo ? opt_configs.sideBarInfo : null
+		return addNCellRowWithElements(numCells, pageNode, {
 			classes: "orders",
-			sideBarInfo: opt_sideBarInfo,
+			sideBarInfo: sideBarInfo,
 			unusable: true,
 			customHeight: ordersRowHeight,
 			customClasses: "card",
@@ -229,82 +275,97 @@ define([
 		})
 	}
 
-	function addCrossTileSpace(parent) {
-		var crossTileSpace = gameUtils.addDiv(parent, `crossTileSpace`, "crossTileSpace")
-		domStyle.set(crossTileSpace, {
-			"width": `${crossTileWidth}px`,
-			"height": `${crossTileHeight}px`,
-			"top": `${crossTileVerticalInset}px`,
-			"left": `${crossTileHorizontalInset}px`,
-		})
-
-		return crossTileSpace
-	}
-
-	function addCrossTileContainer(parent, opt_classes) {
-		var classes = opt_classes ? opt_classes : ""
-		crossTileContainer = gameUtils.addDiv(parent, `crossTileContainer ${classes}`, "crossTileContainer")
-
-		var space = addCrossTileSpace(crossTileContainer)
-
-		return crossTileContainer
-	}
-
-	function addLeftStripPage(bodyNode) {
+	function addStripPage(bodyNode, isLeft) {
 		var pageNode = gameUtils.addDiv(bodyNode, "page_of_items", "page")
 
-		addNumbersRow(pageNode, true)
-		addRowWithElements(pageNode, {
-			classes: "nutDispensers",
-			sideBarInfo: {
-				title: "Nut Dispensers (A)",
-			},
-			hideBeltTop: true,
-		})
-
-		var numRowsThisPage = 1
-		for (let i = 0; i < numMiddleRows; i++) {
-			addRowWithElements(pageNode, {
-				sideBarInfo: {
-					title: `Factory Elements (${i + 2})`,
-				},
-			})
-			numRowsThisPage++
-			if (numRowsThisPage >= maxRowsPerPage)
+		var rowsThisPage = 0
+		for (let i = 0; i < rowCount; i++) {
+			if (rowsThisPage >= maxRowsPerPage)
 			{
 				pageNode = gameUtils.addDiv(bodyNode, "page_of_items", "page")
-				numRowsThisPage = 0
+				rowsThisPage = 0
 			}
+
+			if (i == numberRow) {
+				addNCellRowWithNumbers(cellsPerStrip, pageNode, {
+					classes: "numbers",
+					sideBarInfo: isLeft? {
+						title: "",
+					} : null,
+				})
+			} else if (i == dispenserRow) {
+				addNCellRowWithElements(cellsPerStrip, pageNode, {
+					classes: "nutDispensers",
+					sideBarInfo: isLeft? {
+						title: "Dispensers",
+					} : null,
+					hideBeltTop: true,
+				})
+			} else if (i == conveyorRow1 ) {
+				addNCellRowWithConveyors(cellsPerStrip, pageNode, {
+					sideBarInfo: isLeft? {
+						title: "Conveyor #1",
+					} : null,
+				})
+			} else if (i == conveyorRow1 ) {
+				addNCellRowWithConveyors(cellsPerStrip, pageNode, {
+					sideBarInfo: isLeft? {
+						title: "Conveyor #1",
+					} : null,
+				})
+			} else if (i == conveyorRow2 ) {
+				addNCellRowWithConveyors(cellsPerStrip, pageNode, {
+					sideBarInfo: isLeft? {
+						title: "Conveyor #2",
+					} : null,
+				})
+			} else if (i == conveyorRow3 ) {
+				addNCellRowWithConveyors(cellsPerStrip, pageNode, {
+					sideBarInfo: isLeft? {
+						title: "Conveyor #3",
+					} : null,
+				})
+			} else if (i == conveyorRow4 ) {
+				addNCellRowWithConveyors(cellsPerStrip, pageNode, {
+					sideBarInfo: isLeft? {
+						title: "Conveyor #4",
+					} : null,
+				})
+			} else if (i == roasterRow) {
+				addNCellRowWithElements(cellsPerStrip, pageNode, {
+					sideBarInfo: isLeft? {
+						title: "Roasters",
+						subtitle: "<i>Squirrel 3-4</i>"
+					} : null,
+				})
+			} else if (i == salterRow) {
+				addNCellRowWithElements(cellsPerStrip, pageNode, {
+					sideBarInfo: isLeft? {
+						title: "Salters",
+						subtitle: "<i>Squirrel 5-6</i>"
+					} : null,
+				})
+			} else if (i == squirrelRow) {
+				addNCellRowWithElements(cellsPerStrip, pageNode, {
+					sideBarInfo: isLeft? {
+						title: "Empty",
+						subtitle: "<i>Squirrel 1-2</i>"
+					} : null,
+				})
+			} else if (i == ordersRow) {
+				addNCellOrdersRow(cellsPerStrip, pageNode, {
+					sideBarInfo: isLeft? {
+						title: "Orders",
+					} : null,
+				})
+			} else {
+				print("Doug: i` = ", i)
+				console.assert(false, "Unknown row type")
+			}
+
+			rowsThisPage++
 		}
 
-		addOrdersRow(pageNode, {
-			title: `Orders (${2 + numMiddleRows})`,
-		})
-
-		return pageNode
-	}
-
-	function addMiddleStripPage(bodyNode) {
-		var pageNode = gameUtils.addDiv(bodyNode, "page_of_items", "page")
-
-		addNumbersRow(pageNode)
-		addRowWithElements(pageNode, {
-			hideBeltTop: true,
-			classes: "nutDispensers",
-		})
-
-		var numRowsThisPage = 1
-		for (let i = 0; i < numMiddleRows; i++) {
-			addRowWithElements(pageNode)
-			numRowsThisPage++
-			if (numRowsThisPage >= maxRowsPerPage)
-			{
-				pageNode = gameUtils.addDiv(bodyNode, "page_of_items", "page")
-				numRowsThisPage = 0
-			}
-		}
-
-		addOrdersRow(pageNode)
 		return pageNode
 	}
 
@@ -394,7 +455,7 @@ define([
 	var curvePoints = getCurvePoints()
 
 	function addCrossTile(parent) {
-		var crossTile = gameUtils.addDiv(parent, `crossTile`, "crossTile")
+		var crossTile = gameUtils.addDiv(parent, "crossTile", "crossTile")
 		domStyle.set(crossTile, {
 			"width": `${crossTileWidth}px`,
 			"height": `${crossTileHeight}px`,
@@ -445,16 +506,12 @@ define([
     return {
         create: function () {
             var bodyNode = dom.byId("body");
-
 			// Re-printing: cross tiles are fine, comment out.
 			addCrossTilesPage(bodyNode)
 
-			addLeftStripPage(bodyNode)
-			addMiddleStripPage(bodyNode)
-			addMiddleStripPage(bodyNode)
-			addMiddleStripPage(bodyNode)
-			addMiddleStripPage(bodyNode)
-			addMiddleStripPage(bodyNode)
+			for (let i = 0; i < cellsPerRow; i = i + cellsPerStrip) {
+				addStripPage(bodyNode, i == 0)
+			}
         },
     };
 });
