@@ -11,13 +11,20 @@ define([
 	var rowZUIndex = 0
 
 	var standardRowHeight = 140;
-	var ordersRowHeight = gameUtils.cardHeight + 20;
+	// var ordersRowHeight = gameUtils.cardHeight + 20;
 
 	var slotWidth = 240;
 	var horizontalSpaceBetweenSlots = 10;
 
-	var cellsPerStrip = 3
-	var cellsPerRow = 9
+	var columnsPerStrip = 4
+
+	// 1 column for labels.
+	var numLabelColumns = 1
+	// 4 columns for each nut type.
+	var columnsPerNutType = 4
+	// Total:
+	// * 3 for peanut/almond, * 4 for peanut/almont/walnut/pistachio
+	var totalNumColumns = numLabelColumns + columnsPerNutType * 4
 
 	// Visual aid for all this:
 	// Total width of slot:
@@ -183,11 +190,8 @@ define([
 		return addSlot(parent, "standard", "standardSlot")
 	}
 
-	var elementNumber = 0
-
-	function addStandardSlotWithNumbers(parent) {
+	function addStandardSlotWithNumber(parent, elementNumber) {
 		var standardSlot = addStandardSlot(parent)
-		elementNumber++;
 		var number = gameUtils.addDiv(standardSlot, "number", "number", elementNumber)
 		domStyle.set(number, {
 			"width": `${elementHeight}px`,
@@ -215,42 +219,59 @@ define([
 		return standardSlot
 	}
 
-	function addNCellRowWithElements(numCells, pageNode, opt_configs) {
+	function addNColumnRowWithElements(numColumns, pageNode, firstColumnIndex, opt_configs) {
 		var row, content = addRow(pageNode, opt_configs)
 
 		if (opt_configs && opt_configs.sideBarInfo) {
-			numCells = numCells - 1
+			numColumns = numColumns - 1
 		}
 
-		for (let i = 0; i < numCells; i++) {
+		var numLeft = totalNumColumns - firstColumnIndex
+		if (numColumns > numLeft) {
+			numColumns = numLeft
+		}
+
+		for (let i = 0; i < numColumns; i++) {
 			addStandardSlotWithElementAndBelt(content, opt_configs)
 		}
 		return row
 	}
 
-	function addNCellRowWithNumbers(numCells, pageNode, opt_configs) {
+	function addNColumnRowWithNumbers(numColumns, pageNode, firstColumnIndex, opt_configs) {
 		var row, content = addRow(pageNode,  opt_configs)
 
 		if (opt_configs && opt_configs.sideBarInfo) {
-			numCells = numCells - 1
+			numColumns = numColumns - 1
+			firstColumnIndex = firstColumnIndex + 1
 		}
 
-		for (let i = 0; i < numCells; i++) {
-			addStandardSlotWithNumbers(content, opt_configs)
+		var numLeft = totalNumColumns - firstColumnIndex
+		if (numColumns > numLeft) {
+			numColumns = numLeft
+		}
+
+		for (let i = 0; i < numColumns; i++) {
+			var elementNumber = firstColumnIndex + i
+			addStandardSlotWithNumber(content, elementNumber, opt_configs)
 		}
 		return row
 	}
 
-	function addNCellRowWithConveyors(numCells, pageNode, opt_configs) {
+	function addNColumnRowWithConveyors(numColumns, pageNode, firstColumnIndex, opt_configs) {
 		var row, content = addRow(pageNode, opt_configs)
 
 		if (opt_configs && opt_configs.sideBarInfo) {
-			numCells = numCells - 1
+			numColumns = numColumns - 1
+		}
+
+		var numLeft = totalNumColumns - firstColumnIndex
+		if (numColumns > numLeft) {
+			numColumns = numLeft
 		}
 
 		var configs = opt_configs ? opt_configs : {}
 		configs.skipElement = true
-		for (let i = 0; i < numCells; i++) {
+		for (let i = 0; i < numColumns; i++) {
 			addStandardSlotWithElementAndBelt(content, configs)
 		}
 		return row
@@ -263,20 +284,22 @@ define([
 		})
 	}
 
-	function addNCellOrdersRow(numCells, pageNode, opt_configs) {
+	function addNColumnOrdersRow(numColumns, pageNode, firstColumnIndex, opt_configs) {
 		var sideBarInfo = opt_configs && opt_configs.sideBarInfo ? opt_configs.sideBarInfo : null
-		return addNCellRowWithElements(numCells, pageNode, {
+		console.log("Hi Doug!!!")
+		return addNColumnRowWithElements(numColumns, pageNode, firstColumnIndex, {
 			classes: "orders",
 			sideBarInfo: sideBarInfo,
 			unusable: true,
-			customHeight: ordersRowHeight,
+			// customHeight: ordersRowHeight,
 			customClasses: "card",
 			tweakElement: tweakCardElement,
 		})
 	}
 
-	function addStripPage(bodyNode, isLeft) {
+	function addNColumnStrip(bodyNode, firstColumnIndex) {
 		var pageNode = gameUtils.addDiv(bodyNode, "page_of_items", "page")
+		var isLeft = (firstColumnIndex == 0)
 
 		var rowsThisPage = 0
 		for (let i = 0; i < rowCount; i++) {
@@ -287,14 +310,14 @@ define([
 			}
 
 			if (i == numberRow) {
-				addNCellRowWithNumbers(cellsPerStrip, pageNode, {
+				addNColumnRowWithNumbers(columnsPerStrip, pageNode, firstColumnIndex, {
 					classes: "numbers",
 					sideBarInfo: isLeft? {
 						title: "",
 					} : null,
 				})
 			} else if (i == dispenserRow) {
-				addNCellRowWithElements(cellsPerStrip, pageNode, {
+				addNColumnRowWithElements(columnsPerStrip, pageNode, firstColumnIndex, {
 					classes: "nutDispensers",
 					sideBarInfo: isLeft? {
 						title: "Dispensers",
@@ -302,58 +325,58 @@ define([
 					hideBeltTop: true,
 				})
 			} else if (i == conveyorRow1 ) {
-				addNCellRowWithConveyors(cellsPerStrip, pageNode, {
+				addNColumnRowWithConveyors(columnsPerStrip, pageNode, firstColumnIndex, {
 					sideBarInfo: isLeft? {
 						title: "Conveyor #1",
 					} : null,
 				})
 			} else if (i == conveyorRow1 ) {
-				addNCellRowWithConveyors(cellsPerStrip, pageNode, {
+				addNColumnRowWithConveyors(columnsPerStrip, pageNode, firstColumnIndex, {
 					sideBarInfo: isLeft? {
 						title: "Conveyor #1",
 					} : null,
 				})
 			} else if (i == conveyorRow2 ) {
-				addNCellRowWithConveyors(cellsPerStrip, pageNode, {
+				addNColumnRowWithConveyors(columnsPerStrip, pageNode, firstColumnIndex, {
 					sideBarInfo: isLeft? {
 						title: "Conveyor #2",
 					} : null,
 				})
 			} else if (i == conveyorRow3 ) {
-				addNCellRowWithConveyors(cellsPerStrip, pageNode, {
+				addNColumnRowWithConveyors(columnsPerStrip, pageNode, firstColumnIndex, {
 					sideBarInfo: isLeft? {
 						title: "Conveyor #3",
 					} : null,
 				})
 			} else if (i == conveyorRow4 ) {
-				addNCellRowWithConveyors(cellsPerStrip, pageNode, {
+				addNColumnRowWithConveyors(columnsPerStrip, pageNode, firstColumnIndex, {
 					sideBarInfo: isLeft? {
 						title: "Conveyor #4",
 					} : null,
 				})
 			} else if (i == roasterRow) {
-				addNCellRowWithElements(cellsPerStrip, pageNode, {
+				addNColumnRowWithElements(columnsPerStrip, pageNode, firstColumnIndex, {
 					sideBarInfo: isLeft? {
 						title: "Roasters",
 						subtitle: "<i>Squirrel 3-4</i>"
 					} : null,
 				})
 			} else if (i == salterRow) {
-				addNCellRowWithElements(cellsPerStrip, pageNode, {
+				addNColumnRowWithElements(columnsPerStrip, pageNode, firstColumnIndex, {
 					sideBarInfo: isLeft? {
 						title: "Salters",
 						subtitle: "<i>Squirrel 5-6</i>"
 					} : null,
 				})
 			} else if (i == squirrelRow) {
-				addNCellRowWithElements(cellsPerStrip, pageNode, {
+				addNColumnRowWithElements(columnsPerStrip, pageNode, firstColumnIndex, {
 					sideBarInfo: isLeft? {
 						title: "Empty",
 						subtitle: "<i>Squirrel 1-2</i>"
 					} : null,
 				})
 			} else if (i == ordersRow) {
-				addNCellOrdersRow(cellsPerStrip, pageNode, {
+				addNColumnOrdersRow(columnsPerStrip, pageNode, firstColumnIndex, {
 					sideBarInfo: isLeft? {
 						title: "Orders",
 					} : null,
@@ -480,20 +503,7 @@ define([
 	function addCrossTilesPage(bodyNode) {
 		var pageNode = gameUtils.addDiv(bodyNode, "page_of_items", "page")
 
-		// Max 5 players.
-		// (NumPlayers + 1) * 2 columns.
-		// 2 normal rows, 2 offset rows.
-		// Normal Row = 1 tile every 2 colums.
-		// Offset Row = 1 tile every 2 columns, then minus one.
-		// Plus some slop.
-		var numPlayers = 5
-		var numColumns = (numPlayers + 1) * 2
-		var numNormalRows = 2
-		var numOffsetRows = 2
-		var numTilesForNormalRows = (numColumns/2) * numNormalRows
-		var numTilesForOffsetRows = (numColumns/2 - 1) * numOffsetRows
-		var slop = 2
-		var totalNumTiles = numTilesForOffsetRows + numTilesForNormalRows + slop
+		var totalNumTiles = 30
 
 		for (let i = 0; i < totalNumTiles; i++) {
 			addCrossTile(pageNode)
@@ -509,9 +519,25 @@ define([
 			// Re-printing: cross tiles are fine, comment out.
 			addCrossTilesPage(bodyNode)
 
-			for (let i = 0; i < cellsPerRow; i = i + cellsPerStrip) {
-				addStripPage(bodyNode, i == 0)
-			}
+			// Doing it this way so parts come in larger chunks with no "shavings",
+			// and we can sever the final four columns for smaller game.
+			var index = 0
+			columnsPerStrip = 3
+
+			addNColumnStrip(bodyNode, index)
+			index = index + columnsPerStrip
+			addNColumnStrip(bodyNode, index)
+			index = index + columnsPerStrip
+			addNColumnStrip(bodyNode, index)
+			index = index + columnsPerStrip
+			columnsPerStrip = 2
+			addNColumnStrip(bodyNode, index)
+			index = index + columnsPerStrip
+			addNColumnStrip(bodyNode, index)
+			index = index + columnsPerStrip
+			addNColumnStrip(bodyNode, index)
+			index = index + columnsPerStrip
+			addNColumnStrip(bodyNode, index)
         },
     };
 });

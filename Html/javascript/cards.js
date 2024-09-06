@@ -7,7 +7,7 @@ define([
 	'dojo/domReady!'
 ], function(dojo, string, dom, gameUtils, domStyle){
 
-	var cardsPerPage = 6
+	var cardsPerPage = 8
 
 	// Action Cards
 	actionCardDescs = [
@@ -106,38 +106,201 @@ define([
 	]
 
 	// Agenda Cards
+	function makeTableForAgenda(pairs) {
+		var retVal = "<table>"
+		var headerRow = "<tr>"
+		var valueRow = "<tr>"
+		for (let i = 0; i < pairs.length; i++) {
+			var pair = pairs[i]
+			headerRow = headerRow + "<th>" + pair.header + "</th>"
+			valueRow = valueRow + "<td>" + pair.value + "</td>"
+		}
+		headerRow = headerRow + "</tr>"
+		valueRow = valueRow + "</tr>"
+		retVal = retVal + headerRow + valueRow + "</table>"
+
+		return retVal
+	}
+
+	function makeNormalAgendaGoal(varText) {
+		var retVal = "<div class=goal>Shipped " + varText
+		var pairs = []
+		for (let i = 1; i <= 4; i++) {
+			var pair = {
+				header: i,
+				value: "$" + (i * i).toString(),
+			}
+			pairs.push(pair)
+		}
+		pairs.push({
+			header: "N",
+			value: "$NxN",
+		})
+
+		retVal = retVal + makeTableForAgenda(pairs) + "</div>"
+		return retVal
+	}
+
+	function make3NutAgendaGoal(varText) {
+		var retVal = "<div class=goal>Shipped " + varText
+		var pairs = []
+		for (let i = 1; i <= 4; i++) {
+			var pair = {
+				header: i.toString(),
+				value: "$" + (2 * i * i).toString(),
+			}
+			pairs.push(pair)
+		}
+		pairs.push({
+			header: "N",
+			value: "$2xNxN",
+		})
+
+		retVal = retVal + makeTableForAgenda(pairs) + "</div>"
+		return retVal
+	}
+
+	function make4NutAgendaGoal(varText) {
+		var retVal = "<div class=goal>Shipped " + varText
+		var pairs = []
+		for (let i = 1; i <= 4; i++) {
+			var pair = {
+				header: i.toString(),
+				value: "$" + (4 * i * i).toString(),
+			}
+			pairs.push(pair)
+		}
+		pairs.push({
+			header: "N",
+			value: "$4xNxN",
+		})
+
+		retVal = retVal + makeTableForAgenda(pairs) + "</div>"
+		return retVal
+	}
+
 	var agendaCardDescs = [
 		{
 			title: "The Low-Sodium Lobby",
 			flavor: "This radical faction will stop at nothing to eliminate salt from our diets.",
-			goal: "Bonus for each of your Shipped Unsalted Nuts",
+			goal: makeNormalAgendaGoal("Unsalted Nuts"),
 		},
 		{
 			title: "Big Salt",
 			flavor: "A coalition of the salt vendors of the world.",
-			goal: "Bonus for each of your Shipped Salted Nuts",
+			goal: makeNormalAgendaGoal("Salted Nuts"),
 		},
 		{
 			title: "The Nature Commune",
 			flavor: "Surprisingly wealthy hippies who passionately advocate for eating raw foods.",
-			goal: "Bonus for each of your Shipped Raw Nuts",
+			goal: makeNormalAgendaGoal("Raw Nuts"),
 		},
 		{
 			title: "The Secret Order of the Flame",
 			flavor: "A mysterious cabal dedicated to the use of fire.",
-			goal: "Bonus for each of your Shipped Roasted Nuts",
+			goal: makeNormalAgendaGoal("Roasted Nuts"),
 		},
 		{
 			title: "People who say<br>\"All-mond\"",
 			flavor: "The more people are talking about Almonds, the better...",
-			goal: "Bonus for each of your Shipped Almonds",
+			goal: makeNormalAgendaGoal("Almonds"),
 		},
 		{
 			title: "The Georgia Boosters",
 			flavor: "An association of ruthless peanut farmers.",
-			goal: "Bonus for each of your Shipped Peanuts",
+			goal: makeNormalAgendaGoal("Peanuts"),
+		},
+
+		// For 3 nut variant.
+		{
+			title: "People who say<br>\"All-mond\"",
+			flavor: "The more people are talking about Almonds, the better...",
+			goal: make3NutAgendaGoal("Almonds"),
+		},
+		{
+			title: "The Georgia Boosters",
+			flavor: "An association of ruthless peanut farmers.",
+			goal: make3NutAgendaGoal("Peanuts"),
+		},
+		{
+			title: "Mustachioed Pistachios",
+			flavor: "They love pistachios and fine facial hair.",
+			goal: make3NutAgendaGoal("Pistachios"),
+		},
+
+		// For 4 nut variant.
+		{
+			title: "People who say<br>\"All-mond\"",
+			flavor: "The more people are talking about Almonds, the better...",
+			goal: make4NutAgendaGoal("Almonds"),
+		},
+		{
+			title: "The Georgia Boosters",
+			flavor: "An association of ruthless peanut farmers.",
+			goal: make4NutAgendaGoal("Peanuts"),
+		},
+		{
+			title: "Mustachioed Pistachios",
+			flavor: "They love pistachios and fine facial hair.",
+			goal: make4NutAgendaGoal("Pistachios"),
+		},
+		{
+			title: "Nutty Bakers of Trenton",
+			flavor: "They will not stop until every baked good has walnuts in it.",
+			goal: make4NutAgendaGoal("Walnuts"),
 		},
 	]
+
+	// Bonus Cards
+	var bonusCardDescs = {
+		"roasters_salters": {
+			title: "Roaster and Salter Maintenance",
+			number: 4,
+			bronze: "<b>Bronze</b>: Spend 1 action to move a Roaster or Salter to any open space",
+			silver: "<b>Silver</b>: Spend 1 action to move two Roasters or Salters to any open spaces",
+			gold: "<b>Gold</b>: Spend 2 actions to freely re-arrange all Roasters and Salters",
+		},
+		"crosses": {
+			title: "Conveyor Maintenance",
+			number: 4,
+			bronze: "<b>Bronze</b>: Spend 1 action to move a Cross Tile to any open space.",
+			silver: "<b>Silver</b>: Spend 1 action to move two Cross Tiles to any open spaces",
+			gold: "<b>Gold</b>: Spend 1 action to remove all Cross Tiles from the board",
+		},
+		"drawing": {
+			title: "Planning",
+			number: 4,
+			bronze: "<b>Bronze</b>: When replacing Orders, draw an extra Order",
+			silver: "<b>Silver</b>:When replacing Orders, draw four extra Orders",
+			gold: "<b>Gold</b>: When the player before you is replacing Orders, after he draws but before he places anything, you may select and place one of the Orders he drew.",
+		},
+		"squirrel": {
+			title: "Squirrel Whisperer",
+			number: 4,
+			bronze: "<b>Bronze</b>: Spend 1 action to reduce Hunger to 1",
+			silver: "<b>Silver</b>:Skip the Squirrel phase of your turn altogether",
+			gold: "<b>Gold</b>: At the start of your turn, move the Squirrel to any valid location.  Skip the Squirrel phase of your turn altogether.",
+		},
+		"dispensers": {
+			title: "Dispenser Maintenance",
+			number: 4,
+			bronze: "<b>Bronze</b>: Spend 2 actions to swap any two Nut Dispensers",
+			silver: "<b>Silver</b>:Spend 1 action to swap any two Nut Dispensers",
+			gold: "<b>Gold</b>: Spend 2 actions to swap two pairs of Nut Dispensers",
+		},
+		"orders": {
+			title: "Scheduling",
+			number: 4,
+			bronze: "<b>Bronze</b>: Spend 2 actions to swap any two Orders",
+			silver: "<b>Silver</b>:Spend 1 action to swap any two Orders",
+			gold: "<b>Gold</b>: Spend 2 actions to rearrange any three Orders",
+		},
+		"wild": {
+			title: "Wild",
+			number: 2,
+			special: "Play in combination with some any non-Wild Bonus Card as a duplicate of that card.",
+		},
+	}
 
 	// Event Cards
 	var eventCardDescs = {
@@ -246,6 +409,16 @@ define([
 		return count
 	}
 
+	function getTotalNumBonusCards()
+	{
+		var count = 0
+		for (key in bonusCardDescs) {
+			var bonusCardDesc = bonusCardDescs[key]
+			count = count + bonusCardDesc.number
+		}
+		return count
+	}
+
 	function makeEventArrowDist() {
 		var eventArrowDist = [
 			0,
@@ -279,6 +452,20 @@ define([
 			count = count + contribution
 			if (index < count) {
 				return eventCardDesc
+			}
+		}
+		return null
+	}
+
+	function getBonusCardDescAtIndex(index)
+	{
+		var count = 0
+		for (key in bonusCardDescs) {
+			var bonusCardDesc = bonusCardDescs[key]
+			var contribution = bonusCardDesc.number
+			count = count + contribution
+			if (index < count) {
+				return bonusCardDesc
 			}
 		}
 		return null
@@ -567,6 +754,24 @@ define([
 			gameUtils.addDiv(node, "title", "title", actionCardDesc.title)
 			gameUtils.addDiv(node, "action", "action", actionCardDesc.action)
 
+			return node
+		},
+
+		// Bonus cards
+		numBonusCards: getTotalNumBonusCards(),
+		makeBonusCard: function (parent, index) {
+			var cardDesc = getBonusCardDescAtIndex(index)
+
+			var node = makeCardFront(parent, "bonus", "bonus.".concat(index.toString()))
+			gameUtils.addDiv(node, "title", "title", cardDesc.title)
+			if (cardDesc.bronze) {
+				gameUtils.addDiv(node, "bronze", "bronze", cardDesc.bronze)
+				gameUtils.addDiv(node, "silver", "silver", cardDesc.silver)
+				gameUtils.addDiv(node, "gold", "bronze", cardDesc.gold)
+			}
+			if (cardDesc.special) {
+				gameUtils.addDiv(node, "special", "special", cardDesc.special)
+			}
 			return node
 		},
 

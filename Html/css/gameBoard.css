@@ -96,6 +96,10 @@ body {
 	position: relative;
 }
 
+.row.orders .content .slot {
+	align-items: start;
+}
+
 .element {
 	border: 1.33px solid #000000;
 	border-radius: 50%;

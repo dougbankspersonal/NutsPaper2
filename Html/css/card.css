@@ -60,6 +60,19 @@ body {
 }
 
 /* Agenda cards */
+.card.front.agenda table {
+	text-align: center;
+	border-collapse: collapse;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.card.front.agenda table td, .card.front.agenda table th {
+	border: 1px solid #000;
+	font-size: 12px;
+	padding: 5px;
+}
+
 .card.front.agenda .title {
 	margin-top: 28px;
 	margin-right: 10px;
@@ -132,6 +145,22 @@ body {
 	font-size: 24px;
 }
 
+/* Bonus cards */
+.card.front.bonus .bronze, .card.front.bonus .silver, .card.front.bonus .gold {
+	margin-top: 20px;
+	margin-right: 10px;
+	margin-left: 10px;
+	font-size: 12px;
+	font-family: 'Courier';
+}
+
+.card.front.bonus .special {
+	margin-top: 20px;
+	margin-right: 10px;
+	margin-left: 10px;
+	font-size: 18px;
+	font-family: 'Courier';
+}
 
 /* Event cards */
 .card.front.event .title {
