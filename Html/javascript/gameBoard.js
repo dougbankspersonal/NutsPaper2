@@ -286,7 +286,6 @@ define([
 
 	function addNColumnOrdersRow(numColumns, pageNode, firstColumnIndex, opt_configs) {
 		var sideBarInfo = opt_configs && opt_configs.sideBarInfo ? opt_configs.sideBarInfo : null
-		console.log("Hi Doug!!!")
 		return addNColumnRowWithElements(numColumns, pageNode, firstColumnIndex, {
 			classes: "orders",
 			sideBarInfo: sideBarInfo,
@@ -382,7 +381,6 @@ define([
 					} : null,
 				})
 			} else {
-				print("Doug: i` = ", i)
 				console.assert(false, "Unknown row type")
 			}
 

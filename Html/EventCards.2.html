@@ -31,9 +31,161 @@
 
     <script>
 		require([
-		'javascript/cards',
-		], function (cards, dojo) {
-			cards.makeCards("Event", "#bd332a", cards.numEventCards, cards.makeEventCard)
+			'javascript/cards',
+			'javascript/gameUtils',
+		], function (cards, gameUtils) {
+
+			var eventCardDescs = {
+				"neutral": {
+					title: "Business as usual",
+					flavor: "Another day, another Nut.",
+					event: "<div class=neutral>Nothing changes</div>",
+					number: 4,
+				},
+				"squirrelLaxative": {
+					title: "Squirrels get into prunes",
+					flavor: "Oh no...",
+					event: "<div>Add 3 tokens to each Squirrel Tummy</div>",
+					number: 2,
+				},
+				"squirrelAsleep": {
+					title: "Squirrels are asleep",
+					flavor: "Late night squirrel party has them tuckered out",
+					event: "<div>Squirrels do not move or eat Nuts today.</div>",
+					number: 2,
+				},
+				"squirrelReunion": {
+					title: "Squirrel family Reunion",
+					flavor: "Cousin comes to visit",
+					event: "<div>Add a Squirrel (random placement)</div>",
+				},
+				"squirrelArgument": {
+					title: "Squirrel Fight",
+					flavor: "They cannot agree on how to roast a ham",
+					event: "<div>Remove a Squirrel (random selection)</div>",
+				},
+				"extraSalty": {
+					title: "A visit from Bob Salt",
+					flavor: "He really likes to see us salting...",
+					event: "<div>Add a Salter (random placement)</div>",
+				},
+				"salterMaintenance": {
+					title: "Salter Maintenance",
+					flavor: "How did chewing gum get in there?",
+					event: "<div>Remove a Salter (random selection)</div>",
+				},
+				"extraRoasty": {
+					title: "The CEO is chilly",
+					flavor: "Whatever you want sir...",
+					event: "<div>Add a Roaster (random placement)</div>",
+				},
+				"roasterMaintenance": {
+					title: "Roaster Maintenance",
+					flavor: "Get in there and scrub out the Nut Smut",
+					event: "<div>Remove a Roaster (random selection)</div>",
+				},
+				"p.up.a.down": {
+					title: "Peanut beats Almond in general election",
+					flavor: "Peanut wins in a tight race",
+					event: "<div class=up>+$5 on any Peanut Shipped today</div>",
+				},
+				"p.down.a.up": {
+					title: "Almond outshines Peanut at Fashion Week",
+					flavor: "Peanut cannot pull off Chiffon",
+					event: "<div class=up>+$5 on any Almond Shipped today</div>",
+				},
+				"s.up.u.down": {
+					title: "Salted Nut dumps Unsalted Nut",
+					flavor: "\"He was a narcissist\" says Salted Nut",
+					event: "<div class=up>+$5 on any Salted Shipped today</div>",
+				},
+				"s.down.u.up": {
+					title: "Unsalted Nut puts out banger diss track",
+					flavor: "Throws shade on longtime rival Salted Nut",
+					event: "<div class=up>+$5 on any Unsalted Shipped today</div>",
+				},
+				"w.up.r.down": {
+					title: "Raw Nut wins big at Oscars",
+					flavor: "Roasted Nut goes home empty handed agin",
+					event: "<div class=up>+$5 on any Raw Shipped today</div>",
+				},
+				"w.down.r.up": {
+					title: "Roasted Nut writes memoir",
+					flavor: "Details the seedy underbelly of life with Raw Nut",
+					event: "<div class=up>+$5 on any Roasted Shipped today</div>",
+				},
+				"w.down.r.up": {
+					title: "Roasted Nut writes memoir",
+					flavor: "Details the seedy underbelly of life with Raw Nut",
+					event: "<div class=up>+$5 on any Roasted Shipped today</div>",
+				},
+				"weekend": {
+					title: "Weekend",
+					flavor: "Things settle down",
+					event: `<div class=list>Raise prices for Orders</div>
+						<div class=list>Remove Markers from used Powers (if playing with Powers)</div>
+						<div class=list>Reset Roasters, Salters, and Squirrels to starting numbers (Randomize which to remove or where to add)</div>
+						<div class=list>Run Factory: from lowest to highest number on Dispenser</div>`,
+					specialOrdering: true,
+				},
+			}
+
+			function getTotalNumEventCards()
+			{
+				var count = 0
+				for (key in eventCardDescs) {
+					var eventCardDesc = eventCardDescs[key]
+					var contribution = eventCardDesc.number ? eventCardDesc.number : 1
+					count = count + contribution
+				}
+				return count
+			}
+			var numEventCards = getTotalNumEventCards()
+
+			function makeEventArrowDist() {
+				var _eventArrowDist = [
+					0,
+					0,
+				]
+				var numCards = getTotalNumEventCards()
+				for (let i = 0; i < numCards; i++) {
+					var index = i % 2
+					_eventArrowDist[index] = _eventArrowDist[index] + 1
+				}
+				return _eventArrowDist
+			}
+
+			var eventArrowDist = makeEventArrowDist()
+
+			function getRandomEventArrow()
+			{
+				var index = gameUtils.getRandomInt(2)
+				if (eventArrowDist[index] == 0) {
+					index = (index + 1) % 2
+				}
+				eventArrowDist[index]--
+				return index
+			}
+
+
+			function makeEventCard(parent, index) {
+				var cardDesc = cards.getCardDescAtIndex(index, eventCardDescs)
+
+				var node = cards.makeCardFront(parent, "event", "event.".concat(index.toString()))
+				gameUtils.addDiv(node, "title", "title", cardDesc.title)
+				gameUtils.addDiv(node, "flavor", "flavor", cardDesc.flavor)
+				gameUtils.addDiv(node, "event", "event", cardDesc.event)
+				var resolutionText
+				if (!cardDesc.specialOrdering) {
+					var resolutionIndex = getRandomEventArrow()
+					resolutionText = resolutionIndex == 0? "&#x2190": "&#x2192"
+					gameUtils.addDiv(node, "resolutionOrder", "resolutionOrder", "Run Factory: " + resolutionText)
+				}
+
+				return node
+			}
+
+			cards.makeCards("Event", "#bd332a", numEventCards, makeEventCard)
 		});
     </script>
 </body>

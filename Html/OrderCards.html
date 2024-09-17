@@ -31,9 +31,170 @@
 
     <script>
 		require([
-		'javascript/cards',
-		], function (cards, dojo) {
-			cards.makeCards(" Order", "#808080", cards.numOrderCards, cards.makeOrderCard)
+			'javascript/cards',
+			'javascript/gameUtils',
+		], function (cards, gameUtils, dojo) {
+
+			var numOrderCardsEachType = 4
+
+			var allPosssibleOrder0QCardDescs = []
+			var allPosssibleOrder1QCardDescs = []
+			var allPosssibleOrder2QCardDescs = []
+
+			function setupOrder0QCards() {
+				for (let i = 0; i < gameUtils.numNutTypes; i++)
+				{
+					for (let j = 0; j < gameUtils.numSaltedTypes; j++)
+					{
+						for (let k = 0; k < gameUtils.numRoastedTypes; k++)
+						{
+							var desc = {
+								nutType: i,
+								saltedType: j,
+								roastedType: k,
+							}
+							allPosssibleOrder0QCardDescs.push(desc)
+						}
+					}
+				}
+			}
+
+			function setupOrder1QCards() {
+				for (let i = 0; i < gameUtils.numNutTypes; i++)
+				{
+					for (let j = 0; j < gameUtils.numSaltedTypes; j++)
+					{
+						var desc = {
+							nutType: i,
+							saltedType: j,
+							roastedType: -1,
+						}
+						allPosssibleOrder1QCardDescs.push(desc)
+					}
+				}
+				for (let i = 0; i < gameUtils.numNutTypes; i++)
+				{
+					for (let j = 0; j < gameUtils.numRoastedTypes; j++)
+					{
+						var desc = {
+							nutType: i,
+							saltedType: -1,
+							roastedType: j,
+						}
+						allPosssibleOrder1QCardDescs.push(desc)
+					}
+				}
+				for (let i = 0; i < gameUtils.numRoastedTypes; i++)
+				{
+					for (let j = 0; j < gameUtils.numSaltedTypes; j++)
+					{
+						var desc = {
+							nutType: -1,
+							saltedType: j,
+							roastedType: i,
+						}
+						allPosssibleOrder1QCardDescs.push(desc)
+					}
+				}
+			}
+
+			function setupOrder2QCards() {
+				for (let i = 0; i < gameUtils.numNutTypes; i++)
+				{
+					var desc = {
+						nutType: i,
+						saltedType: -1,
+						roastedType: -1,
+					}
+					allPosssibleOrder2QCardDescs.push(desc)
+				}
+				for (let i = 0; i < gameUtils.numSaltedTypes; i++)
+				{
+					var desc = {
+						nutType: -1,
+						saltedType: i,
+						roastedType: -1,
+					}
+					allPosssibleOrder2QCardDescs.push(desc)
+				}
+				for (let i = 0; i < gameUtils.numRoastedTypes; i++)
+				{
+					var desc = {
+						nutType: -1,
+						saltedType: -1,
+						roastedType: i,
+					}
+					allPosssibleOrder2QCardDescs.push(desc)
+				}
+			}
+
+			setupOrder0QCards()
+			setupOrder1QCards()
+			setupOrder2QCards()
+
+			var numPossibleOrder0QCards = allPosssibleOrder0QCardDescs.length
+			var numPossibleOrder1QCards = allPosssibleOrder1QCardDescs.length
+			var numPossibleOrder2QCards = allPosssibleOrder2QCardDescs.length
+
+			var numOrderCards = (numPossibleOrder0QCards + numPossibleOrder1QCards + numPossibleOrder2QCards) * numOrderCardsEachType
+
+			function addNutDesc(node, desc) {
+				var wrapper = gameUtils.addDiv(node, "wrapper", "wrapper")
+				var nutPropsTopNode = gameUtils.addDiv(wrapper, "nutProps", "nutProps")
+				var nutPropsBottomNode = gameUtils.addDiv(wrapper, "nutProps standardMargin", "nutProps")
+
+				var nutType = desc.nutType
+				var saltedType = desc.saltedType
+				var roastedType = desc.roastedType
+
+				var nutTypeImage = nutType == -1 ? gameUtils.wildImage: gameUtils.nutTypeImages[nutType]
+				var saltedTypeImage = saltedType == -1 ? gameUtils.wildImage: gameUtils.saltedTypeImages[saltedType]
+				var roastedTypeImage = roastedType == -1 ? gameUtils.wildImage: gameUtils.roastedTypeImages[roastedType]
+
+				var prop
+				prop = gameUtils.addDiv(nutPropsTopNode, "nutProp nutType", "nutType")
+				gameUtils.addImage(prop, "nutType", "nutType", nutTypeImage)
+				prop = gameUtils.addDiv(nutPropsBottomNode, "nutProp saltedType", "saltedType")
+				gameUtils.addImage(prop, "saltedType", "saltedType", saltedTypeImage)
+				prop = gameUtils.addDiv(nutPropsBottomNode, "nutProp roastedType", "roastedType")
+				gameUtils.addImage(prop, "roastedType", "roastedType", roastedTypeImage)
+				return wrapper
+			}
+
+			function makeNthOrderCard(parent, index)
+			{
+				var realIndex = Math.floor(index/numOrderCardsEachType)
+
+				var desc
+				if (realIndex < numPossibleOrder0QCards)
+				{
+					desc = allPosssibleOrder0QCardDescs[realIndex]
+				}
+				else
+				{
+					realIndex -= numPossibleOrder0QCards
+					if (realIndex < numPossibleOrder1QCards)
+					{
+						desc = allPosssibleOrder1QCardDescs[realIndex]
+					}
+					else
+					{
+						realIndex -= numPossibleOrder1QCards
+						desc = allPosssibleOrder2QCardDescs[realIndex]
+
+					}
+				}
+				var node = cards.makeCardFront(parent, `order`, "order.".concat(index.toString()))
+				addNutDesc(node, desc)
+				return node
+			}
+
+			function makeOrderCard(parent, index) {
+				return makeNthOrderCard(parent, index)
+			}
+
+
+			cards.makeCards(" Order", "#808080", numOrderCards, makeOrderCard)
 		});
     </script>
 </body>

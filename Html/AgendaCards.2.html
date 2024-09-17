@@ -31,9 +31,172 @@
 
     <script>
 		require([
-		'javascript/cards',
-		], function (cards, dojo) {
-			cards.makeCards("Agenda", "#294e85", cards.numAgendaCards, cards.makeAgendaCard)
+			'javascript/cards',
+			'javascript/gameUtils',
+		], function (cards, gameUtils, dojo) {
+			function makeTableForAgenda(pairs) {
+				var retVal = "<table>"
+				var headerRow = "<tr>"
+				var valueRow = "<tr>"
+				for (let i = 0; i < pairs.length; i++) {
+					var pair = pairs[i]
+					headerRow = headerRow + "<th>" + pair.header + "</th>"
+					valueRow = valueRow + "<td>" + pair.value + "</td>"
+				}
+				headerRow = headerRow + "</tr>"
+				valueRow = valueRow + "</tr>"
+				retVal = retVal + headerRow + valueRow + "</table>"
+
+				return retVal
+			}
+
+			function makeNormalAgendaGoal(varText) {
+				var retVal = "<div class=goal>Shipped " + varText
+				var pairs = []
+				for (let i = 1; i <= 4; i++) {
+					var pair = {
+						header: i,
+						value: "$" + (i * i).toString(),
+					}
+					pairs.push(pair)
+				}
+				pairs.push({
+					header: "N",
+					value: "$NxN",
+				})
+
+				retVal = retVal + makeTableForAgenda(pairs) + "</div>"
+				return retVal
+			}
+
+			function make3NutAgendaGoal(varText) {
+				var retVal = "<div class=goal>Shipped " + varText
+				var pairs = []
+				for (let i = 1; i <= 4; i++) {
+					var pair = {
+						header: i.toString(),
+						value: "$" + (2 * i * i).toString(),
+					}
+					pairs.push(pair)
+				}
+				pairs.push({
+					header: "N",
+					value: "$2xNxN",
+				})
+
+				retVal = retVal + makeTableForAgenda(pairs) + "</div>"
+				return retVal
+			}
+
+			function make4NutAgendaGoal(varText) {
+				var retVal = "<div class=goal>Shipped " + varText
+				var pairs = []
+				for (let i = 1; i <= 4; i++) {
+					var pair = {
+						header: i.toString(),
+						value: "$" + (4 * i * i).toString(),
+					}
+					pairs.push(pair)
+				}
+				pairs.push({
+					header: "N",
+					value: "$4xNxN",
+				})
+
+				retVal = retVal + makeTableForAgenda(pairs) + "</div>"
+				return retVal
+			}
+
+			var agendaCardDescs = [
+				{
+					title: "The Low-Sodium Lobby",
+					flavor: "This radical faction will stop at nothing to eliminate salt from our diets.",
+					goal: makeNormalAgendaGoal("Unsalted Nuts"),
+				},
+				{
+					title: "Big Salt",
+					flavor: "A coalition of the salt vendors of the world.",
+					goal: makeNormalAgendaGoal("Salted Nuts"),
+				},
+				{
+					title: "The Nature Commune",
+					flavor: "Surprisingly wealthy hippies who passionately advocate for eating raw foods.",
+					goal: makeNormalAgendaGoal("Raw Nuts"),
+				},
+				{
+					title: "The Secret Order of the Flame",
+					flavor: "A mysterious cabal dedicated to the use of fire.",
+					goal: makeNormalAgendaGoal("Roasted Nuts"),
+				},
+				{
+					title: "People who say<br>\"All-mond\"",
+					flavor: "The more people are talking about Almonds, the better...",
+					goal: makeNormalAgendaGoal("Almonds"),
+				},
+				{
+					title: "The Georgia Boosters",
+					flavor: "An association of ruthless peanut farmers.",
+					goal: makeNormalAgendaGoal("Peanuts"),
+				},
+
+				// For 3 nut variant.
+				{
+					title: "People who say<br>\"All-mond\"",
+					flavor: "The more people are talking about Almonds, the better...",
+					goal: make3NutAgendaGoal("Almonds"),
+				},
+				{
+					title: "The Georgia Boosters",
+					flavor: "An association of ruthless peanut farmers.",
+					goal: make3NutAgendaGoal("Peanuts"),
+				},
+				{
+					title: "Mustachioed Pistachios",
+					flavor: "They love pistachios and fine facial hair.",
+					goal: make3NutAgendaGoal("Pistachios"),
+				},
+
+				// For 4 nut variant.
+				{
+					title: "People who say<br>\"All-mond\"",
+					flavor: "The more people are talking about Almonds, the better...",
+					goal: make4NutAgendaGoal("Almonds"),
+				},
+				{
+					title: "The Georgia Boosters",
+					flavor: "An association of ruthless peanut farmers.",
+					goal: make4NutAgendaGoal("Peanuts"),
+				},
+				{
+					title: "Mustachioed Pistachios",
+					flavor: "They love pistachios and fine facial hair.",
+					goal: make4NutAgendaGoal("Pistachios"),
+				},
+				{
+					title: "Nutty Bakers of Trenton",
+					flavor: "They will not stop until every baked good has walnuts in it.",
+					goal: make4NutAgendaGoal("Walnuts"),
+				},
+			]
+
+			var numAgendaCards = Object.keys(agendaCardDescs).length
+
+			function makeAgendaCard(parent, index) {
+				var cardDesc = agendaCardDescs[index]
+
+				var node = cards.makeCardFront(parent, "agenda", "agenda.".concat(index.toString()))
+				gameUtils.addDiv(node, "title", "title", cardDesc.title)
+				gameUtils.addDiv(node, "flavor", "flavor", cardDesc.flavor)
+				var goalClasses = "goal"
+				if (cardDesc.extraClasses) {
+					goalClasses = goalClasses + " " + cardDesc.extraClasses
+				}
+				gameUtils.addDiv(node, goalClasses, "goal", cardDesc.goal)
+
+				return node
+			}
+
+			cards.makeCards("Agenda", "#294e85", numAgendaCards, makeAgendaCard)
 		});
     </script>
 </body>
