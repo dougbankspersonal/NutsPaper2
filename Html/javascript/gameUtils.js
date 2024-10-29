@@ -6,21 +6,27 @@ define([
 	var cardHeight = 336
 	var cardWidth = 240
 
-	var nutTypes = [
-		"Peanut", 
-		"Almond", 
-		"Walnut", 
-		"Pistachio",
-	]
+	var nutTypesByVersion = {
+		"v003": [
+			"Peanut",
+			"Almond",
+		],
+		"v004": [
+			"Peanut",
+			"Almond",
+			"Walnut",
+			"Pistachio",
+		],
+	}
 
 	var saltedTypes = [
-		"Salted", 
-		"Unsalted", 
+		"Salted",
+		"Unsalted",
 	]
 
 	var roastedTypes = [
-		"Roasted", 
-		"Raw", 
+		"Roasted",
+		"Raw",
 	]
 
 	var saltedTypeImages = [
@@ -120,8 +126,7 @@ define([
 		cardHeight: cardHeight,
 		cardWidth: cardWidth,
 
-		nutTypes: nutTypes,
-		numNutTypes: nutTypes.length,
+		nutTypesByVersion: nutTypesByVersion,
 		nutTypeImages: nutTypeImages,
 
 		saltedTypes: saltedTypes,

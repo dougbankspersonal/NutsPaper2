@@ -35,6 +35,8 @@
 			'javascript/gameUtils',
 		], function (cards, gameUtils, dojo) {
 
+			var numNutTypes = gameUtils.nutTypesByVersion["v003"].length
+
 			var numOrderCardsEachType = 4
 
 			var allPosssibleOrder0QCardDescs = []
@@ -42,7 +44,7 @@
 			var allPosssibleOrder2QCardDescs = []
 
 			function setupOrder0QCards() {
-				for (let i = 0; i < gameUtils.numNutTypes; i++)
+				for (let i = 0; i < numNutTypes; i++)
 				{
 					for (let j = 0; j < gameUtils.numSaltedTypes; j++)
 					{
@@ -60,7 +62,7 @@
 			}
 
 			function setupOrder1QCards() {
-				for (let i = 0; i < gameUtils.numNutTypes; i++)
+				for (let i = 0; i < numNutTypes; i++)
 				{
 					for (let j = 0; j < gameUtils.numSaltedTypes; j++)
 					{
@@ -72,7 +74,7 @@
 						allPosssibleOrder1QCardDescs.push(desc)
 					}
 				}
-				for (let i = 0; i < gameUtils.numNutTypes; i++)
+				for (let i = 0; i < numNutTypes; i++)
 				{
 					for (let j = 0; j < gameUtils.numRoastedTypes; j++)
 					{
@@ -99,7 +101,7 @@
 			}
 
 			function setupOrder2QCards() {
-				for (let i = 0; i < gameUtils.numNutTypes; i++)
+				for (let i = 0; i < numNutTypes; i++)
 				{
 					var desc = {
 						nutType: i,
@@ -136,7 +138,8 @@
 			var numPossibleOrder1QCards = allPosssibleOrder1QCardDescs.length
 			var numPossibleOrder2QCards = allPosssibleOrder2QCardDescs.length
 
-			var numOrderCards = (numPossibleOrder0QCards + numPossibleOrder1QCards + numPossibleOrder2QCards) * numOrderCardsEachType
+			// var numOrderCards = (numPossibleOrder0QCards + numPossibleOrder1QCards + numPossibleOrder2QCards) * numOrderCardsEachType
+			var numOrderCards = (numPossibleOrder0QCards) * numOrderCardsEachType
 
 			function addNutDesc(node, desc) {
 				var wrapper = gameUtils.addDiv(node, "wrapper", "wrapper")
@@ -194,7 +197,7 @@
 			}
 
 
-			cards.makeCards(" Order", "#808080", numOrderCards, makeOrderCard)
+			cards.makeCards("Order", "#40c080", numOrderCards, makeOrderCard)
 		});
     </script>
 </body>
