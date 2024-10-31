@@ -31,8 +31,9 @@
     <script>
 		require([
 			'javascript/gameBoard',
-		], function (gameBoard) {
-			gameBoard.createV003()
+			'javascript/gameUtils',
+		], function (gameBoard, gameUtils) {
+			gameBoard.createBoard(gameUtils.version004)
 		});
     </script>
 </body>

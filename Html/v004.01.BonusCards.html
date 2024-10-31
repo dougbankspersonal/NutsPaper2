@@ -1,0 +1,160 @@
+<html>
+
+<head>
+	<link rel="stylesheet" href="css/card.css">
+	<link href='https://fonts.googleapis.com/css?family=Courier' rel='stylesheet'>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+    <style type="text/css">
+	</style>
+</head>
+
+<body id="body">
+	<!-- configure Dojo -->
+	<script>
+		// Instead of using data-dojo-config, we're creating a dojoConfig
+		// object *before* we load dojo.js; they're functionally identical,
+		// it's just easier to read this approach with a larger configuration.
+		var dojoConfig = {
+			baseUrl: ".",
+			async: true,
+			// This code registers the correct location of the "demo"
+			// package so we can load Dojo from the CDN whilst still
+			// being able to load local modules
+			packages: [
+				{ name: "dojo", location: "../../bower_components/dojo" },
+				{ name: "javascript", location: "javascript" }
+			]
+		};
+	</script>
+	<!-- load Dojo -->
+	<script src="../../bower_components/dojo/dojo.js"></script>
+
+    <script>
+		require([
+			'javascript/cards',
+			'javascript/gameUtils',
+		], function (cards, gameUtils, dojo) {
+
+
+			var bonusCardConfigs = [
+                {
+                    nutCount: 3,
+                    cardCount: 15,
+                },
+                {
+                    nutCount: 4,
+                    cardCount: 10,
+                },
+                {
+                    nutCount: 5,
+                    cardCount: 5,
+                },
+			]
+
+			var numBonusCards = 0
+            for (i = 0; i < bonusCardConfigs.length; i++) {
+                numBonusCards += bonusCardConfigs[i].cardCount
+            }
+			console.log("numBonusCards = ", numBonusCards)
+			var nutTypes = gameUtils.nutTypesByVersion[gameUtils.version004_01]
+			var numNutTypes = nutTypes.length
+
+			function getEmptyDistribution() {
+				var distribution = {}
+				for (var i = 0; i < numNutTypes; i++) {
+					distribution[i] = 0
+				}
+				return distribution
+			}
+
+			function scoreForDistribution(distribution, count) {
+                // Sum triangle numbers for each nut type.
+				var score = 0
+                for (var i  = 0; i < numNutTypes; i++) {
+					score += distribution[i] * (distribution[i] + 1) / 2
+                }
+				// Halve it.
+                return Math.ceil(score/2)
+			}
+
+			function addBonusDesc(parentNode, bonusCardConfig) {
+				// Collect n random nut types.
+				var nutTypeDistribution = getEmptyDistribution()
+                console.log("001 nutTypeDistribution = ", nutTypeDistribution)
+
+                // 1. Make sure that at least one nut is duplicated.
+                // 2. Never all 4 nuts are in there.
+                var nutsRemaining = bonusCardConfig.nutCount
+				for (var i = 0; i < bonusCardConfig.nutCount - 1; i++) {
+					var nutTypeIndex = gameUtils.getRandomInt(numNutTypes)
+					nutTypeDistribution[nutTypeIndex] = nutTypeDistribution[nutTypeIndex] + 1
+                    nutsRemaining--
+                    // If there's only one nut type left with no nuts, get out.
+                    var zeroCount = 0
+                    for (var j = 0; j < numNutTypes; j++) {
+                        if (nutTypeDistribution[j] == 0) {
+                            zeroCount++
+                        }
+                    }
+                    if (zeroCount == 1) {
+                        break
+                    }
+				}
+
+                while (nutsRemaining) {
+                    var nutTypeIndex = gameUtils.getRandomInt(numNutTypes)
+                    if (nutTypeDistribution[nutTypeIndex] > 0) {
+                        nutTypeDistribution[nutTypeIndex] += 1
+                        nutsRemaining--
+                    }
+                }
+
+                console.log("002 nutTypeDistribution = ", nutTypeDistribution)
+				// Calculate the score for this distribution
+				var score = scoreForDistribution(nutTypeDistribution)
+                console.log("score = ", score)
+
+				var wrapper = gameUtils.addDiv(parentNode, "wrapper", "wrapper")
+				for (var i = 0; i < numNutTypes; i++) {
+					var nutType = nutTypes[i]
+					var typeCount = nutTypeDistribution[i]
+                    for (var j = 0; j < typeCount; j++) {
+						var prop = gameUtils.addDiv(wrapper, "requirement", "requirement")
+						var nutTypeImage = gameUtils.nutTypeImages[nutType]
+						gameUtils.addImage(prop, "nutType", "nutType", nutTypeImage)
+					}
+				}
+
+				var scoreNode = gameUtils.addDiv(wrapper, "score", "score")
+				scoreNode.innerHTML = score.toString().concat(" points")
+
+				return wrapper
+			}
+
+			function makeNthBonusCard(parent, index)
+			{
+                var bonusCardConfig
+				for (var i = 0; i < bonusCardConfigs.length; i++) {
+                    bonusCardConfig = bonusCardConfigs[i]
+                    if (index < bonusCardConfig.cardCount) {
+                        break
+                    }
+					index -= bonusCardConfig.cardCount
+                }
+
+				var node = cards.makeCardFront(parent, `bonus version004 small`, "bonus.version004.".concat(index.toString()))
+
+				addBonusDesc(node, bonusCardConfig)
+				return node
+			}
+
+			function makeBonusCard(parent, index) {
+				return makeNthBonusCard(parent, index)
+			}
+
+			cards.makeCards("Bonus", "#d0f0d0", numBonusCards, makeBonusCard, "small")
+		});
+    </script>
+</body>
+
+</html>

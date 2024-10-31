@@ -34,8 +34,8 @@
 			'javascript/cards',
 			'javascript/gameUtils',
 		], function (cards, gameUtils, dojo) {
-
-			var numNutTypes = gameUtils.nutTypesByVersion["v003"].length
+			var nutTypes = gameUtils.nutTypesByVersion[gameUtils.version003]
+			var numNutTypes = nutTypes.length
 
 			var numOrderCardsEachType = 4
 
@@ -46,12 +46,13 @@
 			function setupOrder0QCards() {
 				for (let i = 0; i < numNutTypes; i++)
 				{
+					var nutType = nutTypes[i]
 					for (let j = 0; j < gameUtils.numSaltedTypes; j++)
 					{
 						for (let k = 0; k < gameUtils.numRoastedTypes; k++)
 						{
 							var desc = {
-								nutType: i,
+								nutType: nutType,
 								saltedType: j,
 								roastedType: k,
 							}
@@ -64,10 +65,11 @@
 			function setupOrder1QCards() {
 				for (let i = 0; i < numNutTypes; i++)
 				{
+					var nutType = nutTypes[i]
 					for (let j = 0; j < gameUtils.numSaltedTypes; j++)
 					{
 						var desc = {
-							nutType: i,
+							nutType: nutType,
 							saltedType: j,
 							roastedType: -1,
 						}
@@ -76,10 +78,11 @@
 				}
 				for (let i = 0; i < numNutTypes; i++)
 				{
+					var nutType = nutTypes[i]
 					for (let j = 0; j < gameUtils.numRoastedTypes; j++)
 					{
 						var desc = {
-							nutType: i,
+							nutType: nutType,
 							saltedType: -1,
 							roastedType: j,
 						}
@@ -103,8 +106,9 @@
 			function setupOrder2QCards() {
 				for (let i = 0; i < numNutTypes; i++)
 				{
+					var nutType = nutTypes[i]
 					var desc = {
-						nutType: i,
+						nutType: nutType,
 						saltedType: -1,
 						roastedType: -1,
 					}
@@ -195,7 +199,6 @@
 			function makeOrderCard(parent, index) {
 				return makeNthOrderCard(parent, index)
 			}
-
 
 			cards.makeCards("Order", "#40c080", numOrderCards, makeOrderCard)
 		});

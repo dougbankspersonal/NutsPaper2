@@ -22,12 +22,16 @@ body {
     overflow: hidden;
 }
 
-.row.v003 {
-	background-image: url("../images/Factory/Concrete.png");
+.row.version003 {
+	background-image: url("../images/Factory/FloorConcrete.png");
 }
 
-.row.v004 {
-	background-image: url("../images/Factory/woodfloor.jpg");
+.row.version004 {
+	background-image: url("../images/Factory/FloorWood.jpg");
+}
+
+.row.version004_01 {
+	background-image: url("../images/Factory/FloorBrick.png");
 }
 
 .row .sideBar {

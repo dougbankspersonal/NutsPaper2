@@ -34,40 +34,16 @@
 			'javascript/cards',
 			'javascript/gameUtils',
 		], function (cards, gameUtils, dojo) {
-
 			var numOrderCardsEachType = 10
-			var nutTypes = gameUtils.nutTypesByVersion["v004"]
+			var nutTypes = gameUtils.nutTypesByVersion[gameUtils.version004_01]
 			var numNutTypes = nutTypes.length
-
 			var numOrderCards = numNutTypes * numOrderCardsEachType
 
-			function addNutDesc(parentNode, nutType) {
-				var wrapper = gameUtils.addDiv(parentNode, "wrapper", "wrapper")
-				var nutPropsTopNode = gameUtils.addDiv(wrapper, "nutProps", "nutProps")
-				var nutPropsBottomNode = gameUtils.addDiv(wrapper, "nutProps standardMargin", "nutProps")
-
-				var nutTypeImage = nutType == -1 ? gameUtils.wildImage: gameUtils.nutTypeImages[nutType]
-
-				var prop
-				prop = gameUtils.addDiv(nutPropsTopNode, "nutProp nutType", "nutType")
-				gameUtils.addImage(prop, "nutType", "nutType", nutTypeImage)
-				return wrapper
-			}
-
-			function makeNthOrderCard(parent, index)
-			{
-				var nutType = Math.floor(index/numOrderCardsEachType)
-
-				var node = cards.makeCardFront(parent, `order`, "order.".concat(index.toString()))
-				addNutDesc(node, nutType)
-				return node
-			}
-
 			function makeOrderCard(parent, index) {
-				return makeNthOrderCard(parent, index)
+				return cards.makeNthOrderCardSingleNut(gameUtils.version004_01, parent, index, numOrderCardsEachType, "small")
 			}
 
-			cards.makeCards("Order", "#f0d0d0", numOrderCards, makeOrderCard)
+			cards.makeCards("Order", "#f0d0d0", numOrderCards, makeOrderCard, "small")
 		});
     </script>
 </body>

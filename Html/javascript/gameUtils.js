@@ -3,21 +3,47 @@ define([
 	'dojo/domReady!'
 ], function(domConstruct) {
 	var pageNumber = 0
+
 	var cardHeight = 336
 	var cardWidth = 240
 
-	var nutTypesByVersion = {
-		"v003": [
-			"Peanut",
-			"Almond",
-		],
-		"v004": [
-			"Peanut",
-			"Almond",
-			"Walnut",
-			"Pistachio",
-		],
-	}
+	var smallCardHeight = 0.666 * cardHeight
+	var smallCardWidth = 0.666 * cardWidth
+
+	var version003 = "version003"
+	var version004 = "version004"
+	var version004_01 = "version004_01"
+
+	var nutTypeAlmond = "Almond"
+	var nutTypeCashew = "Cashew"
+	var nutTypePeanut = "Peanut"
+	var nutTypePistachio = "Pistachio"
+	var nutTypeWalnut = "Walnut"
+
+	var nutTypesByVersion = []
+	nutTypesByVersion[version003] = [
+		nutTypeAlmond,
+		nutTypePeanut,
+	]
+	nutTypesByVersion[version004] = [
+		nutTypeAlmond,
+		nutTypePeanut,
+		nutTypePistachio,
+		nutTypeWalnut,
+	]
+	nutTypesByVersion[version004_01] = [
+		nutTypeAlmond,
+		nutTypeCashew,
+		nutTypePeanut,
+		nutTypePistachio,
+	]
+
+	var nutTypeImages = {}
+	nutTypeImages[nutTypeAlmond] = "images/NutProps/Simple.Almond.png"
+	nutTypeImages[nutTypeCashew] = "images/NutProps/Simple.Cashew.png"
+	nutTypeImages[nutTypePeanut] = "images/NutProps/Simple.Peanut.png"
+	nutTypeImages[nutTypePistachio] = "images/NutProps/Simple.Pistachio.png"
+	nutTypeImages[nutTypeWalnut] = "images/NutProps/Simple.Walnut.png"
 
 	var saltedTypes = [
 		"Salted",
@@ -36,12 +62,6 @@ define([
 	var roastedTypeImages = [
 		"images/NutProps/Roasted.Y.png",
 		"images/NutProps/Roasted.N.png",
-	]
-	var nutTypeImages = [
-		"images/NutProps/Simple.Peanut.png",
-		"images/NutProps/Simple.Almond.png",
-		"images/NutProps/Simple.Walnut.png",
-		"images/NutProps/Simple.Pistachio.png",
 	]
 
 	var wildImage = "images/Order/Order.Wild.png"
@@ -72,8 +92,7 @@ define([
 		if (opt_extraClass != "") {
 			c = c + " " + opt_extraClass
 		}
-		var node = addDiv(parent, c, pageId)
-		return node
+		return addDiv(parent, c, pageId)
 	}
 
 	// Function to convert hexadecimal color to RGB
@@ -118,6 +137,15 @@ define([
 
     // This returned object becomes the defined value of this module
     return {
+		version003: version003,
+		version004: version004,
+		version004_01: version004_01,
+
+		nutTypeAlmond: nutTypeAlmond,
+		nutTypePeanut: nutTypePeanut,
+		nutTypePistachio: nutTypePistachio,
+		nutTypeWalnut: nutTypeWalnut,
+
 		addDiv: addDiv,
 		addImage: addImage,
 		addPage: addPage,
@@ -125,6 +153,9 @@ define([
 		getRandomInt: getRandomInt,
 		cardHeight: cardHeight,
 		cardWidth: cardWidth,
+
+		smallCardHeight: smallCardHeight,
+		smallCardWidth: smallCardWidth,
 
 		nutTypesByVersion: nutTypesByVersion,
 		nutTypeImages: nutTypeImages,

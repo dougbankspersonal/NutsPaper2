@@ -16,14 +16,6 @@ define([
 	var slotWidth = 240;
 	var horizontalSpaceBetweenSlots = 10;
 
-	// 1 column for labels.
-	var numLabelColumns = 1
-	// 4 columns for each nut type.
-	var columnsPerNutType = 4
-	// Total:
-	// * 3 for peanut/almond, * 4 for peanut/almont/walnut/pistachio
-	var totalNumColumns = numLabelColumns + columnsPerNutType * 4
-
 	// Visual aid for all this:
 	// Total width of slot:
 	// +-a-+-----b-----+-a-+
@@ -39,6 +31,11 @@ define([
 	var RowType_RoasterRow = 5
 	var RowType_SalterRow = 6
 	var RowType_OrdersRow = 7
+
+	var factoryColumnCountByVersion = {}
+	factoryColumnCountByVersion[gameUtils.version003] = 10
+	factoryColumnCountByVersion[gameUtils.version004] = 12
+	factoryColumnCountByVersion[gameUtils.version004_01] = 16
 
 	var rowTypesForV003 = [
 		RowType_NumberRow,
@@ -64,12 +61,25 @@ define([
 		RowType_ConveyorRow,
 		RowType_ConveyorRow,
 		RowType_OrdersRow,
-]
+	]
 
-	var rowTypesByVersion = {
-		v003: rowTypesForV003,
-		v004: rowTypesForV004,
-	}
+	var rowTypesForV004_01 = [
+		RowType_NumberRow,
+		RowType_DispenserRow,
+		RowType_ConveyorRow,
+		RowType_ConveyorRow,
+		RowType_SquirrelRow,
+		RowType_ConveyorRow,
+		RowType_SalterRow,
+		RowType_ConveyorRow,
+		RowType_ConveyorRow,
+		RowType_OrdersRow,
+	]
+
+	var rowTypesByVersion = {}
+	rowTypesByVersion[gameUtils.version003] = rowTypesForV003
+	rowTypesByVersion[gameUtils.version004] = rowTypesForV004
+	rowTypesByVersion[gameUtils.version004_01] = rowTypesForV004_01
 
 	var maxRowsPerPage = 5
 
@@ -230,6 +240,19 @@ define([
 		return standardSlot
 	}
 
+	function adjustNumColumns(numColumns, factoryColumnCount, firstColumnIndex, opt_configs) {
+		if (opt_configs && opt_configs.sideBarInfo) {
+			numColumns = numColumns - 1
+		}
+
+		var totalNumColumns = factoryColumnCount + 1
+		var numLeft = totalNumColumns - firstColumnIndex
+		if (numColumns > numLeft) {
+			numColumns = numLeft
+		}
+		return numColumns
+	}
+
 	function addStandardSlotWithElementAndBelt(parentNode, opt_configs) {
 		var hideBeltTop = opt_configs && opt_configs.hideBeltTop ? true : false
 		var customClasses = opt_configs && opt_configs.customClasses ? opt_configs.customClasses : null
@@ -253,17 +276,10 @@ define([
 		return standardSlot
 	}
 
-	function addNColumnRowWithElements(parentNode, version, numColumns, firstColumnIndex, opt_configs) {
+	function addNColumnRowWithElements(parentNode, version, numColumns, factoryColumnCount, firstColumnIndex, opt_configs) {
 		var row, content = addRow(parentNode, version, opt_configs)
 
-		if (opt_configs && opt_configs.sideBarInfo) {
-			numColumns = numColumns - 1
-		}
-
-		var numLeft = totalNumColumns - firstColumnIndex
-		if (numColumns > numLeft) {
-			numColumns = numLeft
-		}
+		numColumns = adjustNumColumns(numColumns, factoryColumnCount, firstColumnIndex, opt_configs)
 
 		var configs = opt_configs ? opt_configs : {}
 		var squirrelStartIndex = configs.squirrelStartIndex
@@ -284,18 +300,10 @@ define([
 		return row
 	}
 
-	function addNColumnRowWithNumbers(parentNode, version, numColumns, firstColumnIndex, opt_configs) {
+	function addNColumnRowWithNumbers(parentNode, version, numColumns, factoryColumnCount, firstColumnIndex, opt_configs) {
 		var row, content = addRow(parentNode, version, opt_configs)
 
-		if (opt_configs && opt_configs.sideBarInfo) {
-			numColumns = numColumns - 1
-			firstColumnIndex = firstColumnIndex + 1
-		}
-
-		var numLeft = totalNumColumns - firstColumnIndex
-		if (numColumns > numLeft) {
-			numColumns = numLeft
-		}
+		numColumns = adjustNumColumns(numColumns, factoryColumnCount, firstColumnIndex, opt_configs)
 
 		for (let i = 0; i < numColumns; i++) {
 			var elementNumber = firstColumnIndex + i
@@ -304,17 +312,10 @@ define([
 		return row
 	}
 
-	function addNColumnRowWithConveyors(parentNode, version, numColumns, firstColumnIndex, opt_configs) {
+	function addNColumnRowWithConveyors(parentNode, version, numColumns, factoryColumnCount, firstColumnIndex, opt_configs) {
 		var row, content = addRow(parentNode, version, opt_configs)
 
-		if (opt_configs && opt_configs.sideBarInfo) {
-			numColumns = numColumns - 1
-		}
-
-		var numLeft = totalNumColumns - firstColumnIndex
-		if (numColumns > numLeft) {
-			numColumns = numLeft
-		}
+		numColumns = adjustNumColumns(numColumns, factoryColumnCount, firstColumnIndex, opt_configs)
 
 		var configs = opt_configs ? opt_configs : {}
 		configs.skipElement = true
@@ -331,19 +332,18 @@ define([
 		})
 	}
 
-	function addNColumnOrdersRow(parentNode, version, numColumns, firstColumnIndex, opt_configs) {
+	function addNColumnOrdersRow(parentNode, version, numColumns, factoryColumnCount, firstColumnIndex, opt_configs) {
 		var sideBarInfo = opt_configs && opt_configs.sideBarInfo ? opt_configs.sideBarInfo : null
-		return addNColumnRowWithElements(parentNode, version, numColumns, firstColumnIndex, {
+		return addNColumnRowWithElements(parentNode, version, numColumns, factoryColumnCount, firstColumnIndex, {
 			classes: "orders",
 			sideBarInfo: sideBarInfo,
 			darkBackground: true,
-			// customHeight: ordersRowHeight,
 			customClasses: "card",
 			tweakElement: tweakCardElement,
 		})
 	}
 
-	function addNColumnStrip(parentNode, version, factoryColumnCount, numColumns, firstColumnIndex) {
+	function addNColumnStrip(parentNode, version, numColumns, factoryColumnCount, firstColumnIndex) {
 		var pageNode = gameUtils.addDiv(parentNode, "page_of_items", "page")
 		var isLeft = (firstColumnIndex == 0)
 
@@ -362,7 +362,7 @@ define([
 			var rowType = rowTypes[i]
 			switch (rowType) {
 				case RowType_NumberRow:
-					addNColumnRowWithNumbers(pageNode, version, numColumns, firstColumnIndex, {
+					addNColumnRowWithNumbers(pageNode, version, numColumns, factoryColumnCount, firstColumnIndex, {
 						classes: "numbers",
 						sideBarInfo: isLeft? {
 							title: "",
@@ -370,7 +370,7 @@ define([
 					})
 					break;
 				case RowType_DispenserRow:
-					addNColumnRowWithElements(pageNode, version, numColumns, firstColumnIndex, {
+					addNColumnRowWithElements(pageNode, version, numColumns, factoryColumnCount, firstColumnIndex, {
 						classes: "nutDispensers",
 						sideBarInfo: isLeft? {
 							title: "Dispensers",
@@ -379,7 +379,7 @@ define([
 					})
 					break;
 				case RowType_ConveyorRow:
-					addNColumnRowWithConveyors(pageNode, version, numColumns, firstColumnIndex, {
+					addNColumnRowWithConveyors(pageNode, version, numColumns, factoryColumnCount, firstColumnIndex, {
 						classes: "nutDispensers",
 						sideBarInfo: isLeft? {
 							title: "Conveyor",
@@ -390,7 +390,7 @@ define([
 					var squirrelRangeStart = numSquirrelRows * factoryColumnCount + 1
 					var squirrelRangeEnd = (numSquirrelRows + 1) * factoryColumnCount
 					var subtitle = `<i>Squirrel spaces ${squirrelRangeStart}-${squirrelRangeEnd}</i>`
-					addNColumnRowWithElements(pageNode, version, numColumns, firstColumnIndex, {
+					addNColumnRowWithElements(pageNode, version, numColumns, factoryColumnCount, firstColumnIndex, {
 						squirrelStartIndex: squirrelRangeStart,
 						sideBarInfo: isLeft? {
 							title: "Roasters",
@@ -400,14 +400,9 @@ define([
 					numSquirrelRows = numSquirrelRows + 1
 					break;
 				case RowType_SalterRow:
-					var squirrelRangeStart = numSquirrelRows * factoryColumnCount + 1
-					var squirrelRangeEnd = (numSquirrelRows + 1) * factoryColumnCount
-					var subtitle = `<i>Squirrel spaces ${squirrelRangeStart}-${squirrelRangeEnd}</i>`
-					addNColumnRowWithElements(pageNode, version, numColumns, firstColumnIndex, {
-						squirrelStartIndex: squirrelRangeStart,
+					addNColumnRowWithElements(pageNode, version, numColumns, factoryColumnCount, firstColumnIndex, {
 						sideBarInfo: isLeft? {
 							title: "Salters",
-							subtitle: subtitle,
 						} : null,
 					})
 					numSquirrelRows = numSquirrelRows + 1
@@ -416,7 +411,7 @@ define([
 					var squirrelRangeStart = numSquirrelRows * factoryColumnCount + 1
 					var squirrelRangeEnd = (numSquirrelRows + 1) * factoryColumnCount
 					var subtitle = `<i>Squirrel spaces ${squirrelRangeStart}-${squirrelRangeEnd}</i>`
-					addNColumnRowWithElements(pageNode, version, numColumns, firstColumnIndex, {
+					addNColumnRowWithElements(pageNode, version, numColumns, factoryColumnCount, firstColumnIndex, {
 						squirrelStartIndex: squirrelRangeStart,
 						sideBarInfo: isLeft? {
 							title: "Empty",
@@ -426,7 +421,7 @@ define([
 					numSquirrelRows = numSquirrelRows + 1
 					break;
 				case RowType_OrdersRow:
-					addNColumnOrdersRow(pageNode, version, numColumns, firstColumnIndex, {
+					addNColumnOrdersRow(pageNode, version, numColumns, factoryColumnCount, firstColumnIndex, {
 						sideBarInfo: isLeft? {
 							title: "Orders",
 						} : null,
@@ -558,13 +553,15 @@ define([
 		return pageNode
 	}
 
-	function createBoard(factoryColumnCount, version) {
+	function createBoard(version) {
 		var bodyNode = dom.byId("body");
 
 		var firstColumnIndex = 0
 
+		var factoryColumnCount = factoryColumnCountByVersion[version]
+
 		// First column is special case.
-		addNColumnStrip(bodyNode, version, factoryColumnCount, 1, firstColumnIndex)
+		addNColumnStrip(bodyNode, version, 1, factoryColumnCount, firstColumnIndex)
 		var firstColumnIndex = 1
 
 		var outstandingNumColumns = factoryColumnCount
@@ -572,7 +569,7 @@ define([
 		var columnsPerStrip = 4
 		while (outstandingNumColumns > 0) {
 			var numColumns = Math.min(outstandingNumColumns, columnsPerStrip)
-			addNColumnStrip(bodyNode, version, factoryColumnCount, numColumns, firstColumnIndex)
+			addNColumnStrip(bodyNode, version, numColumns, factoryColumnCount, firstColumnIndex)
 			firstColumnIndex = firstColumnIndex + numColumns
 			outstandingNumColumns = outstandingNumColumns - numColumns
 		}
@@ -585,14 +582,9 @@ define([
 
 	// This returned object becomes the defined value of this module
     return {
-		createV004: function() {
-			createBoard(12, "v004")
-		},
-        createV003: function () {
-			createBoard(10, "v003")
-        },
+		createBoard: createBoard,
 		createStrips: function() {
 			createStrips()
-		}
+		},
     };
 });

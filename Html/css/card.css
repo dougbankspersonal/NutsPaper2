@@ -10,11 +10,6 @@ body {
 	position: relative;
 }
 
-.page_of_items.back {
-	padding-top: 16px;
-	padding-left: 12px;
-}
-
 .card {
 	margin-left: 0.00px;
 	margin-top: 0.00px;
@@ -23,14 +18,108 @@ body {
 	overflow: hidden;
 }
 
-
-.card.small {
-	width: 180px;
-	height: 252px;
+/* Bonus cards */
+.card.front {
+	box-sizing: border-box;
 }
 
-.card.front {
-	background: radial-gradient(#ffffff, #f0f0f0);
+/* Order Cards */
+.card.front.order {
+	position: relative;
+}
+
+.card.front.order .wrapper {
+	position: absolute;
+	top: 50%;
+	width: 100%;
+	-ms-transform: translateY(-50%);
+	transform: translateY(-50%);
+}
+
+.card.front.order .nutProps {
+	display: flex;
+	margin-bottom: 20px;
+}
+
+.card.front.order div.nutProp {
+	height: 80px;
+	width: 80px;
+	margin: auto;
+}
+
+.card.front.order div.nutProp.nutType {
+	height: 100px;
+	width: 100px;
+}
+
+.card.front.order div.nutProp img{
+	max-width:100%;
+	max-height:100%;
+	width: auto;
+	height: auto;
+}
+
+/* goalv004.01 cards. */
+.card.front.goal {
+	padding-top: 27px;
+	padding-bottom: 27px;
+	padding-left: 14px;
+	padding-right: 14px;
+}
+
+.card.front.goal div.title {
+	font-family: 'Courier';
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.card.front.goal div.goal {
+	padding-top: 7px;
+	font-size: 11px;
+	font-family: 'Courier';
+	font-weight: bold;
+	font-style: italic;
+}
+
+.card.front.goal div.reward {
+	padding-top: 7px;
+	font-size: 11px;
+	font-family: 'Courier';
+	font-weight: bold;
+}
+
+/* bonusv004 cards. */
+.card.front.bonus.version004 {
+	padding-top: 27px;
+}
+
+.card.front.bonus.version004 div.requirement {
+	display: inline-flex;
+	align-items: center;
+}
+
+.card.front.bonus.version004 div.requirement img{
+	height: 34px;
+	width: 34px;
+	vertical-align: middle;
+	padding-right: 3px;
+	padding-left: 3px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+
+.card.front.bonus.version004 div.wrapper {
+	padding-bottom: 14px;
+	padding-left: 14px;
+	padding-right: 14px;
+}
+
+.card.front.bonus.version004 div.score {
+	padding-top: 14px;
+	font-family: 'Courier';
+	font-style: italic;
+	font-size: 16px;
+	font-weight: bold;
 }
 
 /* Bonus cards */
@@ -239,7 +328,6 @@ body {
 
 /* Card backs*/
 .card.back {
-	border: 1px solid #000000;
 	box-sizing: border-box;
 	position: relative;
 }
@@ -267,39 +355,4 @@ body {
 
 .card.back.small .inset .title {
 	font-size: 36px;
-}
-
-.card.front.order {
-	position: relative;
-}
-
-.card.front.order .wrapper {
-	position: absolute;
-	top: 50%;
-	width: 100%;
-	-ms-transform: translateY(-50%);
-	transform: translateY(-50%);
-}
-
-.card.front.order .nutProps {
-	display: flex;
-	margin-bottom: 20px;
-}
-
-.card.front.order div.nutProp {
-	height: 80px;
-	width: 80px;
-	margin: auto;
-}
-
-.card.front.order div.nutProp.nutType {
-	height: 100px;
-	width: 100px;
-}
-
-.card.front.order div.nutProp img{
-	max-width:100%;
-	max-height:100%;
-	width: auto;
-	height: auto;
 }
