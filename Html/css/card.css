@@ -1,15 +1,3 @@
-body {
-	margin: 0px;
-}
-
-.page_of_items {
-	page-break-after: always;
-	text-align: center;
-	padding: 10px;
-	overflow: hidden;
-	position: relative;
-}
-
 .card {
 	margin-left: 0.00px;
 	margin-top: 0.00px;
@@ -26,6 +14,8 @@ body {
 /* Order Cards */
 .card.front.order {
 	position: relative;
+	background-color: #fff;
+	margin: 0px;
 }
 
 .card.front.order .wrapper {
@@ -69,36 +59,43 @@ body {
 
 .card.front.goal div.title {
 	font-family: 'Courier';
-	font-size: 14px;
+	font-size: 21px;
 	font-weight: bold;
 }
 
 .card.front.goal div.goal {
 	padding-top: 7px;
-	font-size: 11px;
+	font-size: 16px;
 	font-family: 'Courier';
 	font-weight: bold;
 	font-style: italic;
 }
 
+.card.front.goal div.points {
+	padding-top: 7px;
+	font-size: 16px;
+	font-family: 'Courier';
+	font-weight: bold;
+}
+
 .card.front.goal div.reward {
 	padding-top: 7px;
-	font-size: 11px;
+	font-size: 16px;
 	font-family: 'Courier';
 	font-weight: bold;
 }
 
 /* bonusv004 cards. */
-.card.front.bonus.version004 {
+.card.front.bonus.version4 {
 	padding-top: 27px;
 }
 
-.card.front.bonus.version004 div.requirement {
+.card.front.bonus.version4 div.requirement {
 	display: inline-flex;
 	align-items: center;
 }
 
-.card.front.bonus.version004 div.requirement img{
+.card.front.bonus.version4 div.requirement img{
 	height: 34px;
 	width: 34px;
 	vertical-align: middle;
@@ -108,13 +105,13 @@ body {
 	padding-bottom: 3px;
 }
 
-.card.front.bonus.version004 div.wrapper {
+.card.front.bonus.version4 div.wrapper {
 	padding-bottom: 14px;
 	padding-left: 14px;
 	padding-right: 14px;
 }
 
-.card.front.bonus.version004 div.score {
+.card.front.bonus.version4 div.score {
 	padding-top: 14px;
 	font-family: 'Courier';
 	font-style: italic;

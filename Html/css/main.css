@@ -1,0 +1,17 @@
+body {
+	margin: 0px;
+}
+
+.pageOfItems {
+	page-break-after: always;
+	text-align: center;
+	padding: 10px;
+	overflow: hidden;
+	position: relative;
+	overflow-x: scroll;
+	white-space: nowrap;
+}
+
+.pageOfItems.allowsOverflow {
+	overflow: visible;
+}

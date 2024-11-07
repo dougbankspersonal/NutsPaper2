@@ -10,10 +10,7 @@ define([
 	var cardBorderWidth = 5
 
 	function setCardSize(node, classes) {
-		console.log("classes = ", classes)
 		if (classes && classes.indexOf("small") != -1) {
-			console.log("Doug 001")
-			console.log("gameUtils.smallCardWidth = ", gameUtils.smallCardWidth)
 			domStyle.set(node, {
 				"width": `${gameUtils.smallCardWidth}px`,
 				"height": `${gameUtils.smallCardHeight}px`,
@@ -22,7 +19,6 @@ define([
 		}
 		else
 		{
-			console.log("Doug 002 ")
 			domStyle.set(node, {
 				"width": `${gameUtils.cardWidth}px`,
 				"height": `${gameUtils.cardHeight}px`,
@@ -54,43 +50,48 @@ define([
 	function makeCardFront(parent, classes, id) {
 		var classes = "card front " + classes
 		var node = gameUtils.addDiv(parent, classes, id)
-
 		setCardSize(node, classes)
 
 		return node
 	}
 
-	function addNutDesc(parentNode, nutType) {
-		var wrapper = gameUtils.addDiv(parentNode, "wrapper", "wrapper")
+	function addNutDesc(parent, nutType) {
+		console.log("Doug: addNutDesc ", parent, nutType)
+		var wrapper = gameUtils.addDiv(parent, "wrapper", "wrapper")
+		console.log("Doug: addNutDesc ", wrapper)
 		var nutPropsTopNode = gameUtils.addDiv(wrapper, "nutProps", "nutProps")
-		var nutPropsBottomNode = gameUtils.addDiv(wrapper, "nutProps standardMargin", "nutProps")
+		gameUtils.addDiv(wrapper, "nutProps standardMargin", "nutProps")
 
 		var nutTypeImage = nutType == -1 ? gameUtils.wildImage: gameUtils.nutTypeImages[nutType]
 
-		var prop
-		prop = gameUtils.addDiv(nutPropsTopNode, "nutProp nutType", "nutType")
+		var prop = gameUtils.addDiv(nutPropsTopNode, "nutProp nutType", "nutType")
 		gameUtils.addImage(prop, "nutType", "nutType", nutTypeImage)
 		return wrapper
 	}
 
+	function makeOrderCardSingleNut(parent, nutType, index, opt_classes) {
+		console.log("Doug: makeOrderCardSingleNut ", parent, nutType, index, opt_classes)
+		var classes = opt_classes ? opt_classes: ""
+		var cardId = "order.".concat(index.toString())
+		var cardClasses = `order ${classes}`
+		var node = makeCardFront(parent, cardClasses, cardId)
+		console.log("Doug: makeOrderCardSingleNut ", node, nutType)
+		addNutDesc(node, nutType)
+		return node
+	}
+
 	function makeNthOrderCardSingleNut(version, parent, index, numOrderCardsEachType, opt_classes) {
-		console.log("version = ", version)
-		console.log("index = ", index)
-		console.log("numOrderCardsEachType = ", numOrderCardsEachType)
 		var nutTypeIndex = Math.floor(index/numOrderCardsEachType)
 		var nutTypes = gameUtils.nutTypesByVersion[version]
 		var nutType = nutTypes[nutTypeIndex]
 
-		var classes = opt_classes ? opt_classes: ""
-
-		var node = makeCardFront(parent, `order `.concat(classes), "order.".concat(index.toString()))
-		addNutDesc(node, nutType)
-		return node
+		return makeOrderCardSingleNut(parent, nutType, index, opt_classes)
 	}
 
     // This returned object becomes the defined value of this module
     return {
 		makeNthOrderCardSingleNut: makeNthOrderCardSingleNut,
+		makeOrderCardSingleNut: makeOrderCardSingleNut,
 
 		getCardDescAtIndex: function(index, descs)
 		{
@@ -121,8 +122,8 @@ define([
 
 			for (let i = 0; i < numCards; i++) {
 				if (i % cardsPerPage == 0) {
-					pageOfFronts = gameUtils.addPage(bodyNode)
-					pageOfBacks = gameUtils.addPage(bodyNode, "back")
+					pageOfFronts = gameUtils.addPageOfItems(bodyNode)
+					pageOfBacks = gameUtils.addPageOfItems(bodyNode, "back")
 				}
 				makeCardBack(pageOfBacks, title, color, opt_extraClass)
 				contentCallback(pageOfFronts, i, opt_extraClass)

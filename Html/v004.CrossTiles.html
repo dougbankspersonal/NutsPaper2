@@ -1,7 +1,9 @@
 <html>
 
 <head>
-	<link rel="stylesheet" href="css/gameBoard.css">
+	<link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="css/belt.css">
+	<link rel="stylesheet" href="css/cross_tile.css">
     <meta content="text/html; charset=UTF-8" http-equiv="content-type">
     <style type="text/css">
 	</style>
@@ -30,9 +32,9 @@
 
     <script>
 		require([
-			'javascript/gameBoard',
-		], function (gameBoard) {
-			gameBoard.createStrips()
+			'javascript/crossTiles',
+		], function (crossTiles) {
+			crossTiles.createCrossTiles(48)
 		});
     </script>
 </body>

@@ -1,7 +1,9 @@
 <html>
 
 <head>
-	<link rel="stylesheet" href="css/gameBoard.css">
+	<link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="css/game_board.css">
+	<link rel="stylesheet" href="css/belt.css">
     <meta content="text/html; charset=UTF-8" http-equiv="content-type">
     <style type="text/css">
 	</style>
@@ -33,7 +35,10 @@
 			'javascript/gameBoard',
 			'javascript/gameUtils',
 		], function (gameBoard, gameUtils) {
-			gameBoard.createBoard(gameUtils.version003)
+			gameBoard.createBoard(gameUtils.version003, {
+				columnsPerStrip: 4,
+				maxRowsPerPage: 5,
+			})
 		});
     </script>
 </body>

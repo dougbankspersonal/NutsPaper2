@@ -1,6 +1,7 @@
 <html>
 
 <head>
+	<link rel="stylesheet" href="css/main.css">
 	<link rel="stylesheet" href="css/card.css">
 	<link href='https://fonts.googleapis.com/css?family=Courier' rel='stylesheet'>
     <meta content="text/html; charset=UTF-8" http-equiv="content-type">
@@ -38,54 +39,84 @@
                 {
                     title: "Peanut Champion",
                     goal: "First player to collect 4 Peanuts",
-                    reward: "Immediately collect 3 Action Tokens",
+                    points: "Final Scoring: +3 points",
+                    reward: "Immediately collect 2 Action Tokens",
+                    count: 2,
                 },
                 {
                     title: "Almond Thought Leader",
-                    goal: "First player to collect 4 Almonds",
-                    reward: "Any time you roll for squirrel movement, roll twice and use the lower result.",
+                    goal: "Collect 4 Almonds",
+                    points: "Final Scoring: +3 points",
+                    reward: "At Final Scoring, you may move the lowest token in one nut column to the lowest space in another nut column.",
+                    count: 2,
                 },
                 {
                     title: "Cashew Innovator",
-                    goal: "First player to collect 4 Cashews",
+                    goal: "Collect 4 Cashews",
+                    points: "Final Scoring: +3 points",
                     reward: "You may collect a 6th nut of any type for an additional 6 points. (Only once)",
+                    count: 2,
                 },
                 {
                     title: "Pistachio Monger",
-                    goal: "First player to collect 4 Pistachios",
+                    goal: "Collect 4 Pistachios",
+                    points: "Final Scoring: +3 points",
                     reward: "You may ignore the penalty for one failed Bonus card.",
+                    count: 2,
                 },
                 {
                     title: "Salty Mama",
-                    goal: "First player to collect 4 Salt Tokens",
+                    goal: "Collect 4 Salt Tokens",
+                    points: "Final Scoring: +3 points",
                     reward: "Each of your Salt Tokens is worth 3 points at the end of the game.",
+                    count: 2,
                 },
                 {
-                    title: "Dummy Mama",
-                    goal: "First player to collect 4 Salt Tokens",
-                    reward: "Each of your Salt Tokens is worth 3 points at the end of the game.",
+                    title: "Squirrel Buddy",
+                    goal: "Lose 3 nuts to the Squirrel",
+                    points: "Final Scoring: +3 points",
+                    reward: "When you roll for Squirrel movement, roll twice and use the lower result.",
+                    count: 6,
                 },
             ]
 
-            var numGoalCards = goalCardConfigs.length
+            var numGoalCards = 0
+            for (var i = 0; i < goalCardConfigs.length; i++) {
+                numGoalCards = numGoalCards + goalCardConfigs[i].count
+            }
+
+            function mapIndexToCardType(index) {
+                for (var i = 0; i < goalCardConfigs.length; i++) {
+                    if (index < goalCardConfigs[i].count) {
+                        return i
+                    }
+                    index -= goalCardConfigs[i].count
+                }
+                // How did we get here?
+                console.assert("mapIndexToCardType error")
+                return 0
+            }
 
 			function makeNthGoalCard(parentNode, index)
 			{
-				var node = cards.makeCardFront(parentNode, "goal small", "goal.".concat(index.toString()))
-                var config = goalCardConfigs[index]
-                var scoreNode = gameUtils.addDiv(node, "title", "title")
-				scoreNode.innerHTML = config.title
-                var scoreNode = gameUtils.addDiv(node, "goal", "goal")
-				scoreNode.innerHTML = config.goal
-                var scoreNode = gameUtils.addDiv(node, "reward", "reward")
-				scoreNode.innerHTML = config.reward
+                var cardType = mapIndexToCardType(index)
+				var fontNode = cards.makeCardFront(parentNode, "goal", "goal.".concat(index.toString()))
+                var config = goalCardConfigs[cardType]
+                var node = gameUtils.addDiv(fontNode, "title", "title")
+				node.innerHTML = config.title
+                var node = gameUtils.addDiv(fontNode, "goal", "goal")
+				node.innerHTML = config.goal
+                var node = gameUtils.addDiv(fontNode, "points", "points")
+				node.innerHTML = config.points
+                var node = gameUtils.addDiv(fontNode, "reward", "reward")
+				node.innerHTML = config.reward
 			}
 
 			function makeGoalCard(parent, index) {
 				return makeNthGoalCard(parent, index)
 			}
 
-			cards.makeCards("Goal", "#ffeedd", numGoalCards, makeGoalCard, "small")
+			cards.makeCards("Goal", "#ffeedd", numGoalCards, makeGoalCard)
 		});
     </script>
 </body>

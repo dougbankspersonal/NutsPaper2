@@ -1,6 +1,7 @@
 <html>
 
 <head>
+	<link rel="stylesheet" href="css/main.css">
 	<link rel="stylesheet" href="css/card.css">
 	<link href='https://fonts.googleapis.com/css?family=Courier' rel='stylesheet'>
     <meta content="text/html; charset=UTF-8" http-equiv="content-type">
@@ -37,87 +38,130 @@
 
 
 			var bonusCardConfigs = [
-                {
-                    nutCount: 3,
-                    cardCount: 15,
+				{
+					Almond: 2,
+					Cashew: 1,
+					Peanut: 1,
+					Pistachio: 0,
+                },
+				{
+					Almond: 2,
+					Cashew: 1,
+					Peanut: 0,
+					Pistachio: 1,
+                },
+				{
+					Almond: 2,
+					Cashew: 0,
+					Peanut: 1,
+					Pistachio: 1,
                 },
                 {
-                    nutCount: 4,
-                    cardCount: 10,
+					Almond: 0,
+					Cashew: 2,
+					Peanut: 1,
+					Pistachio: 1,
+                },
+				{
+					Almond: 1,
+					Cashew: 2,
+					Peanut: 1,
+					Pistachio: 0,
+                },
+				{
+					Almond: 1,
+					Cashew: 2,
+					Peanut: 0,
+					Pistachio: 1,
+                },
+				{
+					Almond: 1,
+					Cashew: 0,
+					Peanut: 2,
+					Pistachio: 1,
+                },
+				{
+					Almond: 0,
+					Cashew: 1,
+					Peanut: 2,
+					Pistachio: 1,
+                },
+				{
+					Almond: 1,
+					Cashew: 1,
+					Peanut: 2,
+					Pistachio: 0,
+                },
+				{
+					Almond: 1,
+					Cashew: 1,
+					Peanut: 0,
+					Pistachio: 2,
+                },
+				{
+					Almond: 1,
+					Cashew: 0,
+					Peanut: 1,
+					Pistachio: 2,
+                },
+				{
+					Almond: 0,
+					Cashew: 1,
+					Peanut: 1,
+					Pistachio: 2,
                 },
                 {
-                    nutCount: 5,
-                    cardCount: 5,
+					Almond: 2,
+					Cashew: 0,
+					Peanut: 2,
+					Pistachio: 0,
+                },
+                {
+					Almond: 2,
+					Cashew: 0,
+					Peanut: 0,
+					Pistachio: 2,
+                },
+                {
+					Almond: 0,
+					Cashew: 2,
+					Peanut: 2,
+					Pistachio: 0,
+                },
+                {
+					Almond: 0,
+					Cashew: 0,
+					Peanut: 2,
+					Pistachio: 2,
                 },
 			]
 
-			var numBonusCards = 0
-            for (i = 0; i < bonusCardConfigs.length; i++) {
-                numBonusCards += bonusCardConfigs[i].cardCount
-            }
-			console.log("numBonusCards = ", numBonusCards)
+			var numBonusCards = bonusCardConfigs.length
 			var nutTypes = gameUtils.nutTypesByVersion[gameUtils.version004_01]
 			var numNutTypes = nutTypes.length
-
-			function getEmptyDistribution() {
-				var distribution = {}
-				for (var i = 0; i < numNutTypes; i++) {
-					distribution[i] = 0
-				}
-				return distribution
-			}
 
 			function scoreForDistribution(distribution, count) {
                 // Sum triangle numbers for each nut type.
 				var score = 0
+
                 for (var i  = 0; i < numNutTypes; i++) {
-					score += distribution[i] * (distribution[i] + 1) / 2
+					nutType = nutTypes[i]
+					score += distribution[nutType] * (distribution[nutType] + 1) / 2
                 }
-				// Halve it.
-                return Math.ceil(score/2)
+                return score
 			}
 
 			function addBonusDesc(parentNode, bonusCardConfig) {
 				// Collect n random nut types.
-				var nutTypeDistribution = getEmptyDistribution()
-                console.log("001 nutTypeDistribution = ", nutTypeDistribution)
+				var nutTypeDistribution = bonusCardConfig
 
-                // 1. Make sure that at least one nut is duplicated.
-                // 2. Never all 4 nuts are in there.
-                var nutsRemaining = bonusCardConfig.nutCount
-				for (var i = 0; i < bonusCardConfig.nutCount - 1; i++) {
-					var nutTypeIndex = gameUtils.getRandomInt(numNutTypes)
-					nutTypeDistribution[nutTypeIndex] = nutTypeDistribution[nutTypeIndex] + 1
-                    nutsRemaining--
-                    // If there's only one nut type left with no nuts, get out.
-                    var zeroCount = 0
-                    for (var j = 0; j < numNutTypes; j++) {
-                        if (nutTypeDistribution[j] == 0) {
-                            zeroCount++
-                        }
-                    }
-                    if (zeroCount == 1) {
-                        break
-                    }
-				}
-
-                while (nutsRemaining) {
-                    var nutTypeIndex = gameUtils.getRandomInt(numNutTypes)
-                    if (nutTypeDistribution[nutTypeIndex] > 0) {
-                        nutTypeDistribution[nutTypeIndex] += 1
-                        nutsRemaining--
-                    }
-                }
-
-                console.log("002 nutTypeDistribution = ", nutTypeDistribution)
 				// Calculate the score for this distribution
 				var score = scoreForDistribution(nutTypeDistribution)
-                console.log("score = ", score)
 
 				var wrapper = gameUtils.addDiv(parentNode, "wrapper", "wrapper")
 				for (var i = 0; i < numNutTypes; i++) {
 					var nutType = nutTypes[i]
-					var typeCount = nutTypeDistribution[i]
+					var typeCount = nutTypeDistribution[nutType]
                     for (var j = 0; j < typeCount; j++) {
 						var prop = gameUtils.addDiv(wrapper, "requirement", "requirement")
 						var nutTypeImage = gameUtils.nutTypeImages[nutType]
@@ -133,14 +177,7 @@
 
 			function makeNthBonusCard(parent, index)
 			{
-                var bonusCardConfig
-				for (var i = 0; i < bonusCardConfigs.length; i++) {
-                    bonusCardConfig = bonusCardConfigs[i]
-                    if (index < bonusCardConfig.cardCount) {
-                        break
-                    }
-					index -= bonusCardConfig.cardCount
-                }
+                var bonusCardConfig = bonusCardConfigs[index]
 
 				var node = cards.makeCardFront(parent, `bonus version004 small`, "bonus.version004.".concat(index.toString()))
 
