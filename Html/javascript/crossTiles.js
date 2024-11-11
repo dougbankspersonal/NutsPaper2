@@ -9,7 +9,7 @@ define([
 		var curvePoints = []
 
 		var startX = gameUtils.beltCenterOffsetInTile
-		var endX = gameUtils.crossTileWidth - gameUtils.beltCenterOffsetInTile
+		var endX = gameUtils.crossTileInnerWidth - gameUtils.beltCenterOffsetInTile
 
 		var startY = 0
 		var endY = gameUtils.crossTileHeight
@@ -59,7 +59,7 @@ define([
 		{
 			var oldPoint = curvePoints[i]
 			curvePoints.push({
-				xOffset: gameUtils.crossTileWidth - oldPoint.xOffset,
+				xOffset: gameUtils.crossTileInnerWidth - oldPoint.xOffset,
 				yOffset: endY - oldPoint.yOffset,
 			})
 		}
@@ -91,10 +91,15 @@ define([
 	var curvePoints = getCurvePoints()
 
 	function addCrossTile(parentNode) {
-		var crossTile = gameUtils.addDiv(parentNode, "crossTile", "crossTile")
+		var classArray = ["crossTile"]
+		if (gameUtils.getIsDemoBoard()) {
+			classArray.push("isDemoBoard")
+		}
+		var crossTile = gameUtils.addDiv(parentNode, classArray, "crossTile")
 		domStyle.set(crossTile, {
 			"width": `${gameUtils.crossTileWidth}px`,
 			"height": `${gameUtils.crossTileHeight}px`,
+			"border": `${gameUtils.crossTileBorder}px solid #000000`
 		})
 
 		// Add belts.
@@ -107,7 +112,7 @@ define([
 		// Right to left belt.
 		for (let index = 0; index < curvePoints.length; index++) {
 			var curvePoint = curvePoints[index]
-			beltUtils.addBeltSegment(crossTile, gameUtils.crossTileWidth - curvePoint.xOffset, curvePoint.yOffset, -curvePoint.rads)
+			beltUtils.addBeltSegment(crossTile, gameUtils.crossTileInnerWidth - curvePoint.xOffset, curvePoint.yOffset, -curvePoint.rads)
 		}
 
 		return crossTile
@@ -136,5 +141,6 @@ define([
 	// This returned object becomes the defined value of this module
     return {
 		createCrossTiles: createCrossTiles,
+		addCrossTile: addCrossTile,
     };
 });

@@ -172,15 +172,15 @@
 			function makeEventCard(parent, index) {
 				var cardDesc = cards.getCardDescAtIndex(index, eventCardDescs)
 
-				var node = cards.makeCardFront(parent, "event", "event.".concat(index.toString()))
-				gameUtils.addDiv(node, "title", "title", cardDesc.title)
-				gameUtils.addDiv(node, "flavor", "flavor", cardDesc.flavor)
-				gameUtils.addDiv(node, "event", "event", cardDesc.event)
+				var node = cards.addDiv(parent, ["event"], "event.".concat(index.toString()))
+				gameUtils.addDiv(node, ["title"], "title", cardDesc.title)
+				gameUtils.addDiv(node, ["flavor"], "flavor", cardDesc.flavor)
+				gameUtils.addDiv(node, ["event"], "event", cardDesc.event)
 				var resolutionText
 				if (!cardDesc.specialOrdering) {
 					var resolutionIndex = getRandomEventArrow()
 					resolutionText = resolutionIndex == 0? "&#x2190": "&#x2192"
-					gameUtils.addDiv(node, "resolutionOrder", "resolutionOrder", "Run Factory: " + resolutionText)
+					gameUtils.addDiv(node, ["resolutionOrder"], "resolutionOrder", "Run Factory: " + resolutionText)
 				}
 
 				return node

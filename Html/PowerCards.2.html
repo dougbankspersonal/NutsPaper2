@@ -103,10 +103,10 @@
 			function makePowerCard(parent, index) {
 				var cardDesc = powerCardDescs[index]
 
-				var node = cards.makeCardFront(parent, "power", "power.".concat(index.toString()))
-				gameUtils.addDiv(node, "title", "title", cardDesc.title)
-				gameUtils.addDiv(node, "power", "power", cardDesc.power)
-				gameUtils.addDiv(node, "timing", "timing", cardDesc.timing)
+				var node = cards.addDiv(parent, ["power"], "power.".concat(index.toString()))
+				gameUtils.addDiv(node, ["title"], "title", cardDesc.title)
+				gameUtils.addDiv(node, ["power"], "power", cardDesc.power)
+				gameUtils.addDiv(node, ["timing"], "timing", cardDesc.timing)
 
 				return node
 			}

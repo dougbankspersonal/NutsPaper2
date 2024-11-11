@@ -28,23 +28,23 @@ define([
 	var shrinkage = 3
 	var markersPerPage = 42
 
-	function makeMarker(parent, markerType, opt_classes, opt_additionalConfig) {
-		var classes = opt_classes ? opt_classes: ""
+	function makeMarker(parent, markerType, opt_classArray, opt_additionalConfig) {
+		var classArray = gameUtils.extendOptClassArray(opt_classArray, "marker")
+		classArray.push(markerType)
 		var additionalConfig = opt_additionalConfig ? opt_additionalConfig: {}
-		var classes = `marker ${markerType} ${classes}`
-		var node = gameUtils.addDiv(parent, classes, "marker.".concat(markerType))
+		var node = gameUtils.addDiv(parent, classArray, "marker.".concat(markerType))
 		domStyle.set(node, {
-			"width": `${gameUtils.elementHeight - shrinkage}px`,
+			"width": `${gameUtils.elementWidth - shrinkage}px`,
 			"height": `${gameUtils.elementHeight - shrinkage}px`,
 		})
 
 		var image = imagesByType[markerType]
 		if (image) {
-			gameUtils.addImage(node, "image", "image", image)
+			gameUtils.addImage(node, ["image"], "image", image)
 		}
 		var text = additionalConfig.text ? additionalConfig.text: null
 		if (text) {
-			gameUtils.addDiv(node, "text", "text", text)
+			gameUtils.addDiv(node, ["text"], "text", text)
 		}
 		if (additionalConfig.color) {
 			domStyle.set(node, "background-color", additionalConfig.color)

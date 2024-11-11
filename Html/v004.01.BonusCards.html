@@ -158,18 +158,18 @@
 				// Calculate the score for this distribution
 				var score = scoreForDistribution(nutTypeDistribution)
 
-				var wrapper = gameUtils.addDiv(parentNode, "wrapper", "wrapper")
+				var wrapper = gameUtils.addDiv(parentNode, ["wrapper"], "wrapper")
 				for (var i = 0; i < numNutTypes; i++) {
 					var nutType = nutTypes[i]
 					var typeCount = nutTypeDistribution[nutType]
                     for (var j = 0; j < typeCount; j++) {
-						var prop = gameUtils.addDiv(wrapper, "requirement", "requirement")
+						var prop = gameUtils.addDiv(wrapper, ["requirement"], "requirement")
 						var nutTypeImage = gameUtils.nutTypeImages[nutType]
-						gameUtils.addImage(prop, "nutType", "nutType", nutTypeImage)
+						gameUtils.addImage(prop, ["nutType"], "nutType", nutTypeImage)
 					}
 				}
 
-				var scoreNode = gameUtils.addDiv(wrapper, "score", "score")
+				var scoreNode = gameUtils.addDiv(wrapper, ["score"], "score")
 				scoreNode.innerHTML = score.toString().concat(" points")
 
 				return wrapper
@@ -178,8 +178,15 @@
 			function makeNthBonusCard(parent, index)
 			{
                 var bonusCardConfig = bonusCardConfigs[index]
-
-				var node = cards.makeCardFront(parent, `bonus version004 small`, "bonus.version004.".concat(index.toString()))
+				var idElements = [
+					"bonus",
+					gameUtils.version004_01,
+					index.toString(),
+				]
+				var id = idElements.join(".")
+				var classArray = gameUtils.versionToClassArray(gameUtils.version004_01)
+				classArray.push("bonus")
+				var node = cards.makeCardFront(parent, classArray, id)
 
 				addBonusDesc(node, bonusCardConfig)
 				return node
@@ -189,7 +196,7 @@
 				return makeNthBonusCard(parent, index)
 			}
 
-			cards.makeCards("Bonus", "#d0f0d0", numBonusCards, makeBonusCard, "small")
+			cards.makeCards("Bonus", "#d0f0d0", numBonusCards, makeBonusCard)
 		});
     </script>
 </body>

@@ -73,9 +73,9 @@
 			function makeActionCard(parent, index) {
 				var actionCardDesc = actionCardDescs[index]
 
-				var node = cards.makeCardFront(parent, "action", "action.".concat(index.toString()))
-				gameUtils.addDiv(node, "title", "title", actionCardDesc.title)
-				gameUtils.addDiv(node, "action", "action", actionCardDesc.action)
+				var node = cards.makeCardFront(parent, ["action"], "action.".concat(index.toString()))
+				gameUtils.addDiv(node, ["title"], "title", actionCardDesc.title)
+				gameUtils.addDiv(node, ["action"], "action", actionCardDesc.action)
 
 				return node
 			}

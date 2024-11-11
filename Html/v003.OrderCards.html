@@ -147,8 +147,8 @@
 			var numOrderCards = (numPossibleOrder0QCards) * numOrderCardsEachType
 
 			function addNutDesc(node, desc) {
-				var wrapper = gameUtils.addDiv(node, "wrapper", "wrapper")
-				var nutPropsTopNode = gameUtils.addDiv(wrapper, "nutProps", "nutProps")
+				var wrapper = gameUtils.addDiv(node, ["wrapper"], "wrapper")
+				var nutPropsTopNode = gameUtils.addDiv(wrapper, ["nutProps"], "nutProps")
 				var nutPropsBottomNode = gameUtils.addDiv(wrapper, "nutProps standardMargin", "nutProps")
 
 				var nutType = desc.nutType
@@ -160,12 +160,12 @@
 				var roastedTypeImage = roastedType == -1 ? gameUtils.wildImage: gameUtils.roastedTypeImages[roastedType]
 
 				var prop
-				prop = gameUtils.addDiv(nutPropsTopNode, "nutProp nutType", "nutType")
-				gameUtils.addImage(prop, "nutType", "nutType", nutTypeImage)
-				prop = gameUtils.addDiv(nutPropsBottomNode, "nutProp saltedType", "saltedType")
-				gameUtils.addImage(prop, "saltedType", "saltedType", saltedTypeImage)
-				prop = gameUtils.addDiv(nutPropsBottomNode, "nutProp roastedType", "roastedType")
-				gameUtils.addImage(prop, "roastedType", "roastedType", roastedTypeImage)
+				prop = gameUtils.addDiv(nutPropsTopNode, ["nutProp", "nutType"], "nutType")
+				gameUtils.addImage(prop, ["nutType"], "nutType", nutTypeImage)
+				prop = gameUtils.addDiv(nutPropsBottomNode, ["nutProp, saltedType"], "saltedType")
+				gameUtils.addImage(prop, ["saltedType"], "saltedType", saltedTypeImage)
+				prop = gameUtils.addDiv(nutPropsBottomNode, ["nutProp, roastedType"], "roastedType")
+				gameUtils.addImage(prop, ["roastedType"], "roastedType", roastedTypeImage)
 				return wrapper
 			}
 

@@ -5,7 +5,7 @@ define([
 ], function(gameUtils, domStyle) {
 
     function addBeltSegment(parentNode, xOffset, yOffset, opt_rads) {
-		var beltSegment = gameUtils.addDiv(parentNode, "beltSegment", "beltSegment")
+		var beltSegment = gameUtils.addDiv(parentNode, ["beltSegment"], "beltSegment")
 		var style = {
 			"left": `${xOffset}px`,
 			"top": `${yOffset}px`,

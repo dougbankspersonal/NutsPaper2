@@ -100,15 +100,15 @@
 			function makeBonusCard(parent, index) {
 				var cardDesc = cards.getCardDescAtIndex(index, bonusCardDescs)
 
-				var node = cards.makeCardFront(parent, "bonus", "bonus.".concat(index.toString()))
-				gameUtils.addDiv(node, "title", "title", cardDesc.title)
+				var node = cards.addDiv(parent, ["bonus"], "bonus.".concat(index.toString()))
+				gameUtils.addDiv(node, ["title"], "title", cardDesc.title)
 				if (cardDesc.bronze) {
-					gameUtils.addDiv(node, "bronze", "bronze", cardDesc.bronze)
-					gameUtils.addDiv(node, "silver", "silver", cardDesc.silver)
-					gameUtils.addDiv(node, "gold", "bronze", cardDesc.gold)
+					gameUtils.addDiv(node, ["bronze"], "bronze", cardDesc.bronze)
+					gameUtils.addDiv(node, ["silver"], "silver", cardDesc.silver)
+					gameUtils.addDiv(node, ["gold"], "bronze", cardDesc.gold)
 				}
 				if (cardDesc.special) {
-					gameUtils.addDiv(node, "special", "special", cardDesc.special)
+					gameUtils.addDiv(node, ["special"], "special", cardDesc.special)
 				}
 				return node
 			}

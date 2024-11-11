@@ -8,10 +8,10 @@ body {
 	padding: 10px;
 	overflow: hidden;
 	position: relative;
-	overflow-x: scroll;
-	white-space: nowrap;
 }
 
-.pageOfItems.allowsOverflow {
+.pageOfItems.isDemoBoard {
 	overflow: visible;
+	white-space: nowrap;
+	overflow-x: scroll;
 }

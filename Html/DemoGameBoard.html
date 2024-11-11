@@ -6,6 +6,7 @@
 	<link rel="stylesheet" href="css/belt.css">
 	<link rel="stylesheet" href="css/marker.css">
 	<link rel="stylesheet" href="css/card.css">
+	<link rel="stylesheet" href="css/cross_tile.css">
     <meta content="text/html; charset=UTF-8" http-equiv="content-type">
     <style type="text/css">
 	</style>
@@ -72,8 +73,7 @@
                 return orderInstanceDescs
             }
 
-            gameUtils.setPageAllowsOverflow(true)
-            gameUtils.setRowAllowsOverflow(true)
+            gameUtils.setIsDemoBoard(true)
 
 			gameBoard.createBoard(gameUtils.version004_01, {
 				columnsPerStrip: 20,
@@ -89,13 +89,25 @@
             }
 
             // Add squirrel and ghost squirrel.
+            // First arg is row, second is column, both zero-indexed.
+            // For v004.01 there's just one squirrel row.
             var squirrelRowId = `${gameBoard.squirrelRowPrefix}${0}`
             gameBoard.addMarker(squirrelRowId, 3, markers.markerTypes.Squirrel)
-            gameBoard.addMarker(squirrelRowId, 4, markers.markerTypes.Squirrel, "ghost")
+            gameBoard.addMarker(squirrelRowId, 4, markers.markerTypes.Squirrel, ["ghost"])
 
             // add Orders.
             var orderInstanceDescs = generateOrderInstanceDescs()
-            gameBoard.addOrders(orderInstanceDescs)
+            for (var i = 0; i < orderInstanceDescs.length; i++) {
+                var orderInstanceDesc = orderInstanceDescs[i]
+                gameBoard.addOrder(orderInstanceDesc.nutType, orderInstanceDesc.columnIndex)
+            }
+
+            // add some cross tiles.
+            // There are six conveyor rows for v 004.01 (see rowTypesForV004_01).
+            // First arg is nth conveyor row, second is column, both zero-indexed.
+            gameBoard.addCrossTile(2, 0)
+            gameBoard.addCrossTile(5, 1)
+            gameBoard.addCrossTile(9, 10)
 
 		});
     </script>

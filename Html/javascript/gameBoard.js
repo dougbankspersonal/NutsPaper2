@@ -7,10 +7,10 @@ define([
 	'javascript/gameUtils',
 	'javascript/markers',
 	'javascript/cards',
+	'javascript/crossTiles',
 	'dojo/domReady!'
-], function(dojo, dom, query, domStyle, beltUtils, gameUtils, markers, cards){
+], function(dojo, dom, query, domStyle, beltUtils, gameUtils, markers, cards, crossTiles){
 	var rowZUIndex = 0
-
 	var RowType_NumberRow = 1
 	var RowType_DispenserRow = 2
 	var RowType_ConveyorRow = 3
@@ -18,6 +18,10 @@ define([
 	var RowType_RoasterRow = 5
 	var RowType_SalterRow = 6
 	var RowType_OrdersRow = 7
+	// A cross tile hits two slots.
+	// Say first slot is row i, column j.
+	// Then the cross tile is stored in crossTilesByRowThenColumn[i][j]
+	var crossTylesByRowThenColumn = []
 
 	var factoryColumnCountByVersion = {}
 	factoryColumnCountByVersion[gameUtils.version003] = 10
@@ -80,29 +84,17 @@ define([
 	var factoryColumnCount
 	var firstFactoryColumnIndexThisStrip
 
-	// Add a standard width cell.  May be extra long for cards, depends on class.
-	function addSlot(parentNode, classes, id)
-	{
-		var slot = gameUtils.addDiv(parentNode, classes + " slot", id)
-		domStyle.set(slot, {
-			"width": `${gameUtils.slotWidth}px`,
-			"margin-left": `${gameUtils.horizontalSpaceBetweenSlots/2}`,
-			"margin-right": `${gameUtils.horizontalSpaceBetweenSlots/2}`,
-		})
-		return slot
-	}
-
 	// Add a sideBar to the row with labels & whatnot.
 	function addSidebar(parentNode, sideBarInfo) {
-		var sideBar = gameUtils.addDiv(parentNode, "sideBar", "sideBar")
-		var wrapper = gameUtils.addDiv(sideBar, "wrapper", "wrapper")
-		gameUtils.addDiv(wrapper, "title", "title", sideBarInfo.title)
+		var sideBar = gameUtils.addDiv(parentNode, ["sideBar"], "sideBar")
+		var wrapper = gameUtils.addDiv(sideBar, ["wrapper"], "wrapper")
+		gameUtils.addDiv(wrapper, ["title"], "title", sideBarInfo.title)
 		if (sideBarInfo.subtitle) {
-			gameUtils.addDiv(wrapper, "subtitle", "subtitle", sideBarInfo.subtitle)
+			gameUtils.addDiv(wrapper, ["subtitle"], "subtitle", sideBarInfo.subtitle)
 		}
 		if (sideBarInfo.instructions)
 		{
-			gameUtils.addDiv(wrapper, "instructions", "instructions", sideBarInfo.instructions)
+			gameUtils.addDiv(wrapper, ["instructions"], "instructions", sideBarInfo.instructions)
 		}
 
 		return sideBar
@@ -111,17 +103,18 @@ define([
 
 	// Add a row: side bar plus content.
 	function addRowWithSidebarAndContent(parentNode, opt_configs) {
-		var darkBackground = opt_configs && opt_configs.darkBackground ? true : false
-		var sideBarInfo = opt_configs && opt_configs.sideBarInfo? opt_configs.sideBarInfo : null
-		var customHeight = opt_configs && opt_configs.customHeight? opt_configs.customHeight : null
-		var classes = opt_configs && opt_configs.classes? opt_configs.classes : ""
-		var rowId = opt_configs && opt_configs.id? opt_configs.id : "row"
+		var configs = opt_configs ? opt_configs : {}
+		var darkBackground = configs.darkBackground ? true : false
+		var sideBarInfo = configs.sideBarInfo
+		var customRowHeight = configs.customRowHeight
+		var classArray = configs.classArray ?  configs.classArray : []
+		var rowId = configs.id ? configs.id : "row"
 
-		var cssVersion = gameUtils.versionToCssFriendlyString(version)
-		var finalClasses = cssVersion + " " + classes
-		var row = gameUtils.addRow(parentNode, finalClasses, rowId)
+		var versionClassArray = gameUtils.versionToClassArray(gameUtils.version004_01)
+		classArray = classArray.concat(versionClassArray)
+		var row = gameUtils.addRow(parentNode, classArray, rowId)
 
-		var finalHeight = customHeight ? customHeight : gameUtils.standardRowHeight
+		var finalHeight = customRowHeight ? customRowHeight : gameUtils.standardRowHeight
 		var finalZIndex = rowZUIndex
 		rowZUIndex--
 
@@ -135,7 +128,7 @@ define([
 		}
 
 		if (darkBackground) {
-			gameUtils.addDiv(row, 'darkBackground', 'darkBackground')
+			gameUtils.addDiv(row, ["darkBackground"], 'darkBackground')
 		}
 
 		var content = addContent(row)
@@ -144,15 +137,35 @@ define([
 	}
 
 	function addContent(parentNode) {
-		var content = gameUtils.addDiv(parentNode, "content", "content")
+		var content = gameUtils.addDiv(parentNode, ["content"], "content")
 		return content
 	}
 
-	function addStraightBelt(parentNode, opt_hideTop) {
-		var belt = gameUtils.addDiv(parentNode, "belt", "belt")
+	function applyStandardElementStyling(element) {
+		domStyle.set(element, {
+			"width": `${gameUtils.elementWidth}px`,
+			"height": `${gameUtils.elementHeight}px`,
+			"z-index": `${gameUtils.elementZIndex}`,
+			"margin-top": `${gameUtils.elementTopAndBottomMargin}px`,
+			"margin-left": `${gameUtils.elementLeftAndRightMargin}px`,
+		})
+	}
+
+	function addStraightBelt(parentNode, opt_configs) {
+		var configs = opt_configs ? opt_configs : {}
+		var hideBeltTop = configs.hideBeltTop ? true : false
+		var hideBeltBottom = configs.hideBeltBottom ? true : false
+
+		var belt = gameUtils.addDiv(parentNode, ["belt"], "belt")
+		domStyle.set(belt, {
+			"z-index": `${gameUtils.beltZIndex}`,
+		})
 
 		for (let i = 0; i < gameUtils.beltSegmentsPerRow; i++) {
-			if (opt_hideTop && i < gameUtils.beltSegmentsPerRow/2) {
+			if (hideBeltTop && i < gameUtils.beltSegmentsPerRow/2) {
+				continue;
+			}
+			if (hideBeltBottom && i >= gameUtils.beltSegmentsPerRow/2 - 1) {
 				continue;
 			}
 			var yOffset = gameUtils.beltSegmentOffset/2 + i * gameUtils.beltSegmentOffset
@@ -162,39 +175,40 @@ define([
 		return belt
 	}
 
-	function addNthElement(parentNode, elementIndex, opt_customClasses) {
-		var classes = "element"
-		if (opt_customClasses) {
-			classes = classes + " " + opt_customClasses
-		}
-		var element = gameUtils.addDiv(parentNode, classes, `element${elementIndex}`)
+	// columnIndex is 0-based.
+	function addNthElement(parentNode, columnIndex, opt_classArray) {
+		var classArray = gameUtils.extendOptClassArray(opt_classArray, "element")
+		var elementId = gameUtils.getElementId(columnIndex)
+		var element = gameUtils.addDiv(parentNode, classArray, elementId)
 
-		if (!opt_customClasses) {
-			domStyle.set(element, {
-				"width": `${gameUtils.elementHeight}px`,
-				"height": `${gameUtils.elementHeight}px`,
-			})
-		}
+		applyStandardElementStyling(element)
+
 		return element
 	}
 
 	function addSquirrelIndex(parentNode, squirrelIndex) {
-		var squirrelIndexElement = gameUtils.addDiv(parentNode, "squirrelTitle", "squirrelTitle", "Squirrel")
-		var squirrelIndexElement = gameUtils.addDiv(parentNode, "squirrelIndex", "squirrelIndex", squirrelIndex)
+		var squirrelIndexElement = gameUtils.addDiv(parentNode, ["squirrelTitle"], "squirrelTitle", "Squirrel")
+		var squirrelIndexElement = gameUtils.addDiv(parentNode, ["squirrelIndex"], "squirrelIndex", squirrelIndex)
 		return squirrelIndexElement
 	}
 
-	function addStandardSlot(parentNode) {
-		return addSlot(parentNode, "standard", "standardSlot")
+	function addStandardSlot(parentNode, rowIndex, columnIndex) {
+		var slotId = gameUtils.makeSlotId(rowIndex, columnIndex)
+		var classArray = ["slot"]
+		var node = gameUtils.addDiv(parentNode, classArray, slotId)
+		domStyle.set(node, {
+			"width": `${gameUtils.slotWidth}px`,
+		})
+		return node
 	}
 
-	function addStandardSlotWithNumber(parentNode, elementNumber) {
-		var standardSlot = addStandardSlot(parentNode)
-		var number = gameUtils.addDiv(standardSlot, "number", "number", elementNumber)
-		domStyle.set(number, {
-			"width": `${gameUtils.elementHeight}px`,
-			"height": `${gameUtils.elementHeight}px`,
-		})
+	function addStandardSlotWithNumber(parent, rowIndex, columnIndex) {
+		var standardSlot = addStandardSlot(parent, rowIndex, columnIndex)
+		var elementId = gameUtils.getElementId(columnIndex)
+		// Column index is zero based: when we render the number we want it to start at one.
+		var columnNumber = columnIndex + 1
+		var numberNode = gameUtils.addDiv(standardSlot, ["number"], elementId, columnNumber)
+		applyStandardElementStyling(numberNode)
 		return standardSlot
 	}
 
@@ -204,17 +218,17 @@ define([
 		return numFactoryColumnsInThisRow
 	}
 
-	function addStandardSlotWithElementAndBelt(parentNode, elementIndex, opt_configs) {
-		var hideBeltTop = opt_configs && opt_configs.hideBeltTop ? true : false
-		var classesForEachElement = opt_configs && opt_configs.classesForEachElement ? opt_configs.classesForEachElement : null
+	function addStandardSlotWithElementAndBelt(parentNode, rowIndex, columnIndex, opt_configs) {
+		// Column index is 0-based.
+		var classArray = opt_configs && opt_configs.classArray ? opt_configs.classArray : null
 		var tweakElement = opt_configs && opt_configs.tweakElement ? opt_configs.tweakElement : null
 		var skipElement = opt_configs && opt_configs.skipElement ? true : false
 		var squirrelIndex = opt_configs && opt_configs.squirrelIndex ? opt_configs.squirrelIndex : null
 
-		var standardSlot = addStandardSlot(parentNode)
+		var standardSlot = addStandardSlot(parentNode, rowIndex, columnIndex)
 
 		if (!skipElement) {
-			var element = addNthElement(standardSlot, elementIndex, classesForEachElement)
+			var element = addNthElement(standardSlot, columnIndex, classArray)
 			if (squirrelIndex) {
 				addSquirrelIndex(element, squirrelIndex)
 			}
@@ -222,7 +236,7 @@ define([
 				tweakElement(element)
 			}
 		}
-		addStraightBelt(standardSlot, hideBeltTop)
+		addStraightBelt(standardSlot, opt_configs)
 
 		return standardSlot
 	}
@@ -256,71 +270,74 @@ define([
 		}
 	}
 
-	function addNColumnRowWithElements(parentNode, rowType, numFactoryColumnsInThisRow, opt_configs) {
+	function addNColumnRowWithElements(parentNode, rowIndex, rowType, numFactoryColumnsInThisRow, opt_configs) {
+		var configs = opt_configs ? opt_configs : {}
 		var [squirrelRangeStart, subtitle] = getSquirrelDetailsForRow(rowType, numSquirrelRows)
 		if (squirrelRangeStart != null) {
 			numSquirrelRows++
 		}
-		if (opt_configs)
-		{
-			if (opt_configs.sideBarInfo) {
-				opt_configs.sideBarInfo.subtitle = subtitle
-			}
+		if (configs.sideBarInfo) {
+			opt_configs.sideBarInfo.subtitle = subtitle
 		}
 
 		var [row, content] = addRowWithSidebarAndContent(parentNode, opt_configs)
-		console.log("Doug: addNColumnRowWithElements row = ", row)
-		console.log("Doug: addNColumnRowWithElements content = ", content)
-
-		var configs = opt_configs ? opt_configs : {}
+		var elementConfigs = configs.elementConfigs ? configs.elementConfigs : {}
 
 		for (let i = 0; i < numFactoryColumnsInThisRow; i++) {
 			var squirrelIndex
 			if (squirrelRangeStart) {
 				squirrelIndex = squirrelRangeStart + i + firstFactoryColumnIndexThisStrip
 			}
-			configs.squirrelIndex = squirrelIndex
-			addStandardSlotWithElementAndBelt(content, firstFactoryColumnIndexThisStrip + i, configs)
+			elementConfigs.squirrelIndex = squirrelIndex
+			addStandardSlotWithElementAndBelt(content, rowIndex, firstFactoryColumnIndexThisStrip + i, elementConfigs)
 		}
+
 		return row
 	}
 
-	function addNColumnRowWithNumbers(parentNode, numFactoryColumnsInThisRow, opt_configs) {
+	function addNColumnRowWithNumbers(parentNode, rowIndex, numFactoryColumnsInThisRow, opt_configs) {
 		var [row, content] = addRowWithSidebarAndContent(parentNode, opt_configs)
 
 		for (let i = 0; i < numFactoryColumnsInThisRow; i++) {
-			var elementNumber = firstFactoryColumnIndexThisStrip + i + 1
-			addStandardSlotWithNumber(content, elementNumber, opt_configs)
+			var columnIndex = firstFactoryColumnIndexThisStrip + i
+			addStandardSlotWithNumber(content, rowIndex, columnIndex)
 		}
 		return row
 	}
 
-	function addNColumnRowWithConveyors(parentNode, numFactoryColumnsInThisRow, opt_configs) {
+	function addNColumnRowWithConveyors(parentNode, rowIndex, numFactoryColumnsInThisRow, opt_configs) {
 		var [row, content] = addRowWithSidebarAndContent(parentNode, opt_configs)
 
 		var configs = opt_configs ? opt_configs : {}
 		configs.skipElement = true
 		for (let i = 0; i < numFactoryColumnsInThisRow; i++) {
-			addStandardSlotWithElementAndBelt(content, firstFactoryColumnIndexThisStrip + i, configs)
+			addStandardSlotWithElementAndBelt(content, rowIndex, firstFactoryColumnIndexThisStrip + i, configs)
 		}
 		return row
 	}
 
-	function tweakCardElement(node)	{
+	function tweakOrderRowCardSlot(node)	{
+		var cardSlotHeight = gameUtils.standardRowHeight/2 - 2 * (gameUtils.ordersRowMarginTop)
 		domStyle.set(node, {
 			"width": `${gameUtils.cardWidth}px`,
-			"height": `${gameUtils.cardHeight}px`,
+			"height": `${cardSlotHeight}px`,
+			"margin-top": `${gameUtils.ordersRowMarginTop}px`,
+			"display": "block",
 		})
 	}
 
-	function addNColumnOrdersRow(parentNode, rowType, numFactoryColumnsInThisRow, opt_sidebarInfo) {
-		return addNColumnRowWithElements(parentNode, rowType, numFactoryColumnsInThisRow, {
-			classes: "orders",
+	function addNColumnOrdersRow(parentNode, rowIndex, rowType, numFactoryColumnsInThisRow, opt_sidebarInfo) {
+		addNColumnRowWithElements(parentNode, rowIndex, rowType, numFactoryColumnsInThisRow, {
+			classArray: ["orders"],
 			id: ordersRowId,
 			sideBarInfo: opt_sidebarInfo,
 			darkBackground: true,
-			classesForEachElement: "cardSlot",
-			tweakElement: tweakCardElement,
+			customRowHeight: gameUtils.standardRowHeight/2,
+			elementConfigs: {
+				classArray: ["cardSlot"],
+				tweakElement: tweakOrderRowCardSlot,
+				hideBeltBottom: true,
+			}
 		})
 	}
 
@@ -335,6 +352,7 @@ define([
 
 		var rowsThisPage = 0
 		for (let i = 0; i < rowTypes.length; i++) {
+			var rowIndex = i
 			if (rowsThisPage >= maxRowsPerPage)
 			{
 				pageNode = gameUtils.addPageOfItems(parentNode)
@@ -345,40 +363,42 @@ define([
 
 			switch (rowType) {
 				case RowType_NumberRow:
-					addNColumnRowWithNumbers(pageNode, numFactoryColumnsInThisRow, {
-						classes: "numbers",
+					addNColumnRowWithNumbers(pageNode, rowIndex, numFactoryColumnsInThisRow, {
+						classArray: ["numbers"],
 						sideBarInfo: opt_addSidebar? {
 							title: "",
 						} : null,
 					})
 					break;
 				case RowType_DispenserRow:
-					addNColumnRowWithElements(pageNode, rowType, numFactoryColumnsInThisRow, {
+					addNColumnRowWithElements(pageNode, rowIndex, rowType, numFactoryColumnsInThisRow, {
 						id: dispensersRowId,
-						classes: "nutDispensers",
+						classArray: ["nutDispensers"],
 						sideBarInfo: opt_addSidebar? {
 							title: "Dispensers",
 						} : null,
-						hideBeltTop: true,
+						elementConfigs: {
+							hideBeltTop: true,
+						},
 					})
 					break;
 				case RowType_ConveyorRow:
-					addNColumnRowWithConveyors(pageNode, numFactoryColumnsInThisRow, {
-						classes: "conveyors",
+					addNColumnRowWithConveyors(pageNode, rowIndex, numFactoryColumnsInThisRow, {
+						classArray: ["conveyors"],
 						sideBarInfo: opt_addSidebar? {
 							title: "Conveyor",
 						} : null,
 					})
 					break;
 				case RowType_RoasterRow:
-					addNColumnRowWithElements(pageNode, rowType, numFactoryColumnsInThisRow, {
+					addNColumnRowWithElements(pageNode, rowIndex, rowType, numFactoryColumnsInThisRow, {
 						sideBarInfo: opt_addSidebar? {
 							title: "Roasters",
 						} : null,
 					})
 					break;
 				case RowType_SalterRow:
-					addNColumnRowWithElements(pageNode, rowType, numFactoryColumnsInThisRow, {
+					addNColumnRowWithElements(pageNode, rowIndex, rowType, numFactoryColumnsInThisRow, {
 						sideBarInfo: opt_addSidebar? {
 							title: "Salters",
 						} : null,
@@ -386,7 +406,7 @@ define([
 					break;
 				case RowType_SquirrelRow:
 					var squirrelRowId = `${squirrelRowPrefix}${numSquirrelRows}`
-					addNColumnRowWithElements(pageNode, rowType, numFactoryColumnsInThisRow, {
+					addNColumnRowWithElements(pageNode, rowIndex, rowType, numFactoryColumnsInThisRow, {
 						id: squirrelRowId,
 						sideBarInfo: opt_addSidebar? {
 							title: "Squirrel",
@@ -397,7 +417,7 @@ define([
 					var sideBarInfo = opt_addSidebar? {
 						title: "Orders",
 					} : null
-					addNColumnOrdersRow(pageNode, rowType, numFactoryColumnsInThisRow, sideBarInfo)
+					addNColumnOrdersRow(pageNode, rowIndex, rowType, numFactoryColumnsInThisRow, sideBarInfo)
 					break;
 			}
 			rowsThisPage++
@@ -445,32 +465,66 @@ define([
 		domStyle.set(marker, style)
 	}
 
-	function addMarker(rowId, columnIndex, markerType, opt_classes) {
+	// columnnIndex is 0-based, ignoring the sidebar.
+	function addMarker(rowId, columnIndex, markerType, opt_classArray) {
 		var rowNode = dom.byId(rowId)
 		// add a marker to this element.
-		var elementId = `element${columnIndex}`
+		var elementId = gameUtils.getElementId(columnIndex)
 		var elementNodes = query(`#${elementId}`, rowNode)
 		// add marker here.
-		var marker = markers.makeMarker(elementNodes[0], markerType, opt_classes)
+		var marker = markers.makeMarker(elementNodes[0], markerType, opt_classArray)
 		fixupMarkerStyling(marker)
+		return marker
 	}
 
-	function addOrders(orderInstanceDescs)
-	{
-		console.log("Doug: addOrders ", orderInstanceDescs)
-		console.log("Doug: addOrders ", ordersRowId)
-		var ordersRow = dom.byId(ordersRowId)
-		for (var i = 0; i < orderInstanceDescs.length; i++) {
-			var orderInstanceDesc = orderInstanceDescs[i]
-			var columnIndex = orderInstanceDesc.columnIndex
-			var elementId = `element${columnIndex}`
-			var orderNodes = query(`#${elementId}`, ordersRow)
-			var nutType = orderInstanceDesc.nutType
-			// add a nut type marker to this element.
-			var position = dojo.position(orderNodes[0])
-			console.log("Doug: position = ", position)
-			var order = cards.makeOrderCardSingleNut(orderNodes[0], nutType, columnIndex)
+	function storeCrossTile(rowIndex, columnIndex, crossTile) {
+		if (!crossTylesByRowThenColumn[rowIndex]) {
+			crossTylesByRowThenColumn[rowIndex] = []
 		}
+		if (!crossTylesByRowThenColumn[rowIndex][columnIndex]) {
+			crossTylesByRowThenColumn[rowIndex][columnIndex] = []
+		}
+		crossTylesByRowThenColumn[rowIndex][columnIndex].push(crossTile)
+	}
+
+	function getCrossTile(rowIndex, columnIndex) {
+		if (!crossTilesByRowThenColumn[rowIndex]) {
+			return null
+		}
+		return crossTilesByRowThenColumn[rowIndex][columnIndex]
+	}
+
+	function addCrossTile(rowIndex, columnIndex) {
+		var slotId = gameUtils.makeSlotId(rowIndex, columnIndex)
+		var slot = dom.byId(slotId)
+		console.log("Doug: addCrossTile: rowIndex = ", rowIndex)
+		console.log("Doug: addCrossTile: columnIndex = ", columnIndex)
+		console.log("Doug: addCrossTile: slot = ", slot)
+		var crossTile = crossTiles.addCrossTile(slot)
+		console.log("Doug: addCrossTile: crossTile = ", crossTile)
+		console.log("Doug: addCrossTile: crossTile = ", crossTile)
+
+
+		domStyle.set(crossTile, {
+			"margin-left": `${gameUtils.crossTileOnBoardLeftMargin}px`,
+			"margin-top": `${gameUtils.crossTileOnBoardTopMargin}px`,
+		})
+
+		console.log("Doug: addCrossTile: crossTile = ", crossTile)
+		storeCrossTile(rowIndex, columnIndex, crossTile)
+
+		return crossTile
+	}
+
+	// columnnIndex is 0-based, ignoring the sidebar.
+	function addOrder(nutType, columnIndex)
+	{
+		var ordersRow = dom.byId(ordersRowId)
+		// Element number is 1-based, column index is 0-based.
+		var elementId = gameUtils.getElementId(columnIndex)
+		var orderNodes = query(`#${elementId}`, ordersRow)
+		// add a nut type marker to this element.
+		return cards.makeOrderCardSingleNut(orderNodes[0], nutType, columnIndex)
 	}
 
 	// This returned object becomes the defined value of this module
@@ -484,6 +538,7 @@ define([
 
 		// Add various game elements to the board.
 		addMarker: addMarker,
-		addOrders: addOrders,
+		addOrder: addOrder,
+		addCrossTile: addCrossTile,
     };
 });

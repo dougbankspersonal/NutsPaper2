@@ -4,12 +4,47 @@ define([
 ], function(domConstruct) {
 	var pageNumber = 0
 	var rowNumber = 0
+	var cardNumber = 0
 
-	var cardHeight = 336
-	var cardWidth = 240
+	// Slots, elements, cross tiles.
+	var slotWidth = 180
 
-	var smallCardHeight = 0.666 * cardHeight
-	var smallCardWidth = 0.666 * cardWidth
+	var standardRowHeight = 180;
+	var elementHeight = slotWidth - 20
+	var elementWidth = elementHeight
+	var elementTopAndBottomMargin = (standardRowHeight - elementHeight)/2
+	var elementLeftAndRightMargin = (slotWidth - elementWidth)/2
+
+	var crossTileOnBoardLeftMargin = 20
+	var crossTileOnBoardTopMargin = 10
+
+	// For a cross tile, it lays across two side by side slots:
+	//
+	// Slots: +------a------+------a------+
+	// Tile : +-c-+---------b---------+-c-+
+	// Where a is slotWidth, b is crossTileWidth, and c is crossTileOnBoardLeftMargin.
+	// So...
+	var crossTileWidth = 2 * (slotWidth - crossTileOnBoardLeftMargin)
+	var crossTileHeight = standardRowHeight - 2 * crossTileOnBoardTopMargin
+
+	// So we have this:
+	// +------a------+------a------+
+	// +-c-+---------b---------+-c-+
+	// where b is the width of a cross tile, and c is crossTileOnBoardLeftMargin.
+	// There's also a margin:
+	var crossTileBorder = 2
+
+	// Border on both sides: the space inside the cross tile is actually this big:
+	var crossTileInnerWidth = crossTileWidth - 2 * crossTileBorder
+
+	// So if belt elements are children of the cross tile div, what is the position that'd
+	// put the belt in the center of a slot?
+	var beltCenterOffsetInTile = slotWidth/2 - crossTileOnBoardLeftMargin - crossTileBorder
+
+	// Cards.
+	var cardWidth = slotWidth - 20
+	var cardHeight = 1.4 * cardWidth
+	var cardBackFontSize = cardWidth * 0.2
 
 	var version003 = 3
 	var version004 = 4
@@ -21,8 +56,7 @@ define([
 	var nutTypePistachio = "Pistachio"
 	var nutTypeWalnut = "Walnut"
 
-	var pageAllowsOverflow = false
-	var rowAllowsOverflow = false
+	var isDemoBoard = false
 
 	var nutTypesByVersion = []
 	nutTypesByVersion[version003] = [
@@ -70,45 +104,74 @@ define([
 
 	var wildImage = "images/Order/Order.Wild.png"
 
-	function addDiv(parent, className, id, opt_innerHTML = "") {
+	function addDiv(parent, classArray, id, opt_innerHTML = "") {
+		var classes = classArray.join(" ")
 		var node = domConstruct.create("div", {
 			innerHTML: opt_innerHTML,
-			className: className,
+			className: classes,
 			id: id
 		}, parent)
 		return node
 	}
 
-	function addImage(parent, className, id, image) {
+	function isString(value) {
+		return typeof value === 'string'
+	}
+
+	function extendOptClassArray(opt_classArray, newClassOrClasses)
+	{
+		var classArray = opt_classArray ? opt_classArray: []
+		if (isString(newClassOrClasses)) {
+			classArray.push(newClassOrClasses)
+			return classArray
+		} else {
+			// must be an array
+			var newClassArray = classArray.concat(newClassOrClasses)
+			return newClassArray
+		}
+	}
+
+	function makeSlotId(rowIndex, columnIndex) {
+		var idPieces = [
+			"slot",
+			rowIndex.toString(),
+			columnIndex.toString(),
+		]
+		return idPieces.join("_")
+	}
+
+	function getElementId(columnIndex) {
+		var elementId = "element_".concat(columnIndex.toString())
+		return elementId
+	}
+
+	function addImage(parent, opt_classArray, id, image) {
+		var classArray = opt_classArray ? opt_classArray: []
+		var classes = classArray.join(" ")
 		var node = domConstruct.create("img", {
 			innerHTML: "",
-			className: className,
+			className: classes,
 			id: id,
 			src: image
 		}, parent)
 		return node
 	}
 
-	function addPageOfItems(parent, opt_extraClass = "") {
+	function addPageOfItems(parent, opt_classArray) {
 		var pageId = "pageOfItems.".concat(pageNumber.toString())
 		pageNumber++
-		var classes = "pageOfItems"
-		if (pageAllowsOverflow) {
-			classes = classes + " allowsOverflow"
+		var classArray = extendOptClassArray(opt_classArray, "pageOfItems")
+
+		if (isDemoBoard) {
+			classArray.push("isDemoBoard")
 		}
-		if (opt_extraClass != "") {
-			classes = classes + " " + opt_extraClass
-		}
-		return addDiv(parent, classes, pageId)
+		return addDiv(parent, classArray, pageId)
 	}
 
-	function addRow(parent, opt_classes, opt_id) {
-		var classes = "row"
-		if (opt_classes) {
-			classes = classes + " " + opt_classes
-		}
-		if (rowAllowsOverflow) {
-			classes = classes + " allowsOverflow"
+	function addRow(parent, opt_classArray, opt_id) {
+		var classArray = extendOptClassArray(opt_classArray, "row")
+		if (isDemoBoard) {
+			classArray.push("isDemoBoard")
 		}
 
 		var rowId
@@ -118,7 +181,22 @@ define([
 			rowId = "row.".concat(rowNumber.toString())
 			rowNumber++
 		}
-		return addDiv(parent, classes, rowId)
+		return addDiv(parent, classArray, rowId)
+	}
+
+	function addCard(parent, opt_classArray, opt_id) {
+		var classArray = extendOptClassArray(opt_classArray, "card")
+		if (isDemoBoard) {
+			classArray.push("isDemoBoard")
+		}
+		var cardId
+		if (opt_id) {
+			cardId = opt_id
+		} else {
+			cardId = "card.".concat(cardNumber.toString())
+			cardNumber++
+		}
+		return addDiv(parent, classArray, cardId)
 	}
 
 	// Function to convert hexadecimal color to RGB
@@ -161,65 +239,48 @@ define([
 		return Math.floor(Math.random() * max);
 	}
 
-	var slotWidth = 240
-	var horizontalSpaceBetweenSlots = 10
+	var ordersRowMarginTop = 5
+	var cardSlotOutlineHeight = 4
 
-	// Visual aid for all this:
-	// Total width of slot:
-	// +-a-+-----b-----+-a-+
-	// Where a is horizontalSpaceBetweenSlots/2 and b slotWidth.
-	var totalSlotWidth = slotWidth + horizontalSpaceBetweenSlots
-
-	// A belt comes in the middle of a slot:
-	// So from far left that's a + b/2
-	// From the Tile's left edge, call that x.
-	// Then x + g = a + b/2.
-	// x = a + b/2 - g
-	// = horizontalSpaceBetweenSlots/2 + slotWidth/2 - crossTileHorizontalInset
-	var crossTileVerticalInset = 10
-	var crossTileHorizontalInset = 20
-	var beltCenterOffsetInTile = horizontalSpaceBetweenSlots/2 + slotWidth/2 - crossTileHorizontalInset
-
-	var standardRowHeight = 140;
-	var elementHeight = standardRowHeight - 20
-
-	// For a cross tile, it lays across two side by side slots:
-	//
-	// Slots: +-a-+-----b-----+-a-+-a-+-----b-----+-a-+
-	// Tile : +--g--+-------------h-------------+--g--+
-	// Where h is crossTileWidth and g is crossTileHorizontalInset.
-	// So...
-	var crossTileWidth = totalSlotWidth * 2 - 2 * crossTileHorizontalInset
-	var crossTileHeight = standardRowHeight - 2 * crossTileVerticalInset
-
-	var beltSegmentZIndex = 0
+	var beltSegmentZIndex = 1000000
+	var beltZIndex = 2
+	var elementZIndex = beltZIndex + 1
 
 	var beltSegmentsPerRow = 8;
 	var beltSegmentOffset = standardRowHeight/beltSegmentsPerRow
 	var beltSegmentHeight = beltSegmentOffset + 2
 	var beltSegmentWidth = 40
 
-	function versionToCssFriendlyString(version) {
-		return "version" + version.toString().replace(".", "_")
+	function versionToClassArray(version) {
+		var versionAsStrinng = version.toString()
+		var versionPieces = versionAsStrinng.split(".")
+		var mainVersionPiece = versionPieces[0]
+		var mainVersionClass = "version" + mainVersionPiece
+		if (versionPieces.length > 1) {
+			var subVersionPiece = versionPieces[1]
+			var subVersionClass = "subversion" + subVersionPiece
+			return [mainVersionClass, subVersionClass]
+		}
+		return [mainVersionClass]
 	}
 
-	function setPageAllowsOverflow(pao) {
-		pageAllowsOverflow = pao
-	}
-
-	function setRowAllowsOverflow(rao) {
-		rowAllowsOverflow = rao
+	function setIsDemoBoard(idb) {
+		isDemoBoard = idb
 	}
 
     // This returned object becomes the defined value of this module
     return {
 		slotWidth: slotWidth,
-		horizontalSpaceBetweenSlots: horizontalSpaceBetweenSlots,
 		beltCenterOffsetInTile: beltCenterOffsetInTile,
 		standardRowHeight: standardRowHeight,
 		elementHeight: elementHeight,
+		elementWidth: elementWidth,
+		elementTopAndBottomMargin: elementTopAndBottomMargin,
+		elementLeftAndRightMargin: elementLeftAndRightMargin,
 		crossTileWidth: crossTileWidth,
 		crossTileHeight: crossTileHeight,
+		crossTileBorder: crossTileBorder,
+		crossTileInnerWidth: crossTileInnerWidth,
 		beltSegmentZIndex: beltSegmentZIndex,
 		beltSegmentsPerRow: beltSegmentsPerRow,
 		beltSegmentOffset: beltSegmentOffset,
@@ -231,25 +292,15 @@ define([
 		version004: version004,
 		version004_01: version004_01,
 
-		versionToCssFriendlyString: versionToCssFriendlyString,
-
 		nutTypeAlmond: nutTypeAlmond,
 		nutTypeCashew: nutTypeCashew,
 		nutTypePeanut: nutTypePeanut,
 		nutTypePistachio: nutTypePistachio,
 		nutTypeWalnut: nutTypeWalnut,
 
-		addDiv: addDiv,
-		addImage: addImage,
-		addPageOfItems: addPageOfItems,
-		addRow: addRow,
-		blendHexColors: blendHexColors,
-		getRandomInt: getRandomInt,
 		cardHeight: cardHeight,
 		cardWidth: cardWidth,
-
-		smallCardHeight: smallCardHeight,
-		smallCardWidth: smallCardWidth,
+		cardBackFontSize: cardBackFontSize,
 
 		nutTypesByVersion: nutTypesByVersion,
 		nutTypeImages: nutTypeImages,
@@ -263,8 +314,27 @@ define([
 		roastedTypeImages: roastedTypeImages,
 
 		wildImage: wildImage,
+		ordersRowMarginTop: ordersRowMarginTop,
+		cardSlotOutlineHeight: cardSlotOutlineHeight,
+		elementZIndex: elementZIndex,
+		beltZIndex: beltZIndex,
+		crossTileOnBoardLeftMargin: crossTileOnBoardLeftMargin,
+		crossTileOnBoardTopMargin: crossTileOnBoardTopMargin,
 
-		setPageAllowsOverflow: setPageAllowsOverflow,
-		setRowAllowsOverflow: setRowAllowsOverflow,
+		addDiv: addDiv,
+		addImage: addImage,
+		addPageOfItems: addPageOfItems,
+		addRow: addRow,
+		addCard: addCard,
+		blendHexColors: blendHexColors,
+		getRandomInt: getRandomInt,
+		versionToClassArray: versionToClassArray,
+		setIsDemoBoard: setIsDemoBoard,
+		getIsDemoBoard: function() {
+			return isDemoBoard
+		},
+		extendOptClassArray: extendOptClassArray,
+		makeSlotId: makeSlotId,
+		getElementId: getElementId,
 	};
 });

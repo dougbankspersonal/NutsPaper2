@@ -100,15 +100,15 @@
 			function makeNthGoalCard(parentNode, index)
 			{
                 var cardType = mapIndexToCardType(index)
-				var fontNode = cards.makeCardFront(parentNode, "goal", "goal.".concat(index.toString()))
+				var fontNode = cards.makeCardFront(parentNode, ["goal"], "goal.".concat(index.toString()))
                 var config = goalCardConfigs[cardType]
-                var node = gameUtils.addDiv(fontNode, "title", "title")
+                var node = gameUtils.addDiv(fontNode, ["title"], "title")
 				node.innerHTML = config.title
-                var node = gameUtils.addDiv(fontNode, "goal", "goal")
+                var node = gameUtils.addDiv(fontNode, ["goal"], "goal")
 				node.innerHTML = config.goal
-                var node = gameUtils.addDiv(fontNode, "points", "points")
+                var node = gameUtils.addDiv(fontNode, ["points"], "points")
 				node.innerHTML = config.points
-                var node = gameUtils.addDiv(fontNode, "reward", "reward")
+                var node = gameUtils.addDiv(fontNode, ["reward"], "reward")
 				node.innerHTML = config.reward
 			}
 

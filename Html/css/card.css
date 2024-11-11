@@ -1,9 +1,15 @@
 .card {
-	margin-left: 0.00px;
-	margin-top: 0.00px;
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 1px;
+	margin-bottom: 1px;
 	display: inline-block;
-	margin: 2px;
 	overflow: hidden;
+}
+
+.card.forDemo {
+	margin-right: 0px;
+	margin-bottom: 0px;
 }
 
 /* Bonus cards */
@@ -15,7 +21,6 @@
 .card.front.order {
 	position: relative;
 	background-color: #fff;
-	margin: 0px;
 }
 
 .card.front.order .wrapper {
@@ -59,13 +64,13 @@
 
 .card.front.goal div.title {
 	font-family: 'Courier';
-	font-size: 21px;
+	font-size: 14px;
 	font-weight: bold;
 }
 
 .card.front.goal div.goal {
 	padding-top: 7px;
-	font-size: 16px;
+	font-size: 12px;
 	font-family: 'Courier';
 	font-weight: bold;
 	font-style: italic;
@@ -73,19 +78,19 @@
 
 .card.front.goal div.points {
 	padding-top: 7px;
-	font-size: 16px;
+	font-size: 12px;
 	font-family: 'Courier';
 	font-weight: bold;
 }
 
 .card.front.goal div.reward {
 	padding-top: 7px;
-	font-size: 16px;
+	font-size: 12px;
 	font-family: 'Courier';
 	font-weight: bold;
 }
 
-/* bonusv004 cards. */
+/* bonusv004 and 4.01 cards. */
 .card.front.bonus.version4 {
 	padding-top: 27px;
 }
@@ -346,10 +351,5 @@
 .card.back .inset .title {
 	transform-origin: center;
 	font-family: 'Courier';
-	font-size: 54px;
 	text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.5);
-}
-
-.card.back.small .inset .title {
-	font-size: 36px;
 }

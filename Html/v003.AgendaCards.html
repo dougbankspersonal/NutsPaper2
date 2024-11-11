@@ -186,14 +186,16 @@
 			function makeAgendaCard(parent, index) {
 				var cardDesc = agendaCardDescs[index]
 
-				var node = cards.makeCardFront(parent, "agenda", "agenda.".concat(index.toString()))
-				gameUtils.addDiv(node, "title", "title", cardDesc.title)
-				gameUtils.addDiv(node, "flavor", "flavor", cardDesc.flavor)
-				var goalClasses = "goal"
-				if (cardDesc.extraClasses) {
-					goalClasses = goalClasses + " " + cardDesc.extraClasses
+				var node = cards.addDiv(parent, ["agenda"], "agenda.".concat(index.toString()))
+				gameUtils.addDiv(node, ["title"], "title", cardDesc.title)
+				gameUtils.addDiv(node, ["flavor"], "flavor", cardDesc.flavor)
+				var classArray = [
+					"goal",
+				]
+				if (cardDesc.classArray) {
+					classArray = classArray.concat(cardDesc.classArray)
 				}
-				gameUtils.addDiv(node, goalClasses, "goal", cardDesc.goal)
+				gameUtils.addDiv(node, classArray, "goal", cardDesc.goal)
 
 				return node
 			}

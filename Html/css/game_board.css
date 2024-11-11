@@ -9,7 +9,7 @@
     overflow: hidden;
 }
 
-.row.allowsOverflow {
+.row.isDemoBoard {
     overflow: visible;
 }
 
@@ -21,7 +21,7 @@
 	background-image: url("../images/Factory/FloorWood.jpg");
 }
 
-.row.version4_01 {
+.row.version4.subversion01 {
 	background-image: url("../images/Factory/FloorBrick.png");
 }
 
@@ -92,7 +92,6 @@
 
 .row .content .slot {
 	height: 100%;
-    display: flex;
 	align-items: center;
 	justify-content: center;
 	position: relative;
@@ -107,6 +106,7 @@
 	border-radius: 50%;
 	box-sizing: border-box;
 	break-inside: avoid;
+	z-index: 10;
 }
 
 .element .squirrelTitle {
@@ -114,7 +114,7 @@
 	font-weight: bold;
 }
 
-.element .elementIndex {
+.element .squirrelIndex {
     font-size: 36px;
 	font-weight: bold;
 }
@@ -123,10 +123,11 @@
 	background-color: white;
 	z-index: 2;
 	box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-	align-items: center;
-	justify-content: center;
-	display:flex;
-	flex-direction: column;
+	position: relative;
+	display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 .row .content .slot .number {
@@ -145,12 +146,7 @@
 	outline-width: 4px;
 	box-sizing: border-box;
 	border-radius: 0px;
-	border: 0x solid #000000;
-	margin-top: 5px;
-}
-
-.row.orders {
-	height: 340px;
+	border: 0px solid #000000;
 }
 
 .row .content .crossTileContainer {

@@ -149,20 +149,20 @@
 				// Calculate the score for this distribution
 				var score = scoreForDistribution(nutTypeDistribution, count)
 
-				var wrapper = gameUtils.addDiv(parentNode, "wrapper", "wrapper")
+				var wrapper = gameUtils.addDiv(parentNode, ["wrapper"], "wrapper")
 				for (var i = 0; i < numNutTypes; i++) {
 					var nutType = nutTypes[i]
 					var typeCount = nutTypeDistribution[nutType]
 					if (typeCount > 0) {
-						var prop = gameUtils.addDiv(wrapper, "requirement", "requirement")
+						var prop = gameUtils.addDiv(wrapper, ["requirement"], "requirement")
 						var nutTypeImage = gameUtils.nutTypeImages[nutType]
-						gameUtils.addImage(prop, "nutType", "nutType", nutTypeImage)
-						var numTypeNode = gameUtils.addDiv(prop, "typeCount", "typeCount")
+						gameUtils.addImage(prop, ["nutType"], "nutType", nutTypeImage)
+						var numTypeNode = gameUtils.addDiv(prop, ["typeCount"], "typeCount")
 						numTypeNode.innerHTML = "&nbsp;x".concat(typeCount.toString())
 					}
 				}
 
-				var scoreNode = gameUtils.addDiv(wrapper, "score", "score")
+				var scoreNode = gameUtils.addDiv(wrapper, ["score"], "score")
 				scoreNode.innerHTML = score.toString().concat(" points")
 
 				return wrapper
