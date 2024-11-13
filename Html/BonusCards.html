@@ -97,7 +97,7 @@
 
 			var numBonusCards = getTotalNumBonusCards()
 
-			function makeBonusCard(parent, index) {
+			function addBonusCard(parent, index) {
 				var cardDesc = cards.getCardDescAtIndex(index, bonusCardDescs)
 
 				var node = cards.addDiv(parent, ["bonus"], "bonus.".concat(index.toString()))
@@ -113,7 +113,7 @@
 				return node
 			}
 
-			cards.makeCards("Bonus", "#f0f090", numBonusCards, makeBonusCard)
+			cards.addCards("Bonus", "#f0f090", numBonusCards, addBonusCard)
 		});
     </script>
 </body>

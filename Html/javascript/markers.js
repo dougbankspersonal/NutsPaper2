@@ -1,10 +1,9 @@
 define([
-	'dojo/string',
     'dojo/dom',
 	'javascript/gameUtils',
 	'dojo/dom-style',
 	'dojo/domReady!'
-], function(string, dom, gameUtils, domStyle){
+], function(dom, gameUtils, domStyle){
 
 	var markerTypes = {
 		Almond: gameUtils.nutTypeAlmond,
@@ -17,7 +16,7 @@ define([
 		StartingPlayer: "StartingPlayer",
 	}
 
-	imagesByType = {}
+	var imagesByType = {}
 	imagesByType[markerTypes.Almond] = "images/Markers/Simple.Almond.png"
 	imagesByType[markerTypes.Cashew] = "images/Markers/Simple.Cashew.png"
 	imagesByType[markerTypes.Peanut] = "images/Markers/Simple.Peanut.png"
@@ -28,7 +27,7 @@ define([
 	var shrinkage = 3
 	var markersPerPage = 42
 
-	function makeMarker(parent, markerType, opt_classArray, opt_additionalConfig) {
+	function addMarker(parent, markerType, opt_classArray, opt_additionalConfig) {
 		var classArray = gameUtils.extendOptClassArray(opt_classArray, "marker")
 		classArray.push(markerType)
 		var additionalConfig = opt_additionalConfig ? opt_additionalConfig: {}
@@ -36,16 +35,24 @@ define([
 		domStyle.set(node, {
 			"width": `${gameUtils.elementWidth - shrinkage}px`,
 			"height": `${gameUtils.elementHeight - shrinkage}px`,
+			"z-index": `${gameUtils.markerZIndex}`,
 		})
 
+		console.log("markerType: ", markerType)
+		console.log("imagesByType: ", imagesByType)
 		var image = imagesByType[markerType]
+		console.log("image: ", image)
+
 		if (image) {
 			gameUtils.addImage(node, ["image"], "image", image)
 		}
+
 		var text = additionalConfig.text ? additionalConfig.text: null
+
 		if (text) {
 			gameUtils.addDiv(node, ["text"], "text", text)
 		}
+
 		if (additionalConfig.color) {
 			domStyle.set(node, "background-color", additionalConfig.color)
 		}
@@ -56,8 +63,8 @@ define([
     // This returned object becomes the defined value of this module
     return {
 		markerTypes: markerTypes,
-		makeMarker: makeMarker,
-		makeMarkers: function (numMarkers, contentCallback) {
+		addMarker: addMarker,
+		addMarkers: function (numMarkers, contentCallback) {
             var bodyNode = dom.byId("body");
 			var pageOfMarkers = null
 			for (var i = 0; i < numMarkers; i++) {

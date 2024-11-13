@@ -29,8 +29,6 @@
 	font-family: 'Courier';
 	text-align: center;
 	height: 100%;
-	width: 360px;
-	padding-right: 20px;
 	position: relative;
     display: flex;
 	align-items: center;
@@ -48,6 +46,29 @@
     font-size: 36;
 	font-weight: bold;
 	margin-bottom: 10px;
+}
+
+.token {
+	border: 1.33px solid #000000;
+	border-radius: 50%;
+	box-sizing: border-box;
+	break-inside: avoid;
+	z-index: 10;
+	height: 80px;
+	width: 80px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.token .text {
+    font-size: 24px;
+	font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .row .sideBar .subtitle {

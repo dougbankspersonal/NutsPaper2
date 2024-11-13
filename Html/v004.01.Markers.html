@@ -42,7 +42,7 @@
                     count: 4,
                 },
                 {
-                    markerType: markers.markerTypes.Almond,
+                    markerType: markers.markerTypes.Cashew,
                     count: 4,
                 },
                 {
@@ -80,7 +80,7 @@
                 numMarkerCards += markerConfigs[i].count
             }
 
-			function makeMarkerAtIndex(parent, index) {
+			function addMarkerAtIndex(parent, index) {
                 var config
                 for (var i = 0; i < markerConfigs.length; i++) {
                     var markerConfig = markerConfigs[i]
@@ -91,10 +91,10 @@
                     index -= markerConfig.count
                 }
                 // Should have a config now.
-				return markers.makeMarker(parent, markerConfig.markerType, null, markerConfig)
+				return markers.addMarker(parent, markerConfig.markerType, null, markerConfig)
 			}
 
-			markers.makeMarkers(numMarkerCards, makeMarkerAtIndex)
+			markers.addMarkers(numMarkerCards, addMarkerAtIndex)
 		});
     </script>
 </body>

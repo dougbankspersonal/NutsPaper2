@@ -169,7 +169,7 @@
 				return wrapper
 			}
 
-			function makeNthOrderCard(parent, index)
+			function addNthOrderCard(parent, index)
 			{
 				var realIndex = Math.floor(index/numOrderCardsEachType)
 
@@ -192,16 +192,16 @@
 
 					}
 				}
-				var node = cards.makeCardFront(parent, `order`, "order.".concat(index.toString()))
+				var node = cards.addCardFront(parent, `order`, "order.".concat(index.toString()))
 				addNutDesc(node, desc)
 				return node
 			}
 
-			function makeOrderCard(parent, index) {
-				return makeNthOrderCard(parent, index)
+			function addOrderCard(parent, index) {
+				returnaddNthOrderCard(parent, index)
 			}
 
-			cards.makeCards("Order", "#40c080", numOrderCards, makeOrderCard)
+			cards.addCards("Order", "#40c080", numOrderCards, addOrderCard)
 		});
     </script>
 </body>

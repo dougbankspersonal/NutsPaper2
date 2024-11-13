@@ -90,12 +90,12 @@ define([
 
 	var curvePoints = getCurvePoints()
 
-	function addCrossTile(parentNode) {
-		var classArray = ["crossTile"]
+	function addCrossTile(parentNode, crossTileId, opt_classArray) {
+		var classArray = gameUtils.extendOptClassArray(opt_classArray, "crossTile")
 		if (gameUtils.getIsDemoBoard()) {
 			classArray.push("isDemoBoard")
 		}
-		var crossTile = gameUtils.addDiv(parentNode, classArray, "crossTile")
+		var crossTile = gameUtils.addDiv(parentNode, classArray, crossTileId)
 		domStyle.set(crossTile, {
 			"width": `${gameUtils.crossTileWidth}px`,
 			"height": `${gameUtils.crossTileHeight}px`,
@@ -104,15 +104,17 @@ define([
 
 		// Add belts.
 		// Left to right belt.
+		var belt = gameUtils.addDiv(crossTile, ["belt", "left"], "leftBelt")
 		for (let index = 0; index < curvePoints.length; index++) {
 			var curvePoint = curvePoints[index]
-			beltUtils.addBeltSegment(crossTile, curvePoint.xOffset, curvePoint.yOffset, curvePoint.rads)
+			beltUtils.addBeltSegment(belt, curvePoint.xOffset, curvePoint.yOffset, curvePoint.rads)
 		}
 
 		// Right to left belt.
+		belt = gameUtils.addDiv(crossTile, ["belt", , "right"], "rightBelt")
 		for (let index = 0; index < curvePoints.length; index++) {
 			var curvePoint = curvePoints[index]
-			beltUtils.addBeltSegment(crossTile, gameUtils.crossTileInnerWidth - curvePoint.xOffset, curvePoint.yOffset, -curvePoint.rads)
+			beltUtils.addBeltSegment(belt, gameUtils.crossTileInnerWidth - curvePoint.xOffset, curvePoint.yOffset, -curvePoint.rads)
 		}
 
 		return crossTile

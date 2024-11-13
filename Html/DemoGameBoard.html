@@ -5,6 +5,7 @@
 	<link rel="stylesheet" href="css/game_board.css">
 	<link rel="stylesheet" href="css/belt.css">
 	<link rel="stylesheet" href="css/marker.css">
+	<link rel="stylesheet" href="css/arrow.css">
 	<link rel="stylesheet" href="css/card.css">
 	<link rel="stylesheet" href="css/cross_tile.css">
     <meta content="text/html; charset=UTF-8" http-equiv="content-type">
@@ -38,7 +39,18 @@
 			'javascript/gameBoard',
 			'javascript/gameUtils',
 			'javascript/markers',
-		], function (gameBoard, gameUtils, markers) {
+			'javascript/arrows',
+			'javascript/rowTypes',
+			'javascript/versionDetails',
+		], function (gameBoard, gameUtils, markers, arrows, rowTypes, versionDetails) {
+
+            var undoTokenColor = "#aaaadd"
+            var runTokenColor = "#aaddaa"
+
+            var yellowHighlight = "rgb(255, 255, 68)"
+            var blueHighlight = "rgb(170, 170, 255)"
+            var translucentYellowHighlight = "rgba(255, 255, 68, 0.2)"
+
             function generateDispenserInstanceDescs() {
                 var nutTypes = gameUtils.nutTypesByVersion[gameUtils.version004_01]
                 var numNutTypes = nutTypes.length
@@ -75,40 +87,120 @@
 
             gameUtils.setIsDemoBoard(true)
 
+            var myRowTypes = versionDetails.rowTypesByVersion[gameUtils.version004_01]
 			gameBoard.createBoard(gameUtils.version004_01, {
-				columnsPerStrip: 20,
-				maxRowsPerPage: 20,
+				columnsPerStrip: 13,
+				maxRowsPerPage: myRowTypes.length,
                 factoryColumnCount: 12,
 			})
 
-            // Add nut dispensers.
+            // Add nut dispensers
+            /*
             var dispenserInstanceDescs = generateDispenserInstanceDescs()
             for (var i = 0; i < dispenserInstanceDescs.length; i++) {
                 var dispenserInstanceDesc = dispenserInstanceDescs[i]
-                gameBoard.addMarker(gameBoard.dispensersRowId, i, dispenserInstanceDesc.markerType)
+                gameBoard.addMarker(dispenserRowIndex, i, dispenserInstanceDesc.markerType)
             }
+            */
+           var dispenserRowIndex = gameUtils.getIndexForFirstRowType(myRowTypes, rowTypes.Dispenser)
+            gameBoard.addMarker(dispenserRowIndex, 0, gameUtils.nutTypeAlmond)
+            gameBoard.addMarker(dispenserRowIndex, 1, gameUtils.nutTypeCashew)
+            gameBoard.addMarker(dispenserRowIndex, 2, gameUtils.nutTypePeanut)
+            gameBoard.addMarker(dispenserRowIndex, 3, gameUtils.nutTypePistachio)
+            gameBoard.addMarker(dispenserRowIndex, 5, gameUtils.nutTypeCashew)
+            gameBoard.addMarker(dispenserRowIndex, 6, gameUtils.nutTypePeanut)
+            gameBoard.addMarker(dispenserRowIndex, 8, gameUtils.nutTypeAlmond)
+            gameBoard.addMarker(dispenserRowIndex, 9, gameUtils.nutTypePeanut)
+            gameBoard.addMarker(dispenserRowIndex, 10, gameUtils.nutTypeCashew)
+            gameBoard.addMarker(dispenserRowIndex, 11, gameUtils.nutTypePistachio)
+
+            var pistachioMarker = gameBoard.addMarker(dispenserRowIndex, 4, gameUtils.nutTypePistachio)
+            var almondMarker = gameBoard.addMarker(dispenserRowIndex, 7, gameUtils.nutTypeAlmond)
 
             // Add squirrel and ghost squirrel.
             // First arg is row, second is column, both zero-indexed.
-            // For v004.01 there's just one squirrel row.
-            var squirrelRowId = `${gameBoard.squirrelRowPrefix}${0}`
-            gameBoard.addMarker(squirrelRowId, 3, markers.markerTypes.Squirrel)
-            gameBoard.addMarker(squirrelRowId, 4, markers.markerTypes.Squirrel, ["ghost"])
+            // Just use the first squirrel row.
+            var firstSquirrelRowIndex = gameUtils.getIndexForFirstRowType(myRowTypes, rowTypes.Squirrel)
+
+          //  gameBoard.addMarker(firstSquirrelRowIndex, 3, markers.markerTypes.Squirrel, ["ghost"])
+            gameBoard.addMarker(firstSquirrelRowIndex, 4, markers.markerTypes.Squirrel)
+          //  arrows.addArrow(firstSquirrelRowIndex, 3, arrows.arrowTypes.RightArrow)
+
+            var salterRowIndex = gameUtils.getIndexForFirstRowType(myRowTypes, rowTypes.Salter)
+            for (var i  = 0; i < myRowTypes.length; i++)
+            {
+                var rowType = myRowTypes[i]
+                if (rowType == rowTypes.Squirrel) {
+                    firstSquirrelRowIndex = i
+                    break
+                }
+            }
+
+            // Add salters.
+            gameBoard.addMarker(salterRowIndex, 1, markers.markerTypes.Salter)
+            gameBoard.addMarker(salterRowIndex, 6, markers.markerTypes.Salter)
+            gameBoard.addMarker(salterRowIndex, 10, markers.markerTypes.Salter)
+
+          //  gameBoard.addMarker(salterRowIndex, 11, markers.markerTypes.Salter, ["ghost"])
 
             // add Orders.
-            var orderInstanceDescs = generateOrderInstanceDescs()
-            for (var i = 0; i < orderInstanceDescs.length; i++) {
-                var orderInstanceDesc = orderInstanceDescs[i]
-                gameBoard.addOrder(orderInstanceDesc.nutType, orderInstanceDesc.columnIndex)
-            }
+            console.log("myRowTypes: " + myRowTypes)
+            console.log("rowTypes: " + rowTypes)
+            console.log("rowTypes.Order: " + rowTypes.Order)
+            var orderRowIndex = gameUtils.getIndexForFirstRowType(myRowTypes, rowTypes.Order)
+            console.log("orderRowIndex: " + orderRowIndex)
+            gameBoard.addOrder(gameUtils.nutTypePeanut, orderRowIndex, 0)
+            gameBoard.addOrder(gameUtils.nutTypeAlmond, orderRowIndex, 2)
+            gameBoard.addOrder(gameUtils.nutTypeCashew, orderRowIndex, 3)
+            gameBoard.addOrder(gameUtils.nutTypePistachio, orderRowIndex, 4)
+
+//            gameBoard.addOrder(gameUtils.nutTypePistachio, orderRowIndex, 5)
+  //          gameBoard.addOrder(gameUtils.nutTypeAlmond, orderRowIndex, 7)
+            gameBoard.addOrder(gameUtils.nutTypePeanut, orderRowIndex, 8)
+
+            gameBoard.addOrder(gameUtils.nutTypePistachio, orderRowIndex, 9)
+            gameBoard.addOrder(gameUtils.nutTypePistachio, orderRowIndex, 11)
 
             // add some cross tiles.
             // There are six conveyor rows for v 004.01 (see rowTypesForV004_01).
             // First arg is nth conveyor row, second is column, both zero-indexed.
             gameBoard.addCrossTile(2, 0)
             gameBoard.addCrossTile(5, 1)
+            gameBoard.addCrossTile(5, 9)
+            gameBoard.addCrossTile(6, 4)
+            gameBoard.addCrossTile(8, 2)
             gameBoard.addCrossTile(9, 10)
 
+            // Added tile.
+            gameBoard.addCrossTile(9, 8)
+
+/*
+            // Highlight the winning path:
+            var goodHighlight = "#ffff44"
+            gameBoard.highlightPath(10, "#ffff44")
+
+            // Highlight this moves.
+            gameBoard.getSlotAndHighlightContents(1, 9, moveHighlight)
+            gameBoard.getSlotAndHighlightContents(1, 10, moveHighlight)
+            gameBoard.getSlotAndHighlightContents(4, 10, moveHighlight)
+            gameBoard.getSlotAndHighlightContents(4, 11, moveHighlight)
+
+            // Highlight the new cross tile.
+            gameBoard.highlightCrossTile(9, 8, moveHighlight)
+
+            // Add movement arrows:
+            // Double array for the swap.
+            arrows.addArrow(1, 9, arrows.arrowTypes.DoubleArrow)
+            arrows.addArrow(4, 10, arrows.arrowTypes.RightArrow)
+            */
+
+            gameBoard.highlightPath(4, yellowHighlight)
+            gameBoard.highlightPath(7, blueHighlight)
+
+            /*
+            gameBoard.addToken(pistachioMarker, runTokenColor, "Run")
+            gameBoard.addToken(almondMarker, runTokenColor, "Run")
+            */
 		});
     </script>
 </body>

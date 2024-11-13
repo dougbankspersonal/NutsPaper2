@@ -70,17 +70,17 @@
 						// Action cards
 			var numActionCards = actionCardDescs.length
 
-			function makeActionCard(parent, index) {
+			function addActionCard(parent, index) {
 				var actionCardDesc = actionCardDescs[index]
 
-				var node = cards.makeCardFront(parent, ["action"], "action.".concat(index.toString()))
+				var node = cards.addCardFront(parent, ["action"], "action.".concat(index.toString()))
 				gameUtils.addDiv(node, ["title"], "title", actionCardDesc.title)
 				gameUtils.addDiv(node, ["action"], "action", actionCardDesc.action)
 
 				return node
 			}
 
-			cards.makeCards("Action", "#c4c4c4", numActionCards, makeActionCard)
+			cards.addCards("Action", "#c4c4c4", numActionCards, addActionCard)
 		});
     </script>
 </body>

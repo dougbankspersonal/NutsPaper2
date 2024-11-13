@@ -40,11 +40,11 @@
 			var numNutTypes = nutTypes.length
 			var numOrderCards = numNutTypes * numOrderCardsEachType
 
-			function makeOrderCard(parent, index) {
-				return cards.makeNthOrderCardSingleNut(gameUtils.version004_01, parent, index, numOrderCardsEachType)
+			function addOrderCard(parent, index) {
+				return cards.addNthOrderCardSingleNut(parent, gameUtils.version004_01, index, numOrderCardsEachType)
 			}
 
-			cards.makeCards("Order", "#f0d0d0", numOrderCards, makeOrderCard)
+			cards.addCards("Order", "#f0d0d0", numOrderCards, addOrderCard)
 		});
     </script>
 </body>

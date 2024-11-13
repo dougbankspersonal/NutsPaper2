@@ -64,6 +64,12 @@
                 },
 				{
 					Almond: 1,
+					Cashew: 0,
+					Peanut: 1,
+					Pistachio: 2,
+                },
+				{
+					Almond: 1,
 					Cashew: 2,
 					Peanut: 1,
 					Pistachio: 0,
@@ -96,12 +102,6 @@
 					Almond: 1,
 					Cashew: 1,
 					Peanut: 0,
-					Pistachio: 2,
-                },
-				{
-					Almond: 1,
-					Cashew: 0,
-					Peanut: 1,
 					Pistachio: 2,
                 },
 				{
@@ -175,8 +175,7 @@
 				return wrapper
 			}
 
-			function makeNthBonusCard(parent, index)
-			{
+			function addBonusCard(parent, index) {
                 var bonusCardConfig = bonusCardConfigs[index]
 				var idElements = [
 					"bonus",
@@ -186,17 +185,13 @@
 				var id = idElements.join(".")
 				var classArray = gameUtils.versionToClassArray(gameUtils.version004_01)
 				classArray.push("bonus")
-				var node = cards.makeCardFront(parent, classArray, id)
+				var node = cards.addCardFront(parent, classArray, id)
 
 				addBonusDesc(node, bonusCardConfig)
 				return node
 			}
 
-			function makeBonusCard(parent, index) {
-				return makeNthBonusCard(parent, index)
-			}
-
-			cards.makeCards("Bonus", "#d0f0d0", numBonusCards, makeBonusCard)
+			cards.addCards("Bonus", "#d0f0d0", numBonusCards, addBonusCard)
 		});
     </script>
 </body>

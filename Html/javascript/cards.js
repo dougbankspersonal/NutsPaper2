@@ -17,7 +17,7 @@ define([
 		})
 	}
 
-	function makeCardBack(parent, title, color, opt_classArray) {
+	function addCardBack(parent, title, color, opt_classArray) {
 		var classArray = gameUtils.extendOptClassArray(opt_classArray, "back")
 
 		var node = gameUtils.addCard(parent, classArray, "back")
@@ -39,7 +39,7 @@ define([
 		return node
 	}
 
-	function makeCardFront(parent, classArray, id) {
+	function addCardFront(parent, classArray, id) {
 		classArray.push("front")
 		var node = gameUtils.addCard(parent, classArray, id)
 		setCardSize(node)
@@ -58,26 +58,26 @@ define([
 		return wrapper
 	}
 
-	function makeOrderCardSingleNut(parent, nutType, index, opt_classArray) {
+	function addOrderCardSingleNut(parent, nutType, index, opt_classArray) {
 		var classArray = gameUtils.extendOptClassArray(opt_classArray, "order")
 		var cardId = "order.".concat(index.toString())
-		var node = makeCardFront(parent, classArray, cardId)
+		var node = addCardFront(parent, classArray, cardId)
 		addNutDesc(node, nutType)
 		return node
 	}
 
-	function makeNthOrderCardSingleNut(version, parent, index, numOrderCardsEachType, opt_classArray) {
+	function addNthOrderCardSingleNut(parent, version, index, numOrderCardsEachType, opt_classArray) {
 		var nutTypeIndex = Math.floor(index/numOrderCardsEachType)
 		var nutTypes = gameUtils.nutTypesByVersion[version]
 		var nutType = nutTypes[nutTypeIndex]
 
-		return makeOrderCardSingleNut(parent, nutType, index, opt_classArray)
+		return addOrderCardSingleNut(parent, nutType, index, opt_classArray)
 	}
 
     // This returned object becomes the defined value of this module
     return {
-		makeNthOrderCardSingleNut: makeNthOrderCardSingleNut,
-		makeOrderCardSingleNut: makeOrderCardSingleNut,
+		addNthOrderCardSingleNut:addNthOrderCardSingleNut,
+		addOrderCardSingleNut: addOrderCardSingleNut,
 
 		getCardDescAtIndex: function(index, descs)
 		{
@@ -93,9 +93,9 @@ define([
 			return null
 		},
 
-		makeCardFront: makeCardFront,
+		addCardFront: addCardFront,
 
-		makeCards: function (title, color, numCards, contentCallback, opt_classArray) {
+		addCards: function (title, color, numCards, contentCallback, opt_classArray) {
             var bodyNode = dom.byId("body");
 
 			var pageOfFronts
@@ -106,7 +106,7 @@ define([
 					pageOfFronts = gameUtils.addPageOfItems(bodyNode)
 					pageOfBacks = gameUtils.addPageOfItems(bodyNode, ["back"])
 				}
-				makeCardBack(pageOfBacks, title, color, opt_classArray)
+				addCardBack(pageOfBacks, title, color, opt_classArray)
 				contentCallback(pageOfFronts, i, opt_classArray)
 			}
         },

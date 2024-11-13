@@ -169,7 +169,7 @@
 			}
 
 
-			function makeEventCard(parent, index) {
+			function addEventCard(parent, index) {
 				var cardDesc = cards.getCardDescAtIndex(index, eventCardDescs)
 
 				var node = cards.addDiv(parent, ["event"], "event.".concat(index.toString()))
@@ -186,7 +186,7 @@
 				return node
 			}
 
-			cards.makeCards("Event", "#bd332a", numEventCards, makeEventCard)
+			cards.addCards("Event", "#bd332a", numEventCards, addEventCard)
 		});
     </script>
 </body>

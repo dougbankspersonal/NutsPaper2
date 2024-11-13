@@ -1,81 +1,24 @@
 define([
-	'dojo',
     'dojo/dom',
 	"dojo/query",
 	'dojo/dom-style',
+	'dojo/dom-class',
 	'javascript/beltUtils',
 	'javascript/gameUtils',
 	'javascript/markers',
 	'javascript/cards',
 	'javascript/crossTiles',
+	'javascript/rowTypes',
+	'javascript/versionDetails',
 	'dojo/domReady!'
-], function(dojo, dom, query, domStyle, beltUtils, gameUtils, markers, cards, crossTiles){
+], function(dom, query, domStyle, domClass, beltUtils, gameUtils, markers, cards, crossTiles, rowTypes, versionDetails){
 	var rowZUIndex = 0
-	var RowType_NumberRow = 1
-	var RowType_DispenserRow = 2
-	var RowType_ConveyorRow = 3
-	var RowType_SquirrelRow = 4
-	var RowType_RoasterRow = 5
-	var RowType_SalterRow = 6
-	var RowType_OrdersRow = 7
+
 	// A cross tile hits two slots.
 	// Say first slot is row i, column j.
-	// Then the cross tile is stored in crossTilesByRowThenColumn[i][j]
-	var crossTylesByRowThenColumn = []
-
-	var factoryColumnCountByVersion = {}
-	factoryColumnCountByVersion[gameUtils.version003] = 10
-	factoryColumnCountByVersion[gameUtils.version004] = 12
-	factoryColumnCountByVersion[gameUtils.version004_01] = 16
-
-	var dispensersRowId = "dispensersRow"
-	var ordersRowId = "ordersRow"
-	var squirrelRowPrefix = "squirrelRow"
-
-	var rowTypesForV003 = [
-		RowType_NumberRow,
-		RowType_DispenserRow,
-		RowType_ConveyorRow,
-		RowType_SquirrelRow,
-		RowType_ConveyorRow,
-		RowType_RoasterRow,
-		RowType_ConveyorRow,
-		RowType_SalterRow,
-		RowType_ConveyorRow,
-		RowType_OrdersRow,
-	]
-
-	var rowTypesForV004 = [
-		RowType_NumberRow,
-		RowType_DispenserRow,
-		RowType_ConveyorRow,
-		RowType_ConveyorRow,
-		RowType_ConveyorRow,
-		RowType_SquirrelRow,
-		RowType_ConveyorRow,
-		RowType_ConveyorRow,
-		RowType_ConveyorRow,
-		RowType_OrdersRow,
-	]
-
-	var rowTypesForV004_01 = [
-		RowType_NumberRow,
-		RowType_DispenserRow,
-		RowType_ConveyorRow,
-		RowType_ConveyorRow,
-		RowType_SalterRow,
-		RowType_ConveyorRow,
-		RowType_ConveyorRow,
-		RowType_SquirrelRow,
-		RowType_ConveyorRow,
-		RowType_ConveyorRow,
-		RowType_OrdersRow,
-	]
-
-	var rowTypesByVersion = {}
-	rowTypesByVersion[gameUtils.version003] = rowTypesForV003
-	rowTypesByVersion[gameUtils.version004] = rowTypesForV004
-	rowTypesByVersion[gameUtils.version004_01] = rowTypesForV004_01
+	// Then the cross tile is stored in crossTileIdsByRowThenColumn[i][j]
+	var crossTileIdsByRowThenColumn = {}
+	var addedCrossTileIndex = 0
 
 	var numSquirrelRows = 0
 
@@ -87,6 +30,10 @@ define([
 	// Add a sideBar to the row with labels & whatnot.
 	function addSidebar(parentNode, sideBarInfo) {
 		var sideBar = gameUtils.addDiv(parentNode, ["sideBar"], "sideBar")
+		domStyle.set(sideBar, {
+			width: `${gameUtils.sideBarWidth}px`,
+		})
+
 		var wrapper = gameUtils.addDiv(sideBar, ["wrapper"], "wrapper")
 		gameUtils.addDiv(wrapper, ["title"], "title", sideBarInfo.title)
 		if (sideBarInfo.subtitle) {
@@ -102,17 +49,16 @@ define([
 
 
 	// Add a row: side bar plus content.
-	function addRowWithSidebarAndContent(parentNode, opt_configs) {
+	function addRowWithSidebarAndContent(parentNode, rowIndex, opt_configs) {
 		var configs = opt_configs ? opt_configs : {}
 		var darkBackground = configs.darkBackground ? true : false
 		var sideBarInfo = configs.sideBarInfo
 		var customRowHeight = configs.customRowHeight
 		var classArray = configs.classArray ?  configs.classArray : []
-		var rowId = configs.id ? configs.id : "row"
 
 		var versionClassArray = gameUtils.versionToClassArray(gameUtils.version004_01)
 		classArray = classArray.concat(versionClassArray)
-		var row = gameUtils.addRow(parentNode, classArray, rowId)
+		var row = gameUtils.addRow(parentNode, classArray, rowIndex)
 
 		var finalHeight = customRowHeight ? customRowHeight : gameUtils.standardRowHeight
 		var finalZIndex = rowZUIndex
@@ -193,7 +139,7 @@ define([
 	}
 
 	function addStandardSlot(parentNode, rowIndex, columnIndex) {
-		var slotId = gameUtils.makeSlotId(rowIndex, columnIndex)
+		var slotId = gameUtils.getSlotId(rowIndex, columnIndex)
 		var classArray = ["slot"]
 		var node = gameUtils.addDiv(parentNode, classArray, slotId)
 		domStyle.set(node, {
@@ -244,15 +190,15 @@ define([
 	function getSquirrelDetailsForRow(rowType, numSquirrelRows)
 	{
 		switch (rowType) {
-			case RowType_RoasterRow:
-			case RowType_SalterRow:
+			case rowTypes.Roaster:
+			case rowTypes.Salter:
 				{
 					if (version >= gameUtils.version004_01) {
 						return [null, null]
 					}
 				}
 			// deliberate fallthrough
-			case RowType_SquirrelRow:
+			case rowTypes.Squirrel:
 				{
 					var squirrelRangeStart = numSquirrelRows * factoryColumnCount + 1
 					var squirrelRangeEnd = (numSquirrelRows + 1) * factoryColumnCount
@@ -280,7 +226,7 @@ define([
 			opt_configs.sideBarInfo.subtitle = subtitle
 		}
 
-		var [row, content] = addRowWithSidebarAndContent(parentNode, opt_configs)
+		var [row, content] = addRowWithSidebarAndContent(parentNode, rowIndex, opt_configs)
 		var elementConfigs = configs.elementConfigs ? configs.elementConfigs : {}
 
 		for (let i = 0; i < numFactoryColumnsInThisRow; i++) {
@@ -296,7 +242,7 @@ define([
 	}
 
 	function addNColumnRowWithNumbers(parentNode, rowIndex, numFactoryColumnsInThisRow, opt_configs) {
-		var [row, content] = addRowWithSidebarAndContent(parentNode, opt_configs)
+		var [row, content] = addRowWithSidebarAndContent(parentNode, rowIndex, opt_configs)
 
 		for (let i = 0; i < numFactoryColumnsInThisRow; i++) {
 			var columnIndex = firstFactoryColumnIndexThisStrip + i
@@ -306,7 +252,7 @@ define([
 	}
 
 	function addNColumnRowWithConveyors(parentNode, rowIndex, numFactoryColumnsInThisRow, opt_configs) {
-		var [row, content] = addRowWithSidebarAndContent(parentNode, opt_configs)
+		var [row, content] = addRowWithSidebarAndContent(parentNode, rowIndex, opt_configs)
 
 		var configs = opt_configs ? opt_configs : {}
 		configs.skipElement = true
@@ -326,11 +272,10 @@ define([
 		})
 	}
 
-	function addNColumnOrdersRow(parentNode, rowIndex, rowType, numFactoryColumnsInThisRow, opt_sidebarInfo) {
+	function addNColumnOrdersRow(parentNode, rowIndex, rowType, numFactoryColumnsInThisRow, opt_sideBarInfo) {
 		addNColumnRowWithElements(parentNode, rowIndex, rowType, numFactoryColumnsInThisRow, {
 			classArray: ["orders"],
-			id: ordersRowId,
-			sideBarInfo: opt_sidebarInfo,
+			sideBarInfo: opt_sideBarInfo,
 			darkBackground: true,
 			customRowHeight: gameUtils.standardRowHeight/2,
 			elementConfigs: {
@@ -342,27 +287,43 @@ define([
 	}
 
 	function addNColumnStrip(parentNode, numFactoryColumnsInThisRow, opt_addSidebar) {
+		console.log("addNColumnStrip: numFactoryColumnsInThisRow = ", numFactoryColumnsInThisRow)
+		console.log("addNColumnStrip: opt_addSidebar = ", opt_addSidebar)
 		var pageNode = gameUtils.addPageOfItems(parentNode)
+		console.log("addNColumnStrip: pageNode = ", pageNode)
 
-		var rowTypes = rowTypesByVersion[version]
+		if (gameUtils.getIsDemoBoard()) {
+			// The 10 is just an extra fudge factor.
+			var demoBoardWidth = 10 + factoryColumnCount * gameUtils.slotWidth + gameUtils.sideBarWidth
+			var demoBoardHeight = 10 + maxRowsPerPage * gameUtils.standardRowHeight + gameUtils.cardHeight
+			console.log("addNColumnStrip: demoBoardWidth = ", demoBoardWidth)
+			console.log("addNColumnStrip: demoBoardHeight = ", demoBoardHeight)
+
+			domStyle.set(pageNode, {
+				width: `${demoBoardWidth}px`,
+				height: `${demoBoardHeight}px`,
+			})
+		}
+
+		var myRowTypes = versionDetails.rowTypesByVersion[version]
 
 		numSquirrelRows = 0
 
 		numFactoryColumnsInThisRow = adjustNumFactoryColumnsInThisRow(numFactoryColumnsInThisRow)
 
 		var rowsThisPage = 0
-		for (let i = 0; i < rowTypes.length; i++) {
+		for (let i = 0; i < myRowTypes.length; i++) {
 			var rowIndex = i
+			var rowType = myRowTypes[i]
+
 			if (rowsThisPage >= maxRowsPerPage)
 			{
 				pageNode = gameUtils.addPageOfItems(parentNode)
 				rowsThisPage = 0
 			}
 
-			var rowType = rowTypes[i]
-
 			switch (rowType) {
-				case RowType_NumberRow:
+				case rowTypes.Number:
 					addNColumnRowWithNumbers(pageNode, rowIndex, numFactoryColumnsInThisRow, {
 						classArray: ["numbers"],
 						sideBarInfo: opt_addSidebar? {
@@ -370,9 +331,8 @@ define([
 						} : null,
 					})
 					break;
-				case RowType_DispenserRow:
+				case rowTypes.Dispenser:
 					addNColumnRowWithElements(pageNode, rowIndex, rowType, numFactoryColumnsInThisRow, {
-						id: dispensersRowId,
 						classArray: ["nutDispensers"],
 						sideBarInfo: opt_addSidebar? {
 							title: "Dispensers",
@@ -382,7 +342,7 @@ define([
 						},
 					})
 					break;
-				case RowType_ConveyorRow:
+				case rowTypes.Conveyor:
 					addNColumnRowWithConveyors(pageNode, rowIndex, numFactoryColumnsInThisRow, {
 						classArray: ["conveyors"],
 						sideBarInfo: opt_addSidebar? {
@@ -390,30 +350,28 @@ define([
 						} : null,
 					})
 					break;
-				case RowType_RoasterRow:
+				case rowTypes.Roaster:
 					addNColumnRowWithElements(pageNode, rowIndex, rowType, numFactoryColumnsInThisRow, {
 						sideBarInfo: opt_addSidebar? {
 							title: "Roasters",
 						} : null,
 					})
 					break;
-				case RowType_SalterRow:
+				case rowTypes.Salter:
 					addNColumnRowWithElements(pageNode, rowIndex, rowType, numFactoryColumnsInThisRow, {
 						sideBarInfo: opt_addSidebar? {
 							title: "Salters",
 						} : null,
 					})
 					break;
-				case RowType_SquirrelRow:
-					var squirrelRowId = `${squirrelRowPrefix}${numSquirrelRows}`
+				case rowTypes.Squirrel:
 					addNColumnRowWithElements(pageNode, rowIndex, rowType, numFactoryColumnsInThisRow, {
-						id: squirrelRowId,
 						sideBarInfo: opt_addSidebar? {
 							title: "Squirrel",
 						} : null,
 					})
 					break;
-				case RowType_OrdersRow:
+				case rowTypes.Order:
 					var sideBarInfo = opt_addSidebar? {
 						title: "Orders",
 					} : null
@@ -426,6 +384,7 @@ define([
 	}
 
 	function createBoard(_version, configs) {
+		console.log("createBoard: _version = ", _version)
 		version = _version
 		maxRowsPerPage =  configs.maxRowsPerPage
 		var columnsPerStrip = configs.columnsPerStrip
@@ -435,8 +394,10 @@ define([
 		if (configs.factoryColumnCount) {
 			factoryColumnCount = configs.factoryColumnCount
 		} else {
-			factoryColumnCount = factoryColumnCountByVersion[version]
+			factoryColumnCount = versionDetails.factoryColumnCountByVersion[version]
 		}
+		console.log("createBoard: factoryColumnCount = ", factoryColumnCount)
+		console.log("createBoard: columnsPerStrip = ", columnsPerStrip)
 
 		// Special case if we are doing all the columns in one go.
 		if (columnsPerStrip >= factoryColumnCount) {
@@ -444,7 +405,7 @@ define([
 			return
 		}
 
-		// Put the sidebar alone.
+		// Put the sideBar alone.
 		if (columnsPerStrip < factoryColumnCount) {
 			addNColumnStrip(bodyNode, 0, true)
 		}
@@ -461,70 +422,208 @@ define([
 		var style = {}
 		style["margin"] = "0px"
 		style["position"] = "absolute"
-		style["background-color"] = "#ffffff"
 		domStyle.set(marker, style)
 	}
 
-	// columnnIndex is 0-based, ignoring the sidebar.
-	function addMarker(rowId, columnIndex, markerType, opt_classArray) {
+	// columnnIndex is 0-based, ignoring the sideBar.
+	function addMarker(rowIndex, columnIndex, markerType, opt_classArray, opt_additionalConfig) {
+		var rowId = gameUtils.getRowId(rowIndex)
 		var rowNode = dom.byId(rowId)
 		// add a marker to this element.
-		var elementId = gameUtils.getElementId(columnIndex)
-		var elementNodes = query(`#${elementId}`, rowNode)
+		var elementNode = gameUtils.getElementFromRow(rowNode, columnIndex)
 		// add marker here.
-		var marker = markers.makeMarker(elementNodes[0], markerType, opt_classArray)
+		var marker = markers.addMarker(elementNode, markerType, opt_classArray, opt_additionalConfig)
 		fixupMarkerStyling(marker)
 		return marker
 	}
 
-	function storeCrossTile(rowIndex, columnIndex, crossTile) {
-		if (!crossTylesByRowThenColumn[rowIndex]) {
-			crossTylesByRowThenColumn[rowIndex] = []
+	function storeCrossTileId(rowIndex, columnIndex, crossTileId) {
+		var rowIndexString = "X_" + rowIndex.toString()
+		var columnIndexString = "X_" + columnIndex.toString()
+
+		if (!crossTileIdsByRowThenColumn[rowIndexString]) {
+			crossTileIdsByRowThenColumn[rowIndexString] = {}
 		}
-		if (!crossTylesByRowThenColumn[rowIndex][columnIndex]) {
-			crossTylesByRowThenColumn[rowIndex][columnIndex] = []
-		}
-		crossTylesByRowThenColumn[rowIndex][columnIndex].push(crossTile)
+		crossTileIdsByRowThenColumn[rowIndexString][columnIndexString] = crossTileId
 	}
 
-	function getCrossTile(rowIndex, columnIndex) {
-		if (!crossTilesByRowThenColumn[rowIndex]) {
+	function getStoredCrossTileId(rowIndex, columnIndex) {
+		var rowIndexString = "X_" + rowIndex.toString()
+		var columnIndexString = "X_" + columnIndex.toString()
+
+		if (!crossTileIdsByRowThenColumn[rowIndexString]) {
 			return null
 		}
-		return crossTilesByRowThenColumn[rowIndex][columnIndex]
+		return crossTileIdsByRowThenColumn[rowIndexString][columnIndexString]
 	}
 
-	function addCrossTile(rowIndex, columnIndex) {
-		var slotId = gameUtils.makeSlotId(rowIndex, columnIndex)
-		var slot = dom.byId(slotId)
-		console.log("Doug: addCrossTile: rowIndex = ", rowIndex)
-		console.log("Doug: addCrossTile: columnIndex = ", columnIndex)
-		console.log("Doug: addCrossTile: slot = ", slot)
-		var crossTile = crossTiles.addCrossTile(slot)
-		console.log("Doug: addCrossTile: crossTile = ", crossTile)
-		console.log("Doug: addCrossTile: crossTile = ", crossTile)
+	function getStoredCrossTile(rowIndex, columnIndex) {
+		var crossTileId = getStoredCrossTileId(rowIndex, columnIndex)
+		if (!crossTileId) {
+			return null
+		}
+		var crossTiles = query(`#${crossTileId}`)
+		return crossTiles[0]
+	}
 
+	function getNextCrossTileId() {
+		return `crossTile_${addedCrossTileIndex++}`
+	}
+
+	function addCrossTile(rowIndex, columnIndex, opt_classArray) {
+		var slotId = gameUtils.getSlotId(rowIndex, columnIndex)
+		var slot = dom.byId(slotId)
+		var crossTileId = getNextCrossTileId()
+		var crossTile = crossTiles.addCrossTile(slot, crossTileId, opt_classArray)
 
 		domStyle.set(crossTile, {
 			"margin-left": `${gameUtils.crossTileOnBoardLeftMargin}px`,
 			"margin-top": `${gameUtils.crossTileOnBoardTopMargin}px`,
 		})
 
-		console.log("Doug: addCrossTile: crossTile = ", crossTile)
-		storeCrossTile(rowIndex, columnIndex, crossTile)
+		storeCrossTileId(rowIndex, columnIndex, crossTileId)
 
 		return crossTile
 	}
 
-	// columnnIndex is 0-based, ignoring the sidebar.
-	function addOrder(nutType, columnIndex)
+	function getCrossTileInSlot(rowIndex, columnIndex)
 	{
-		var ordersRow = dom.byId(ordersRowId)
-		// Element number is 1-based, column index is 0-based.
+		var crossTile = getStoredCrossTile(rowIndex, columnIndex)
+		if (crossTile) {
+			return [crossTile, true]
+		}
+		crossTile = getStoredCrossTile(rowIndex, columnIndex - 1)
+		if (crossTile) {
+			return [crossTile, false]
+		}
+		return [null, false]
+	}
+
+	function highlightNode(node, color) {
+		domStyle.set(node, {
+			"box-shadow": `0 0 10px ${color}, 0 0 5px ${color} inset`,
+			"background-color": color,
+		})
+	}
+
+	function highlightQueryResult(node, queryArg, color) {
+		var nodes = query(queryArg, node)
+		for (var i = 0; i < nodes.length; i++) {
+			var element = nodes[i]
+			highlightNode(element, color)
+		}
+	}
+
+	function highlightCrossTile(rowIndex, columnIndex, color, opt_translucentColor) {
+		var crossTile = getStoredCrossTile(rowIndex, columnIndex)
+		if (crossTile) {
+			if (domClass.contains(crossTile, "ghost") && opt_translucentColor)
+			{
+				highlightNode(crossTile, opt_translucentColor)
+			}
+			else
+			{
+				highlightNode(crossTile, color)
+			}
+		}
+	}
+
+	function getSlotAndHighlightContents(rowIndex, columnIndex, color) {
+		console.log("getSlotAndHighlightContents: rowIndex = ", rowIndex)
+		console.log("getSlotAndHighlightContents: columnIndex = ", columnIndex)
+		var slot = gameUtils.getSlot(rowIndex, columnIndex)
+		console.log("getSlotAndHighlightContents: slot = ", slot)
+		if (!slot) {
+			console.log("getSlotAndHighlightContents: returning null")
+			return null
+		}
+		// highlight elements, markers, order cards in this slot.
 		var elementId = gameUtils.getElementId(columnIndex)
-		var orderNodes = query(`#${elementId}`, ordersRow)
-		// add a nut type marker to this element.
-		return cards.makeOrderCardSingleNut(orderNodes[0], nutType, columnIndex)
+		console.log("getSlotAndHighlightContents: elementId = ", elementId)
+		highlightQueryResult(slot, "#" + elementId, color)
+		highlightQueryResult(slot, ".marker", color)
+		highlightQueryResult(slot, ".order", color)
+		console.log("getSlotAndHighlightContents: returning slot = ", slot)
+		return slot
+	}
+
+	function addToken(parent, color, text) {
+		var node = gameUtils.addDiv(parent, ["token"], "token")
+		domStyle.set(node, {
+			"background-color": color,
+		})
+
+		gameUtils.addDiv(node, ["text"], "text", text)
+
+		return node
+	}
+
+	function highlightElementAndBeltsInSlot(rowIndex, columnIndex, color) {
+		var slot = getSlotAndHighlightContents(rowIndex, columnIndex, color)
+		if (!slot) {
+			return false
+		}
+
+		// Find the cross tile, if any, on this space.
+		var [crossTile, isLeft] = getCrossTileInSlot(rowIndex, columnIndex)
+
+		if (crossTile) {
+			var beltQuery = isLeft ? ".belt.left" : ".belt.right"
+			var belts = query(beltQuery, crossTile)
+			var belt = belts[0]
+			highlightQueryResult(belt, ".beltSegment", color)
+		} else {
+			// Find the belt embedded on board, if any, on this space.
+			var belts = query(".belt", slot)
+			if (belts) {
+				belt = belts[0]
+				highlightQueryResult(belt, ".beltSegment", color)
+			}
+		}
+		return true
+	}
+
+	function getColumnIndexNextRow(rowIndex, columnIndex)
+	{
+		var [crossTile, isLeft] = getCrossTileInSlot(rowIndex, columnIndex)
+		if (crossTile) {
+			if (isLeft) {
+				return columnIndex + 1
+			}
+			else {
+				return columnIndex - 1
+			}
+		}
+		return columnIndex
+	}
+
+	function highlightPath(columnIndex, color) {
+		console.log("highlightPath: columnIndex = ", columnIndex)
+		// Go thru each row: find the slot on the path, highlight element and belt stuff in that slot.
+		var columnIndexThisRow = columnIndex
+		// First row is numbers, skip that.
+		var rowIndex = 1
+		while (true) {
+			console.log("highlightPath: columnIndexThisRow = ", columnIndexThisRow)
+			console.log("highlightPath: rowIndex = ", rowIndex)
+			var success = highlightElementAndBeltsInSlot(rowIndex, columnIndexThisRow, color)
+			console.log("highlightPath: success = ", success)
+			if (!success) {
+				break
+			}
+			columnIndexThisRow = getColumnIndexNextRow(rowIndex, columnIndexThisRow)
+			rowIndex++
+		}
+	}
+
+	// columnnIndex is 0-based, ignoring the sideBar.
+	function addOrder(nutType, rowIndex, columnIndex)
+	{
+		var ordersRowId = gameUtils.getRowId(rowIndex)
+		var ordersRow = dom.byId(ordersRowId)
+		var element = gameUtils.getElementFromRow(ordersRow, columnIndex)
+		// add an oredr card to this element.
+		return cards.addOrderCardSingleNut(element, nutType, columnIndex)
 	}
 
 	// This returned object becomes the defined value of this module
@@ -532,13 +631,13 @@ define([
 		// Can be used to make a board in sections or a complete board.
 		createBoard: createBoard,
 
-		dispensersRowId : dispensersRowId,
-		ordersRowId: ordersRowId,
-		squirrelRowPrefix: squirrelRowPrefix,
-
-		// Add various game elements to the board.
 		addMarker: addMarker,
 		addOrder: addOrder,
 		addCrossTile: addCrossTile,
+		highlightPath: highlightPath,
+		highlightQueryResult: highlightQueryResult,
+		highlightCrossTile: highlightCrossTile,
+		getSlotAndHighlightContents: getSlotAndHighlightContents,
+		addToken: addToken,
     };
 });

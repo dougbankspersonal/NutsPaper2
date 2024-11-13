@@ -100,7 +100,7 @@
 			]
 
 			var numPowerCards = Object.keys(powerCardDescs).length,
-			function makePowerCard(parent, index) {
+			function addPowerCard(parent, index) {
 				var cardDesc = powerCardDescs[index]
 
 				var node = cards.addDiv(parent, ["power"], "power.".concat(index.toString()))
@@ -111,7 +111,7 @@
 				return node
 			}
 
-			cards.makeCards("Power", "#449966", cards.numPowerCards, cards.makePowerCard)
+			cards.addCards("Power", "#449966", cards.numPowerCards, cards.addPowerCard)
 		});
     </script>
 </body>

@@ -168,22 +168,17 @@
 				return wrapper
 			}
 
-			function makeNthBonusCard(parent, index)
-			{
+			function addBonusCard(parent, index) {
 				var countIndex = Math.floor(index/numBonusCardsEachCount)
 				var count = bonusCardCounts[countIndex]
 
-				var node = cards.makeCardFront(parent, `bonus version004`, "bonus.version004.".concat(index.toString()))
+				var node = cards.addCardFront(parent, `bonus version004`, "bonus.version004.".concat(index.toString()))
 
 				addBonusDesc(node, count)
 				return node
 			}
 
-			function makeBonusCard(parent, index) {
-				return makeNthBonusCard(parent, index)
-			}
-
-			cards.makeCards("Bonus", "#d0f0d0", numBonusCards, makeBonusCard)
+			cards.addCards("Bonus", "#d0f0d0", numBonusCards, addBonusCard)
 		});
     </script>
 </body>

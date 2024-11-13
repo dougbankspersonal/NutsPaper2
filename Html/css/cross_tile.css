@@ -9,7 +9,17 @@
 	overflow:hidden;
 }
 
-.crossTile.isDemoBoard {
-	background-color: #ffffff;
+.isDemoBoard .crossTile {
+	background-color: rgb(255, 255, 255);
 	z-index: 20;
+}
+
+.isDemoBoard .crossTile.ghost {
+	background-color: rbga(255, 255, 255, 0.4);
+}
+
+.crossTile.ghost .belt {
+	width: 100%;
+	height: 100%;
+	opacity: 0.4;
 }

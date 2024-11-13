@@ -39,42 +39,49 @@
                 {
                     title: "Peanut Champion",
                     goal: "First player to collect 4 Peanuts",
-                    points: "Final Scoring: +3 points",
+                    points: "+3 points",
                     reward: "Immediately collect 2 Action Tokens",
                     count: 2,
                 },
                 {
                     title: "Almond Thought Leader",
                     goal: "Collect 4 Almonds",
-                    points: "Final Scoring: +3 points",
-                    reward: "At Final Scoring, you may move the lowest token in one nut column to the lowest space in another nut column.",
+                    points: "+3 points",
+                    reward: "At Final Scoring, you may move the bottom Score Token from one column into the topmost empty space of another column.",
                     count: 2,
                 },
                 {
                     title: "Cashew Innovator",
                     goal: "Collect 4 Cashews",
-                    points: "Final Scoring: +3 points",
+                    points: "+3 points",
                     reward: "You may collect a 6th nut of any type for an additional 6 points. (Only once)",
                     count: 2,
                 },
                 {
                     title: "Pistachio Monger",
                     goal: "Collect 4 Pistachios",
-                    points: "Final Scoring: +3 points",
+                    points: "+3 points",
                     reward: "You may ignore the penalty for one failed Bonus card.",
                     count: 2,
                 },
                 {
                     title: "Salty Mama",
                     goal: "Collect 4 Salt Tokens",
-                    points: "Final Scoring: +3 points",
+                    points: "+3 points",
                     reward: "Each of your Salt Tokens is worth 3 points at the end of the game.",
+                    count: 2,
+                },
+                {
+                    title: "Nut Lover",
+                    goal: "Complete a Row",
+                    points: "+3 points",
+                    reward: "When you take the Refill Action, refill up to 3 empty slots.",
                     count: 2,
                 },
                 {
                     title: "Squirrel Buddy",
                     goal: "Lose 3 nuts to the Squirrel",
-                    points: "Final Scoring: +3 points",
+                    points: "+3 points",
                     reward: "When you roll for Squirrel movement, roll twice and use the lower result.",
                     count: 6,
                 },
@@ -97,26 +104,21 @@
                 return 0
             }
 
-			function makeNthGoalCard(parentNode, index)
-			{
+			function addGoalCard(parent, index) {
                 var cardType = mapIndexToCardType(index)
-				var fontNode = cards.makeCardFront(parentNode, ["goal"], "goal.".concat(index.toString()))
+				var fromNode = cards.addCardFront(parent, ["goal"], "goal.".concat(index.toString()))
                 var config = goalCardConfigs[cardType]
-                var node = gameUtils.addDiv(fontNode, ["title"], "title")
+                var node = gameUtils.addDiv(fromNode, ["title"], "title")
 				node.innerHTML = config.title
-                var node = gameUtils.addDiv(fontNode, ["goal"], "goal")
+                var node = gameUtils.addDiv(fromNode, ["goal"], "goal")
 				node.innerHTML = config.goal
-                var node = gameUtils.addDiv(fontNode, ["points"], "points")
+                var node = gameUtils.addDiv(fromNode, ["points"], "points")
 				node.innerHTML = config.points
-                var node = gameUtils.addDiv(fontNode, ["reward"], "reward")
+                var node = gameUtils.addDiv(fromNode, ["reward"], "reward")
 				node.innerHTML = config.reward
 			}
 
-			function makeGoalCard(parent, index) {
-				return makeNthGoalCard(parent, index)
-			}
-
-			cards.makeCards("Goal", "#ffeedd", numGoalCards, makeGoalCard)
+			cards.addCards("Goal", "#ffeedd", numGoalCards, addGoalCard)
 		});
     </script>
 </body>

@@ -183,7 +183,7 @@
 
 			var numAgendaCards = Object.keys(agendaCardDescs).length
 
-			function makeAgendaCard(parent, index) {
+			function addAgendaCard(parent, index) {
 				var cardDesc = agendaCardDescs[index]
 
 				var node = cards.addDiv(parent, ["agenda"], "agenda.".concat(index.toString()))
@@ -200,7 +200,7 @@
 				return node
 			}
 
-			cards.makeCards("Agenda", "#294e85", numAgendaCards, makeAgendaCard)
+			cards.addCards("Agenda", "#294e85", numAgendaCards, addAgendaCard)
 		});
     </script>
 </body>

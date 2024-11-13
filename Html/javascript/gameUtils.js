@@ -1,10 +1,13 @@
 define([
+    'dojo/dom',
 	'dojo/dom-construct',
+	"dojo/query",
 	'dojo/domReady!'
-], function(domConstruct) {
+], function(dom, domConstruct, query) {
 	var pageNumber = 0
-	var rowNumber = 0
 	var cardNumber = 0
+
+	var sideBarWidth = 360
 
 	// Slots, elements, cross tiles.
 	var slotWidth = 180
@@ -14,6 +17,9 @@ define([
 	var elementWidth = elementHeight
 	var elementTopAndBottomMargin = (standardRowHeight - elementHeight)/2
 	var elementLeftAndRightMargin = (slotWidth - elementWidth)/2
+
+	var arrowWidth = elementWidth/2
+	var arrowHeight = elementHeight/2
 
 	var crossTileOnBoardLeftMargin = 20
 	var crossTileOnBoardTopMargin = 10
@@ -131,7 +137,7 @@ define([
 		}
 	}
 
-	function makeSlotId(rowIndex, columnIndex) {
+	function getSlotId(rowIndex, columnIndex) {
 		var idPieces = [
 			"slot",
 			rowIndex.toString(),
@@ -140,9 +146,23 @@ define([
 		return idPieces.join("_")
 	}
 
+	function getRowId(rowIndex) {
+		var idPieces = [
+			"row",
+			rowIndex.toString(),
+		]
+		return idPieces.join("_")
+	}
+
 	function getElementId(columnIndex) {
 		var elementId = "element_".concat(columnIndex.toString())
 		return elementId
+	}
+
+	function getElementFromRow(rowNode, columnIndex) {
+		var elementId = getElementId(columnIndex)
+		var elementNodes = query(`#${elementId}`, rowNode)
+		return elementNodes[0]
 	}
 
 	function addImage(parent, opt_classArray, id, image) {
@@ -158,29 +178,24 @@ define([
 	}
 
 	function addPageOfItems(parent, opt_classArray) {
-		var pageId = "pageOfItems.".concat(pageNumber.toString())
-		pageNumber++
 		var classArray = extendOptClassArray(opt_classArray, "pageOfItems")
+		var pageId = "pageOfItems_".concat(pageNumber.toString())
+		pageNumber++
 
 		if (isDemoBoard) {
 			classArray.push("isDemoBoard")
 		}
+
 		return addDiv(parent, classArray, pageId)
 	}
 
-	function addRow(parent, opt_classArray, opt_id) {
+	function addRow(parent, opt_classArray, rowIndex) {
 		var classArray = extendOptClassArray(opt_classArray, "row")
 		if (isDemoBoard) {
 			classArray.push("isDemoBoard")
 		}
 
-		var rowId
-		if (opt_id) {
-			rowId = opt_id
-		} else {
-			rowId = "row.".concat(rowNumber.toString())
-			rowNumber++
-		}
+		var rowId = getRowId(rowIndex)
 		return addDiv(parent, classArray, rowId)
 	}
 
@@ -245,6 +260,8 @@ define([
 	var beltSegmentZIndex = 1000000
 	var beltZIndex = 2
 	var elementZIndex = beltZIndex + 1
+	var markerZIndex = elementZIndex + 1
+	var arrowZIndex = markerZIndex + 1
 
 	var beltSegmentsPerRow = 8;
 	var beltSegmentOffset = standardRowHeight/beltSegmentsPerRow
@@ -268,6 +285,27 @@ define([
 		isDemoBoard = idb
 	}
 
+	function getIsDemoBoard() {
+		return isDemoBoard
+	}
+
+	function getIndexForFirstRowType(myRowTypes, thisRowType) {
+		for (var i  = 0; i < myRowTypes.length; i++)
+		{
+			var rowType = myRowTypes[i]
+			if (rowType == thisRowType) {
+				return i
+			}
+		}
+		return null
+	}
+
+	function getSlot(rowIndex, columnIndex) {
+		var slotId = getSlotId(rowIndex, columnIndex)
+		return dom.byId(slotId)
+	}
+
+
     // This returned object becomes the defined value of this module
     return {
 		slotWidth: slotWidth,
@@ -275,6 +313,8 @@ define([
 		standardRowHeight: standardRowHeight,
 		elementHeight: elementHeight,
 		elementWidth: elementWidth,
+		arrowWidth: arrowWidth,
+		arrowHeight: arrowHeight,
 		elementTopAndBottomMargin: elementTopAndBottomMargin,
 		elementLeftAndRightMargin: elementLeftAndRightMargin,
 		crossTileWidth: crossTileWidth,
@@ -317,9 +357,12 @@ define([
 		ordersRowMarginTop: ordersRowMarginTop,
 		cardSlotOutlineHeight: cardSlotOutlineHeight,
 		elementZIndex: elementZIndex,
+		markerZIndex: markerZIndex,
+		arrowZIndex: arrowZIndex,
 		beltZIndex: beltZIndex,
 		crossTileOnBoardLeftMargin: crossTileOnBoardLeftMargin,
 		crossTileOnBoardTopMargin: crossTileOnBoardTopMargin,
+		sideBarWidth: sideBarWidth,
 
 		addDiv: addDiv,
 		addImage: addImage,
@@ -330,11 +373,13 @@ define([
 		getRandomInt: getRandomInt,
 		versionToClassArray: versionToClassArray,
 		setIsDemoBoard: setIsDemoBoard,
-		getIsDemoBoard: function() {
-			return isDemoBoard
-		},
+		getIsDemoBoard: getIsDemoBoard,
+		getIndexForFirstRowType: getIndexForFirstRowType,
+		getSlot: getSlot,
 		extendOptClassArray: extendOptClassArray,
-		makeSlotId: makeSlotId,
+		getSlotId: getSlotId,
+		getRowId: getRowId,
 		getElementId: getElementId,
+		getElementFromRow: getElementFromRow,
 	};
 });

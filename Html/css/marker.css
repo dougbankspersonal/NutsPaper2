@@ -6,6 +6,7 @@
     position: relative;
     text-align: center;
     display: inline-block;
+    background-color: #ffffff;
 }
 
 .marker .image {
@@ -18,7 +19,7 @@
 }
 
 .marker.ghost .image {
-    opacity: 0.5;
+    opacity: 0.4;
 }
 
 .marker .text {
