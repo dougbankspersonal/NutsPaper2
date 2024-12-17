@@ -1,28 +1,32 @@
 define([
     'dojo/dom',
 	'dojo/dom-construct',
+	'dojo/dom-style',
 	"dojo/query",
 	'dojo/domReady!'
-], function(dom, domConstruct, query) {
+], function(dom, domConstruct, domStyle, query) {
 	var pageNumber = 0
 	var cardNumber = 0
 
+	var factoryColumnCount
+
 	var sideBarWidth = 360
+	var standardBorderWidth = 2
 
 	// Slots, elements, cross tiles.
 	var slotWidth = 180
 
 	var standardRowHeight = 180;
+	var ordersRowHeight = standardRowHeight * 0.5
 	var elementHeight = slotWidth - 20
 	var elementWidth = elementHeight
-	var elementTopAndBottomMargin = (standardRowHeight - elementHeight)/2
-	var elementLeftAndRightMargin = (slotWidth - elementWidth)/2
-
-	var arrowWidth = elementWidth/2
-	var arrowHeight = elementHeight/2
 
 	var crossTileOnBoardLeftMargin = 20
 	var crossTileOnBoardTopMargin = 10
+
+	var dieWidth = 150
+	var dieHeight = dieWidth
+	var dieColulmnsAcross = 3
 
 	// For a cross tile, it lays across two side by side slots:
 	//
@@ -47,14 +51,34 @@ define([
 	// put the belt in the center of a slot?
 	var beltCenterOffsetInTile = slotWidth/2 - crossTileOnBoardLeftMargin - crossTileBorder
 
+	var printedPageWidth = 816
+	var printedPageHeight = 1056
+	var pagePadding = 10
+
 	// Cards.
 	var cardWidth = slotWidth - 20
 	var cardHeight = 1.4 * cardWidth
 	var cardBackFontSize = cardWidth * 0.2
+	var cardBorderWidth = 5
 
-	var version003 = 3
-	var version004 = 4
-	var version004_01 = 4.01
+	var bigCardWidth = 1.4 * cardWidth
+	var bigCardHeight = 1.4 * cardHeight
+	var bigCardBackFontSize = bigCardWidth * 0.2
+
+	var ttsCardPageWidth = 10 * cardWidth
+	var ttsBigCardPageWidth = 10 * bigCardWidth
+
+	var ordersRowMarginTop = 5
+
+	var demoBoardNoCardsHeight = standardBorderWidth + 10 * standardRowHeight + ordersRowHeight + standardBorderWidth
+	var demoBoardWithCardsHeight = standardBorderWidth + 10 * standardRowHeight + standardBorderWidth + ordersRowMarginTop + cardBorderWidth + cardHeight + cardBorderWidth
+
+	console.log("Doug: standardBorderWidth = ", standardBorderWidth)
+	console.log("Doug: standardRowHeight = ", standardRowHeight)
+	console.log("Doug: ordersRowMarginTop = ", ordersRowMarginTop)
+	console.log("Doug: cardBorderWidth = ", cardBorderWidth)
+	console.log("Doug: cardHeight = ", cardHeight)
+	console.log("Doug: demoBoardWithCardsHeight = ", demoBoardWithCardsHeight)
 
 	var nutTypeAlmond = "Almond"
 	var nutTypeCashew = "Cashew"
@@ -62,20 +86,9 @@ define([
 	var nutTypePistachio = "Pistachio"
 	var nutTypeWalnut = "Walnut"
 
-	var isDemoBoard = false
+	var configs = {}
 
-	var nutTypesByVersion = []
-	nutTypesByVersion[version003] = [
-		nutTypeAlmond,
-		nutTypePeanut,
-	]
-	nutTypesByVersion[version004] = [
-		nutTypeAlmond,
-		nutTypePeanut,
-		nutTypePistachio,
-		nutTypeWalnut,
-	]
-	nutTypesByVersion[version004_01] = [
+	var nutTypes = [
 		nutTypeAlmond,
 		nutTypeCashew,
 		nutTypePeanut,
@@ -118,6 +131,12 @@ define([
 			id: id
 		}, parent)
 		return node
+	}
+
+	function addStandardBorder(node) {
+		domStyle.set(node, {
+			border: standardBorderWidth + "px solid black",
+		})
 	}
 
 	function isString(value) {
@@ -182,27 +201,85 @@ define([
 		var pageId = "pageOfItems_".concat(pageNumber.toString())
 		pageNumber++
 
-		if (isDemoBoard) {
-			classArray.push("isDemoBoard")
+		if (configs.demoBoard) {
+			classArray.push("demoBoard")
 		}
 
-		return addDiv(parent, classArray, pageId)
+		var pageOfItems = addDiv(parent, classArray, pageId)
+		domStyle.set(pageOfItems, {
+			padding: pagePadding + "px",
+		})
+		if (configs.ttsCards || configs.ttsDie) {
+			domStyle.set(pageOfItems, {
+				display: "inline-block",
+			})
+		}
+
+		var pageOfItemsContents = addDiv(pageOfItems, ["pageOfItemsContents"], "pageOfItemsContents")
+
+		var demoBoardWidth = sideBarWidth + getFactoryColumnCount() * slotWidth + 2 * standardBorderWidth
+
+		var width = printedPageWidth
+		var height = null
+
+		if (configs.demoBoard) {
+			width = demoBoardWidth
+			if (configs.noSpaceForCards) {
+				height = demoBoardNoCardsHeight
+			} else {
+				height = demoBoardWithCardsHeight
+			}
+		}
+
+		if (configs.ttsCards || configs.ttsDie) {
+			domStyle.set(pageOfItemsContents, {
+				position: "relative",
+				top: "0px",
+				left: "0px",
+				display: "inline-block",
+				"text-align": "left",
+			})
+		}
+
+		if (configs.ttsCards) {
+			if (configs.bigCards) {
+				width = ttsBigCardPageWidth
+			} else {
+				width = ttsCardPageWidth
+			}
+		}
+
+		if (configs.ttsDie) {
+			width = dieColulmnsAcross * dieWidth
+		}
+
+		domStyle.set(pageOfItemsContents, {
+			width: width + "px",
+		})
+
+		if (height !== null) {
+			domStyle.set(pageOfItemsContents, {
+				height: height + "px",
+			})
+		}
+		return pageOfItemsContents
 	}
 
 	function addRow(parent, opt_classArray, rowIndex) {
 		var classArray = extendOptClassArray(opt_classArray, "row")
-		if (isDemoBoard) {
-			classArray.push("isDemoBoard")
+		if (configs.demoBoard) {
+			classArray.push("demoBoard")
 		}
-
 		var rowId = getRowId(rowIndex)
-		return addDiv(parent, classArray, rowId)
+		var row = addDiv(parent, classArray, rowId)
+		addStandardBorder(row)
+		return row
 	}
 
 	function addCard(parent, opt_classArray, opt_id) {
 		var classArray = extendOptClassArray(opt_classArray, "card")
-		if (isDemoBoard) {
-			classArray.push("isDemoBoard")
+		if (configs.demoBoard) {
+			classArray.push("demoBoard")
 		}
 		var cardId
 		if (opt_id) {
@@ -211,7 +288,17 @@ define([
 			cardId = "card.".concat(cardNumber.toString())
 			cardNumber++
 		}
-		return addDiv(parent, classArray, cardId)
+		var node = addDiv(parent, classArray, cardId)
+		if (configs.ttsCards) {
+			domStyle.set(node, {
+				"margin-bottom": "0px",
+				"margin-right": "0px",
+			})
+		}
+		domStyle.set(node, {
+			"border": `${cardBorderWidth}px solid #000`,
+		})
+		return node
 	}
 
 	// Function to convert hexadecimal color to RGB
@@ -254,45 +341,32 @@ define([
 		return Math.floor(Math.random() * max);
 	}
 
-	var ordersRowMarginTop = 5
 	var cardSlotOutlineHeight = 4
 
 	var beltSegmentZIndex = 1000000
 	var beltZIndex = 2
 	var elementZIndex = beltZIndex + 1
 	var markerZIndex = elementZIndex + 1
-	var arrowZIndex = markerZIndex + 1
+	var crossTileZIndex = markerZIndex + 1
+	var arrowZIndex = crossTileZIndex + 1
 
 	var beltSegmentsPerRow = 8;
 	var beltSegmentOffset = standardRowHeight/beltSegmentsPerRow
 	var beltSegmentHeight = beltSegmentOffset + 2
 	var beltSegmentWidth = 40
 
-	function versionToClassArray(version) {
-		var versionAsStrinng = version.toString()
-		var versionPieces = versionAsStrinng.split(".")
-		var mainVersionPiece = versionPieces[0]
-		var mainVersionClass = "version" + mainVersionPiece
-		if (versionPieces.length > 1) {
-			var subVersionPiece = versionPieces[1]
-			var subVersionClass = "subversion" + subVersionPiece
-			return [mainVersionClass, subVersionClass]
-		}
-		return [mainVersionClass]
+	function setConfigs(c) {
+		configs = c
 	}
 
-	function setIsDemoBoard(idb) {
-		isDemoBoard = idb
+	function getConfigs() {
+		return configs
 	}
 
-	function getIsDemoBoard() {
-		return isDemoBoard
-	}
-
-	function getIndexForFirstRowType(myRowTypes, thisRowType) {
-		for (var i  = 0; i < myRowTypes.length; i++)
+	function getIndexForFirstRowType(orderedRowTypes, thisRowType) {
+		for (var i  = 0; i < orderedRowTypes.length; i++)
 		{
-			var rowType = myRowTypes[i]
+			var rowType = orderedRowTypes[i]
 			if (rowType == thisRowType) {
 				return i
 			}
@@ -305,18 +379,27 @@ define([
 		return dom.byId(slotId)
 	}
 
+	var setFactoryColumnCount = function(count) {
+		factoryColumnCount = count
+	}
+
+	var getFactoryColumnCount = function() {
+		return factoryColumnCount
+	}
 
     // This returned object becomes the defined value of this module
     return {
 		slotWidth: slotWidth,
+		standardBorderWidth: standardBorderWidth,
 		beltCenterOffsetInTile: beltCenterOffsetInTile,
 		standardRowHeight: standardRowHeight,
+		ordersRowHeight: ordersRowHeight,
 		elementHeight: elementHeight,
 		elementWidth: elementWidth,
-		arrowWidth: arrowWidth,
-		arrowHeight: arrowHeight,
-		elementTopAndBottomMargin: elementTopAndBottomMargin,
-		elementLeftAndRightMargin: elementLeftAndRightMargin,
+		arrowWidth: elementWidth/2,
+		arrowHeight: elementHeight/2,
+		elementTopAndBottomMargin: (standardRowHeight - elementHeight)/2,
+		elementLeftAndRightMargin: (slotWidth - elementWidth)/2,
 		crossTileWidth: crossTileWidth,
 		crossTileHeight: crossTileHeight,
 		crossTileBorder: crossTileBorder,
@@ -326,11 +409,6 @@ define([
 		beltSegmentOffset: beltSegmentOffset,
 		beltSegmentHeight: beltSegmentHeight,
 		beltSegmentWidth: beltSegmentWidth,
-
-
-		version003: version003,
-		version004: version004,
-		version004_01: version004_01,
 
 		nutTypeAlmond: nutTypeAlmond,
 		nutTypeCashew: nutTypeCashew,
@@ -342,7 +420,11 @@ define([
 		cardWidth: cardWidth,
 		cardBackFontSize: cardBackFontSize,
 
-		nutTypesByVersion: nutTypesByVersion,
+		bigCardHeight: bigCardHeight,
+		bigCardWidth: bigCardWidth,
+		bigCardBackFontSize: bigCardBackFontSize,
+
+		nutTypes: nutTypes,
 		nutTypeImages: nutTypeImages,
 
 		saltedTypes: saltedTypes,
@@ -359,10 +441,16 @@ define([
 		elementZIndex: elementZIndex,
 		markerZIndex: markerZIndex,
 		arrowZIndex: arrowZIndex,
+		crossTileZIndex: crossTileZIndex,
 		beltZIndex: beltZIndex,
 		crossTileOnBoardLeftMargin: crossTileOnBoardLeftMargin,
 		crossTileOnBoardTopMargin: crossTileOnBoardTopMargin,
 		sideBarWidth: sideBarWidth,
+		printedPageWidth: printedPageWidth,
+		printedPageHeight: printedPageHeight,
+		dieWidth: dieWidth,
+		dieHeight: dieHeight,
+		pagePadding: pagePadding,
 
 		addDiv: addDiv,
 		addImage: addImage,
@@ -371,9 +459,8 @@ define([
 		addCard: addCard,
 		blendHexColors: blendHexColors,
 		getRandomInt: getRandomInt,
-		versionToClassArray: versionToClassArray,
-		setIsDemoBoard: setIsDemoBoard,
-		getIsDemoBoard: getIsDemoBoard,
+		setConfigs: setConfigs,
+		getConfigs: getConfigs,
 		getIndexForFirstRowType: getIndexForFirstRowType,
 		getSlot: getSlot,
 		extendOptClassArray: extendOptClassArray,
@@ -381,5 +468,8 @@ define([
 		getRowId: getRowId,
 		getElementId: getElementId,
 		getElementFromRow: getElementFromRow,
+		addStandardBorder: addStandardBorder,
+		setFactoryColumnCount: setFactoryColumnCount,
+		getFactoryColumnCount: getFactoryColumnCount,
 	};
 });

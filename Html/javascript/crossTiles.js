@@ -92,8 +92,8 @@ define([
 
 	function addCrossTile(parentNode, crossTileId, opt_classArray) {
 		var classArray = gameUtils.extendOptClassArray(opt_classArray, "crossTile")
-		if (gameUtils.getIsDemoBoard()) {
-			classArray.push("isDemoBoard")
+		if (gameUtils.getConfigs().isDemoBoard) {
+			classArray.push("demoBoard")
 		}
 		var crossTile = gameUtils.addDiv(parentNode, classArray, crossTileId)
 		domStyle.set(crossTile, {

@@ -3,6 +3,7 @@
 <head>
 	<link rel="stylesheet" href="css/main.css">
 	<link rel="stylesheet" href="css/card.css">
+	<link rel="stylesheet" href="css/agenda.css">
 	<link href='https://fonts.googleapis.com/css?family=Courier' rel='stylesheet'>
     <meta content="text/html; charset=UTF-8" http-equiv="content-type">
     <style type="text/css">
@@ -37,7 +38,7 @@
 		], function (cards, gameUtils, dojo) {
 
 
-			var bonusCardConfigs = [
+			var agendaCardConfigs = [
 				{
 					Almond: 2,
 					Cashew: 1,
@@ -112,6 +113,12 @@
                 },
                 {
 					Almond: 2,
+					Cashew: 2,
+					Peanut: 0,
+					Pistachio: 0,
+                },
+                {
+					Almond: 2,
 					Cashew: 0,
 					Peanut: 2,
 					Pistachio: 0,
@@ -127,6 +134,12 @@
 					Cashew: 2,
 					Peanut: 2,
 					Pistachio: 0,
+                },
+                {
+					Almond: 0,
+					Cashew: 2,
+					Peanut: 0,
+					Pistachio: 2,
                 },
                 {
 					Almond: 0,
@@ -136,8 +149,8 @@
                 },
 			]
 
-			var numBonusCards = bonusCardConfigs.length
-			var nutTypes = gameUtils.nutTypesByVersion[gameUtils.version004_01]
+			var numAgendaCards = agendaCardConfigs.length * 2
+			var nutTypes = gameUtils.nutTypes
 			var numNutTypes = nutTypes.length
 
 			function scoreForDistribution(distribution, count) {
@@ -151,9 +164,9 @@
                 return score
 			}
 
-			function addBonusDesc(parentNode, bonusCardConfig) {
+			function addAgendaDesc(parentNode, agendaCardConfig) {
 				// Collect n random nut types.
-				var nutTypeDistribution = bonusCardConfig
+				var nutTypeDistribution = agendaCardConfig
 
 				// Calculate the score for this distribution
 				var score = scoreForDistribution(nutTypeDistribution)
@@ -175,23 +188,26 @@
 				return wrapper
 			}
 
-			function addBonusCard(parent, index) {
-                var bonusCardConfig = bonusCardConfigs[index]
+			function addAgendaCard(parent, index) {
+				var adjustedIndex = Math.floor(index / 2)
+                var agendaCardConfig = agendaCardConfigs[adjustedIndex]
 				var idElements = [
-					"bonus",
-					gameUtils.version004_01,
+					"agenda",
 					index.toString(),
 				]
 				var id = idElements.join(".")
-				var classArray = gameUtils.versionToClassArray(gameUtils.version004_01)
-				classArray.push("bonus")
+				var classArray = []
+				classArray.push("agenda")
 				var node = cards.addCardFront(parent, classArray, id)
 
-				addBonusDesc(node, bonusCardConfig)
+				addAgendaDesc(node, agendaCardConfig)
 				return node
 			}
 
-			cards.addCards("Bonus", "#d0f0d0", numBonusCards, addBonusCard)
+			cards.addCards("Agenda", "#d0f0d0", numAgendaCards, addAgendaCard, {
+				bigCards: true,
+				ttsCards: false,
+			})
 		});
     </script>
 </body>

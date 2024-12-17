@@ -7,15 +7,15 @@
 	margin-top: 1px;
 	position: relative;
 	overflow:hidden;
+	background-image: url("../images/Factory/FloorBrick.png");
 }
 
-.isDemoBoard .crossTile {
-	background-color: rgb(255, 255, 255);
+.demoBoard .crossTile {
 	z-index: 20;
 }
 
-.isDemoBoard .crossTile.ghost {
-	background-color: rbga(255, 255, 255, 0.4);
+.demoBoard .crossTile.ghost {
+	opacity: 0.4;
 }
 
 .crossTile.ghost .belt {

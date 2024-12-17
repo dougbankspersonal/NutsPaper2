@@ -1,0 +1,88 @@
+<html>
+
+<head>
+	<link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="css/card.css">
+	<link rel="stylesheet" href="css/goal.css">
+	<link href='https://fonts.googleapis.com/css?family=Courier' rel='stylesheet'>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+    <style type="text/css">
+	</style>
+</head>
+
+<body id="body">
+	<!-- configure Dojo -->
+	<script>
+		// Instead of using data-dojo-config, we're creating a dojoConfig
+		// object *before* we load dojo.js; they're functionally identical,
+		// it's just easier to read this approach with a larger configuration.
+		var dojoConfig = {
+			baseUrl: ".",
+			async: true,
+			// This code registers the correct location of the "demo"
+			// package so we can load Dojo from the CDN whilst still
+			// being able to load local modules
+			packages: [
+				{ name: "dojo", location: "../../bower_components/dojo" },
+				{ name: "javascript", location: "javascript" }
+			]
+		};
+	</script>
+	<!-- load Dojo -->
+	<script src="../../bower_components/dojo/dojo.js"></script>
+
+    <script>
+		require([
+			'javascript/cards',
+			'javascript/gameUtils',
+		], function (cards, gameUtils, dojo) {
+            var goalCardConfigs = [
+                {
+                    title: "Squirrel Buddy",
+                    goal: "Lose 3 nuts to the Squirrel",
+                    points: "+3 points",
+                    reward: "When you roll for Squirrel movement, roll twice and use the lower result.",
+                    count: 12,
+                },
+            ]
+
+            var numGoalCards = 0
+            for (var i = 0; i < goalCardConfigs.length; i++) {
+                numGoalCards = numGoalCards + goalCardConfigs[i].count
+            }
+
+            function mapIndexToCardType(index) {
+                for (var i = 0; i < goalCardConfigs.length; i++) {
+                    if (index < goalCardConfigs[i].count) {
+                        return i
+                    }
+                    index -= goalCardConfigs[i].count
+                }
+                // How did we get here?
+                console.assert("mapIndexToCardType error")
+                return 0
+            }
+
+			function addGoalCard(parent, index) {
+                var cardType = mapIndexToCardType(index)
+				var fromNode = cards.addCardFront(parent, ["goal"], "goal.".concat(index.toString()))
+                var config = goalCardConfigs[cardType]
+                var node = gameUtils.addDiv(fromNode, ["title"], "title")
+				node.innerHTML = config.title
+                var node = gameUtils.addDiv(fromNode, ["goal"], "goal")
+				node.innerHTML = config.goal
+                var node = gameUtils.addDiv(fromNode, ["points"], "points")
+				node.innerHTML = config.points
+                var node = gameUtils.addDiv(fromNode, ["reward"], "reward")
+				node.innerHTML = config.reward
+			}
+
+			cards.addCards("Goal", "#ffeedd", numGoalCards, addGoalCard, {
+                bigCards: true,
+                ttsCards: true,
+            })
+		});
+    </script>
+</body>
+
+</html>

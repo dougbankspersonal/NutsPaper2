@@ -3,26 +3,14 @@
     display: flex;
 	align-items: center;
 	break-inside: avoid;
-	border: 1.33px solid rgba(0, 0, 0, .5);
 	box-sizing: border-box;
     width: fit-content;
     overflow: hidden;
-}
-
-.row.isDemoBoard {
-    overflow: visible;
-}
-
-.row.version3 {
-	background-image: url("../images/Factory/FloorConcrete.png");
-}
-
-.row.version4 {
-	background-image: url("../images/Factory/FloorWood.jpg");
-}
-
-.row.version4.subversion01 {
 	background-image: url("../images/Factory/FloorBrick.png");
+}
+
+.row.demoBoard {
+    overflow: visible;
 }
 
 .row .sideBar {
@@ -49,7 +37,6 @@
 }
 
 .token {
-	border: 1.33px solid #000000;
 	border-radius: 50%;
 	box-sizing: border-box;
 	break-inside: avoid;
@@ -96,14 +83,6 @@
 	width: 60px;
 }
 
-.row .sideBar .usage .used,.skipped {
-	border: 1.33px solid #000000;
-	border-radius: 10px;
-	margin: 5px;
-	padding: 5px;
-
-}
-
 .row .content {
     display: flex;
 	height: 100%;
@@ -123,7 +102,6 @@
 }
 
 .element {
-	border: 1.33px solid #000000;
 	border-radius: 50%;
 	box-sizing: border-box;
 	break-inside: avoid;

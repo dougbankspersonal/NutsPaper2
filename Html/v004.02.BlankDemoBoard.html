@@ -4,6 +4,10 @@
 	<link rel="stylesheet" href="css/main.css">
 	<link rel="stylesheet" href="css/game_board.css">
 	<link rel="stylesheet" href="css/belt.css">
+	<link rel="stylesheet" href="css/marker.css">
+	<link rel="stylesheet" href="css/arrow.css">
+	<link rel="stylesheet" href="css/card.css">
+	<link rel="stylesheet" href="css/cross_tile.css">
     <meta content="text/html; charset=UTF-8" http-equiv="content-type">
     <style type="text/css">
 	</style>
@@ -34,10 +38,19 @@
 		require([
 			'javascript/gameBoard',
 			'javascript/gameUtils',
-		], function (gameBoard, gameUtils) {
-			gameBoard.createBoard(gameUtils.version003, {
-				columnsPerStrip: 4,
-				maxRowsPerPage: 5,
+			'javascript/versionDetails',
+		], function (gameBoard, gameUtils, versionDetails) {
+            gameUtils.setConfigs({
+				noSpaceForCards: false,
+				demoBoard: true,
+			})
+
+            var orderedRowTypes = versionDetails.orderedRowTypes
+			var factoryColumnCount = 8
+			gameBoard.createBoard({
+				columnsPerStrip: factoryColumnCount + 1,
+				maxRowsPerPage: orderedRowTypes.length,
+                factoryColumnCount: factoryColumnCount,
 			})
 		});
     </script>

@@ -5,14 +5,15 @@ body {
 .pageOfItems {
 	page-break-after: always;
 	text-align: center;
-	padding: 10px;
 	overflow: hidden;
 	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
-.pageOfItems.isDemoBoard {
+.pageOfItems.demoBoard {
 	overflow: visible;
 	white-space: nowrap;
 	overflow-x: scroll;
-	padding: 30px;
 }

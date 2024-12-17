@@ -1,0 +1,113 @@
+<html>
+
+<head>
+	<link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="css/game_board.css">
+	<link rel="stylesheet" href="css/belt.css">
+	<link rel="stylesheet" href="css/marker.css">
+	<link rel="stylesheet" href="css/arrow.css">
+	<link rel="stylesheet" href="css/card.css">
+	<link rel="stylesheet" href="css/cross_tile.css">
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+    <style type="text/css">
+	</style>
+</head>
+
+<body class="c1 doc-content" id="body">
+	<!-- configure Dojo -->
+	<script>
+		// Instead of using data-dojo-config, we're creating a dojoConfig
+		// object *before* we load dojo.js; they're functionally identical,
+		// it's just easier to read this approach with a larger configuration.
+		var dojoConfig = {
+			baseUrl: ".",
+			async: true,
+			// This code registers the correct location of the "demo"
+			// package so we can load Dojo from the CDN whilst still
+			// being able to load local modules
+			packages: [
+				{ name: "dojo", location: "../../bower_components/dojo" },
+				{ name: "javascript", location: "javascript" }
+			]
+		};
+	</script>
+	<!-- load Dojo -->
+	<script src="../../bower_components/dojo/dojo.js"></script>
+
+    <script>
+		require([
+			'javascript/gameBoard',
+			'javascript/gameUtils',
+			'javascript/markers',
+			'javascript/arrows',
+			'javascript/rowTypes',
+			'javascript/versionDetails',
+		], function (gameBoard, gameUtils, markers, arrows, rowTypes, versionDetails) {
+
+            var undoTokenColor = "#aaaadd"
+            var runTokenColor = "#aaddaa"
+
+            var yellowHighlight = "rgb(255, 255, 68)"
+            var blueHighlight = "rgb(170, 170, 255)"
+            var blueAlphaHighlight = "rgba(170, 170, 255, 0.3)"
+            var translucentYellowHighlight = "rgba(255, 255, 68, 0.2)"
+
+            gameUtils.setConfigs({demoBoard: true})
+
+			var orderedRowTypes = versionDetails.orderedRowTypes
+			gameBoard.createBoard({
+				columnsPerStrip: 13,
+				maxRowsPerPage: orderedRowTypes.length,
+                factoryColumnCount: 8,
+			})
+
+            // Add nut dispensers
+           var dispenserRowIndex = gameUtils.getIndexForFirstRowType(orderedRowTypes, rowTypes.Dispenser)
+            gameBoard.addMarker(dispenserRowIndex, 0, gameUtils.nutTypeAlmond)
+            gameBoard.addMarker(dispenserRowIndex, 1, gameUtils.nutTypeCashew)
+            gameBoard.addMarker(dispenserRowIndex, 2, gameUtils.nutTypePeanut)
+            gameBoard.addMarker(dispenserRowIndex, 3, gameUtils.nutTypePistachio)
+            gameBoard.addMarker(dispenserRowIndex, 5, gameUtils.nutTypeCashew)
+            gameBoard.addMarker(dispenserRowIndex, 6, gameUtils.nutTypePeanut)
+
+            gameBoard.addMarker(dispenserRowIndex, 4, gameUtils.nutTypePistachio)
+            gameBoard.addMarker(dispenserRowIndex, 7, gameUtils.nutTypeAlmond)
+
+            // Squirrel.
+            var firstSquirrelRowIndex = gameUtils.getIndexForFirstRowType(orderedRowTypes, rowTypes.Squirrel)
+            gameBoard.addMarker(firstSquirrelRowIndex, 4, markers.markerTypes.Squirrel, ["ghost"])
+            gameBoard.addMarker(firstSquirrelRowIndex, 5, markers.markerTypes.Squirrel)
+            arrows.addArrow(firstSquirrelRowIndex, 4, arrows.arrowTypes.RightArrow)
+
+
+            // Add Salters.
+            var salterRowIndex = gameUtils.getIndexForFirstRowType(orderedRowTypes, rowTypes.Salter)
+            gameBoard.addMarker(salterRowIndex, 1, markers.markerTypes.Salter)
+            gameBoard.addMarker(salterRowIndex, 6, markers.markerTypes.Salter)
+
+            // add Orders.
+            var orderRowIndex = gameUtils.getIndexForFirstRowType(orderedRowTypes, rowTypes.Order)
+
+            gameBoard.addOrder(gameUtils.nutTypeCashew, orderRowIndex, 0)
+            gameBoard.addOrder(gameUtils.nutTypeAlmond, orderRowIndex, 1)
+            gameBoard.addOrder(gameUtils.nutTypeCashew, orderRowIndex, 2)
+            gameBoard.addOrder(gameUtils.nutTypePeanut, orderRowIndex, 3)
+            gameBoard.addOrder(gameUtils.nutTypePistachio, orderRowIndex, 4)
+            gameBoard.addOrder(gameUtils.nutTypePistachio, orderRowIndex, 5)
+            gameBoard.addOrder(gameUtils.nutTypeAlmond, orderRowIndex, 6)
+            gameBoard.addOrder(gameUtils.nutTypePistachio, orderRowIndex, 7)
+
+            gameBoard.addCrossTile(2, 6)
+            gameBoard.addCrossTile(5, 0)
+            gameBoard.addCrossTile(6, 4)
+
+            gameBoard.highlightPath(0, yellowHighlight)
+            gameBoard.highlightPath(1, yellowHighlight)
+            gameBoard.highlightPath(4, yellowHighlight)
+            gameBoard.highlightPath(7, yellowHighlight)
+
+		});
+    </script>
+</body>
+
+</html>

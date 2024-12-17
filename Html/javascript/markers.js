@@ -38,10 +38,7 @@ define([
 			"z-index": `${gameUtils.markerZIndex}`,
 		})
 
-		console.log("markerType: ", markerType)
-		console.log("imagesByType: ", imagesByType)
 		var image = imagesByType[markerType]
-		console.log("image: ", image)
 
 		if (image) {
 			gameUtils.addImage(node, ["image"], "image", image)

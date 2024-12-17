@@ -6,23 +6,47 @@ define([
 	'dojo/domReady!'
 ], function(string, dom, gameUtils, domStyle){
 
-	var cardsPerPage = 16
-	var cardBorderWidth = 5
+	var adjustedPageWidth = gameUtils.printedPageWidth - 2 * gameUtils.pagePadding
+	var adjustedPageHeight = gameUtils.printedPageHeight - 2 * gameUtils.pagePadding
+	var cardFitHorizontally = Math.floor(adjustedPageWidth / gameUtils.cardWidth)
+	var cardFitVertically = Math.floor(adjustedPageHeight / gameUtils.cardHeight)
 
-	function setCardSize(node) {
-		domStyle.set(node, {
-			"width": `${gameUtils.cardWidth}px`,
-			"height": `${gameUtils.cardHeight}px`,
-			"border": `${cardBorderWidth}px solid #000`,
-		})
+	var bigCardFitHorizontally = Math.floor(adjustedPageWidth / gameUtils.bigCardWidth)
+	var bigCardFitVertically = Math.floor(adjustedPageHeight / gameUtils.bigCardHeight)
+
+	var cardsPerPage = cardFitHorizontally * cardFitVertically
+	var bigCardsPerPage = bigCardFitHorizontally * bigCardFitVertically
+
+	console.log("Doug: cardsPerPage: ", cardsPerPage)
+	console.log("Doug: cardFitHorizontally: ", cardFitHorizontally)
+	console.log("Doug: gameUtils.printedPageWidth: ", gameUtils.printedPageWidth)
+	console.log("adjustedPageWidth: ", adjustedPageWidth)
+	console.log("Doug: gameUtils.pagePadding: ", gameUtils.pagePadding)
+	console.log("Doug: gameUtils.cardWidth: ", gameUtils.cardWidth)
+
+	var ttsCardsPerPage = 70
+
+	function setCardSize(node, configs) {
+		if (configs.bigCards) {
+			domStyle.set(node, {
+				"width": `${gameUtils.bigCardWidth}px`,
+				"height": `${gameUtils.bigCardHeight}px`,
+			})
+		}
+		else
+		{
+			domStyle.set(node, {
+				"width": `${gameUtils.cardWidth}px`,
+				"height": `${gameUtils.cardHeight}px`,
+			})
+		}
 	}
 
-	function addCardBack(parent, title, color, opt_classArray) {
-		var classArray = gameUtils.extendOptClassArray(opt_classArray, "back")
+	function addCardBack(parent, title, color, opt_configs) {
+		var configs = opt_configs ? opt_configs : {}
+		var node = gameUtils.addCard(parent, ["back"], "back")
 
-		var node = gameUtils.addCard(parent, classArray, "back")
-
-		setCardSize(node)
+		setCardSize(node, configs)
 
 		var innerNode = gameUtils.addDiv(node, ["inset"], "inset")
 		var otherColor = gameUtils.blendHexColors(color, "#ffffff")
@@ -33,16 +57,17 @@ define([
 		domStyle.set(innerNode, "background", gradient)
 		var title = gameUtils.addDiv(innerNode, ["title"], "title", title)
 		var style = {}
-		style["font-size"] = `${gameUtils.cardBackFontSize}px`
+		style["font-size"] = configs.bigCards ? `${gameUtils.bigCardBackFontSize}px`: `${gameUtils.cardBackFontSize}px`
 		domStyle.set(title, style)
 
 		return node
 	}
 
 	function addCardFront(parent, classArray, id) {
+		var configs = gameUtils.getConfigs()
 		classArray.push("front")
 		var node = gameUtils.addCard(parent, classArray, id)
-		setCardSize(node)
+		setCardSize(node, configs)
 
 		return node
 	}
@@ -66,12 +91,48 @@ define([
 		return node
 	}
 
-	function addNthOrderCardSingleNut(parent, version, index, numOrderCardsEachType, opt_classArray) {
+	function addNthOrderCardSingleNut(parent, index, numOrderCardsEachType, opt_classArray) {
 		var nutTypeIndex = Math.floor(index/numOrderCardsEachType)
-		var nutTypes = gameUtils.nutTypesByVersion[version]
+		var nutTypes = gameUtils.nutTypes
 		var nutType = nutTypes[nutTypeIndex]
 
 		return addOrderCardSingleNut(parent, nutType, index, opt_classArray)
+	}
+
+	function addCards(title, color, numCards, contentCallback, opt_configs) {
+		var bodyNode = dom.byId("body");
+		var configs = opt_configs ? opt_configs : {}
+		gameUtils.setConfigs(configs)
+
+		var pageOfFronts
+		var pageOfBacks
+
+		var timeForNewPageDivisor
+		if (configs.ttsCards) {
+			timeForNewPageDivisor = ttsCardsPerPage
+		} else if (configs.bigCards) {
+			timeForNewPageDivisor = bigCardsPerPage
+		} else {
+			timeForNewPageDivisor = cardsPerPage
+		}
+
+		for (let i = 0; i < numCards; i++) {
+			var timeForNewPage = i % timeForNewPageDivisor
+			if (timeForNewPage == 0) {
+				pageOfFronts = gameUtils.addPageOfItems(bodyNode)
+			}
+			contentCallback(pageOfFronts, i)
+		}
+		if (!configs.ttsCards)
+		{
+			for (let i = 0; i < numCards; i++) {
+				var timeForNewPage = i % timeForNewPageDivisor
+				if (timeForNewPage == 0) {
+					pageOfBacks = gameUtils.addPageOfItems(bodyNode, ["back"])
+				}
+				addCardBack(pageOfBacks, title, color, configs)
+			}
+		}
 	}
 
     // This returned object becomes the defined value of this module
@@ -95,20 +156,6 @@ define([
 
 		addCardFront: addCardFront,
 
-		addCards: function (title, color, numCards, contentCallback, opt_classArray) {
-            var bodyNode = dom.byId("body");
-
-			var pageOfFronts
-			var pageOfBacks
-
-			for (let i = 0; i < numCards; i++) {
-				if (i % cardsPerPage == 0) {
-					pageOfFronts = gameUtils.addPageOfItems(bodyNode)
-					pageOfBacks = gameUtils.addPageOfItems(bodyNode, ["back"])
-				}
-				addCardBack(pageOfBacks, title, color, opt_classArray)
-				contentCallback(pageOfFronts, i, opt_classArray)
-			}
-        },
-    };
+		addCards: addCards,
+    }
 });

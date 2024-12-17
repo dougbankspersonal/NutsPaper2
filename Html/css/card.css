@@ -5,6 +5,7 @@
 	margin-bottom: 1px;
 	display: inline-block;
 	overflow: hidden;
+	text-align: center;
 }
 
 .card.forDemo {
@@ -12,7 +13,6 @@
 	margin-bottom: 0px;
 }
 
-/* Bonus cards */
 .card.front {
 	box-sizing: border-box;
 }
@@ -54,76 +54,6 @@
 	height: auto;
 }
 
-/* goalv004.01 cards. */
-.card.front.goal {
-	padding-top: 27px;
-	padding-bottom: 27px;
-	padding-left: 14px;
-	padding-right: 14px;
-}
-
-.card.front.goal div.title {
-	font-family: 'Courier';
-	font-size: 14px;
-	font-weight: bold;
-}
-
-.card.front.goal div.goal {
-	padding-top: 7px;
-	font-size: 12px;
-	font-family: 'Courier';
-	font-weight: bold;
-	font-style: italic;
-}
-
-.card.front.goal div.points {
-	padding-top: 7px;
-	font-size: 12px;
-	font-family: 'Courier';
-	font-weight: bold;
-}
-
-.card.front.goal div.reward {
-	padding-top: 7px;
-	font-size: 10px;
-	font-family: 'Courier';
-	font-weight: bold;
-}
-
-/* bonusv004 and 4.01 cards. */
-.card.front.bonus.version4 {
-	padding-top: 27px;
-}
-
-.card.front.bonus.version4 div.requirement {
-	display: inline-flex;
-	align-items: center;
-}
-
-.card.front.bonus.version4 div.requirement img{
-	height: 34px;
-	width: 34px;
-	vertical-align: middle;
-	padding-right: 3px;
-	padding-left: 3px;
-	padding-top: 3px;
-	padding-bottom: 3px;
-}
-
-.card.front.bonus.version4 div.wrapper {
-	padding-bottom: 14px;
-	padding-left: 14px;
-	padding-right: 14px;
-}
-
-.card.front.bonus.version4 div.score {
-	padding-top: 14px;
-	font-family: 'Courier';
-	font-style: italic;
-	font-size: 16px;
-	font-weight: bold;
-}
-
 /* Bonus cards */
 .card.front.bonus .title {
 	margin-top: 28px;
@@ -150,184 +80,6 @@
 	font-size: 16px;
 }
 
-/* Agenda cards */
-.card.front.agenda table {
-	text-align: center;
-	border-collapse: collapse;
-	margin-left: auto;
-	margin-right: auto;
-}
-
-.card.front.agenda table td, .card.front.agenda table th {
-	border: 1px solid #000;
-	font-size: 12px;
-	padding: 5px;
-}
-
-.card.front.agenda .title {
-	margin-top: 28px;
-	margin-right: 10px;
-	margin-left: 10px;
-	font-family: 'Courier';
-	font-size: 30px;
-}
-
-.card.front.agenda .flavor {
-	margin-top: 20px;
-	margin-right: 10px;
-	margin-left: 10px;
-	font-family: 'Courier';
-	font-style: italic;
-	font-size: 14px;
-}
-
-.card.front.agenda .goal {
-	margin-top: 20px;
-	margin-right: 10px;
-	margin-left: 10px;
-	font-family: 'Courier';
-	font-size: 16px;
-}
-
-.card.front.agenda .goal.tiny {
-	font-size: 10px;
-}
-
-/* Power cards */
-.card.front.power .title {
-	margin-top: 28px;
-	margin-right: 10px;
-	margin-left: 10px;
-	font-family: 'Courier';
-	font-size: 30px;
-}
-
-.card.front.power .power {
-	margin-top: 20px;
-	margin-right: 10px;
-	margin-left: 10px;
-	font-family: 'Courier';
-	font-size: 16px;
-}
-
-.card.front.power .timing {
-	margin-top: 20px;
-	margin-right: 10px;
-	margin-left: 10px;
-	font-family: 'Courier';
-	font-style: italic;
-	font-size: 14px;
-}
-
-/* Action cards */
-.card.front.action .title {
-	margin-top: 28px;
-	margin-right: 10px;
-	margin-left: 10px;
-	font-family: 'Courier';
-	font-size: 30px;
-}
-
-.card.front.action .action {
-	margin-top: 20px;
-	margin-right: 10px;
-	margin-left: 10px;
-	font-family: 'Courier';
-	font-size: 24px;
-}
-
-/* Bonus cards */
-.card.front.bonus .bronze, .card.front.bonus .silver, .card.front.bonus .gold {
-	margin-top: 20px;
-	margin-right: 10px;
-	margin-left: 10px;
-	font-size: 12px;
-	font-family: 'Courier';
-}
-
-.card.front.bonus .special {
-	margin-top: 20px;
-	margin-right: 10px;
-	margin-left: 10px;
-	font-size: 18px;
-	font-family: 'Courier';
-}
-
-/* Event cards */
-.card.front.event .title {
-	margin-top: 28px;
-	font-size: 24px;
-	margin-left: 10px;
-	margin-right: 10px;
-	font-family: 'Courier';
-}
-
-.card.front.event .flavor {
-	margin-top: 20px;
-	font-style: italic;
-	font-size: 14px;
-	margin-left: 10px;
-	margin-right: 10px;
-	font-family: 'Courier';
-}
-
-.card.front.event .event {
-	margin-top: 20px;
-	margin-right: 10px;
-	margin-left: 10px;
-	font-size: 18px;
-	font-family: 'Courier';
-}
-
-.card.front.event .resolutionOrder {
-	margin-top: 20px;
-	margin-right: 10px;
-	margin-left: 10px;
-	font-size: 18px;
-	font-family: 'Courier';
-}
-
-.card.front.event .event div.list {
-	font-size: 12px;
-	margin-bottom: 15px;
-}
-
-.card.front.event .up {
-	color: green;
-}
-
-.card.front.event .down {
-	color: red;
-}
-
-/* Shares cards */
-.card.front.shares .prefix {
-	margin-top: 28px;
-	margin-right: 10px;
-	margin-left: 10px;
-	font-family: 'Courier';
-	font-size: 30px;
-	font-style: italic;
-}
-
-.card.front.shares .value {
-	margin-top: 20px;
-	margin-right: 10px;
-	margin-left: 10px;
-	font-family: 'Courier';
-	font-style: bold;
-	font-size: 48px;
-}
-
-.card.front.shares .suffix {
-	margin-top: 20px;
-	margin-right: 10px;
-	margin-left: 10px;
-	font-family: 'Courier';
-	font-size: 30px;
-	font-style: italic;
-}
-
 /* Card backs*/
 .card.back {
 	box-sizing: border-box;
@@ -352,4 +104,8 @@
 	transform-origin: center;
 	font-family: 'Courier';
 	text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.5);
+}
+
+.card.ghost {
+    opacity: 0.4;
 }

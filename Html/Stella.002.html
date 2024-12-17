@@ -1,0 +1,92 @@
+<html>
+
+<head>
+	<link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="css/game_board.css">
+	<link rel="stylesheet" href="css/belt.css">
+	<link rel="stylesheet" href="css/marker.css">
+	<link rel="stylesheet" href="css/arrow.css">
+	<link rel="stylesheet" href="css/card.css">
+	<link rel="stylesheet" href="css/cross_tile.css">
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+    <style type="text/css">
+	</style>
+</head>
+
+<body class="c1 doc-content" id="body">
+	<!-- configure Dojo -->
+	<script>
+		// Instead of using data-dojo-config, we're creating a dojoConfig
+		// object *before* we load dojo.js; they're functionally identical,
+		// it's just easier to read this approach with a larger configuration.
+		var dojoConfig = {
+			baseUrl: ".",
+			async: true,
+			// This code registers the correct location of the "demo"
+			// package so we can load Dojo from the CDN whilst still
+			// being able to load local modules
+			packages: [
+				{ name: "dojo", location: "../../bower_components/dojo" },
+				{ name: "javascript", location: "javascript" }
+			]
+		};
+	</script>
+	<!-- load Dojo -->
+	<script src="../../bower_components/dojo/dojo.js"></script>
+
+    <script>
+		require([
+			'javascript/gameBoard',
+			'javascript/gameUtils',
+			'javascript/rowTypes',
+			'javascript/versionDetails',
+		], function (gameBoard, gameUtils, rowTypes, versionDetails) {
+            var blueHighlight = "rgb(170, 170, 255)"
+            var yellowHighlight = "rgb(255, 255, 68)"
+
+            gameUtils.setConfigs({
+				noSpaceForCards: false,
+				demoBoard: true,
+			})
+
+            var orderedRowTypes = versionDetails.orderedRowTypes
+			var factoryColumnCount = 8
+			gameBoard.createBoard({
+				columnsPerStrip: factoryColumnCount + 1,
+				maxRowsPerPage: orderedRowTypes.length,
+                factoryColumnCount: factoryColumnCount,
+			})
+
+            var dispenserRowIndex = gameUtils.getIndexForFirstRowType(orderedRowTypes, rowTypes.Dispenser)
+            console.log("adding markers")
+            gameBoard.addMarker(dispenserRowIndex, 0, gameUtils.nutTypeAlmond)
+            gameBoard.addMarker(dispenserRowIndex, 1, gameUtils.nutTypeCashew)
+            gameBoard.addMarker(dispenserRowIndex, 2, gameUtils.nutTypePeanut)
+            gameBoard.addMarker(dispenserRowIndex, 3, gameUtils.nutTypePistachio)
+            gameBoard.addMarker(dispenserRowIndex, 4, gameUtils.nutTypeAlmond)
+            gameBoard.addMarker(dispenserRowIndex, 5, gameUtils.nutTypeCashew)
+            gameBoard.addMarker(dispenserRowIndex, 6, gameUtils.nutTypePeanut)
+            gameBoard.addMarker(dispenserRowIndex, 7, gameUtils.nutTypePistachio)
+
+            var orderRowIndex = gameUtils.getIndexForFirstRowType(orderedRowTypes, rowTypes.Order)
+            gameBoard.addOrder(gameUtils.nutTypePeanut, orderRowIndex, 0)
+            gameBoard.addOrder(gameUtils.nutTypeCashew, orderRowIndex, 1)
+            gameBoard.addOrder(gameUtils.nutTypePistachio, orderRowIndex, 2)
+            gameBoard.addOrder(gameUtils.nutTypeCashew, orderRowIndex, 3)
+            gameBoard.addOrder(gameUtils.nutTypeAlmond, orderRowIndex, 4)
+            gameBoard.addOrder(gameUtils.nutTypePistachio, orderRowIndex, 5)
+            gameBoard.addOrder(gameUtils.nutTypeAlmond, orderRowIndex, 6)
+            gameBoard.addOrder(gameUtils.nutTypePeanut, orderRowIndex, 7)
+
+            gameBoard.addCrossTile(2, 0, ["ghost"])
+            gameBoard.addCrossTile(5, 1)
+            gameBoard.addCrossTile(6, 4)
+            gameBoard.addCrossTile(7, 2)
+
+            gameBoard.highlightCrossTile(2, 0, yellowHighlight, yellowHighlight)
+            gameBoard.highlightCrossTile(7, 2, yellowHighlight)
+		});
+    </script>
+</body>
+
+</html>

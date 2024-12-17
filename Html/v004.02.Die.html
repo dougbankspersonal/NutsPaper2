@@ -2,14 +2,13 @@
 
 <head>
 	<link rel="stylesheet" href="css/main.css">
-	<link rel="stylesheet" href="css/card.css">
-	<link href='https://fonts.googleapis.com/css?family=Courier' rel='stylesheet'>
+	<link rel="stylesheet" href="css/die.css">
     <meta content="text/html; charset=UTF-8" http-equiv="content-type">
     <style type="text/css">
 	</style>
 </head>
 
-<body id="body">
+<body class="c1 doc-content" id="body">
 	<!-- configure Dojo -->
 	<script>
 		// Instead of using data-dojo-config, we're creating a dojoConfig
@@ -32,19 +31,14 @@
 
     <script>
 		require([
-			'javascript/cards',
-			'javascript/gameUtils',
-		], function (cards, gameUtils, dojo) {
-			var numOrderCardsEachType = 10
-			var nutTypes = gameUtils.nutTypesByVersion[gameUtils.version004_01]
-			var numNutTypes = nutTypes.length
-			var numOrderCards = numNutTypes * numOrderCardsEachType
+		'javascript/die',
+		'javascript/gameUtils',
+		], function (die, gameUtils) {
+			gameUtils.setConfigs({
+				ttsDie: true,
+			})
 
-			function addOrderCard(parent, index) {
-				return cards.addNthOrderCardSingleNut(parent, gameUtils.version004_01, index, numOrderCardsEachType)
-			}
-
-			cards.addCards("Order", "#f0d0d0", numOrderCards, addOrderCard)
+			die.createDieTemplate()
 		});
     </script>
 </body>

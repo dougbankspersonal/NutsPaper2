@@ -2,14 +2,14 @@
 
 <head>
 	<link rel="stylesheet" href="css/main.css">
-	<link rel="stylesheet" href="css/game_board.css">
-	<link rel="stylesheet" href="css/belt.css">
+	<link rel="stylesheet" href="css/card.css">
+	<link href='https://fonts.googleapis.com/css?family=Courier' rel='stylesheet'>
     <meta content="text/html; charset=UTF-8" http-equiv="content-type">
     <style type="text/css">
 	</style>
 </head>
 
-<body class="c1 doc-content" id="body">
+<body id="body">
 	<!-- configure Dojo -->
 	<script>
 		// Instead of using data-dojo-config, we're creating a dojoConfig
@@ -32,13 +32,21 @@
 
     <script>
 		require([
-			'javascript/gameBoard',
+			'javascript/cards',
 			'javascript/gameUtils',
-		], function (gameBoard, gameUtils) {
-			gameBoard.createBoard(gameUtils.version004_01, {
-				columnsPerStrip: 4,
-				maxRowsPerPage: 4,
-			})
+		], function (cards, gameUtils, dojo) {
+			var numOrderCardsEachType = 10
+			var nutTypes = gameUtils.nutTypes
+			var numNutTypes = nutTypes.length
+			var numOrderCards = numNutTypes * numOrderCardsEachType
+
+			function addOrderCard(parent, index) {
+				return cards.addNthOrderCardSingleNut(parent, index, numOrderCardsEachType)
+			}
+
+			cards.addCards("Order", "#f0d0d0", numOrderCards, addOrderCard,  {
+            //    ttsCards: false,
+            })
 		});
     </script>
 </body>
