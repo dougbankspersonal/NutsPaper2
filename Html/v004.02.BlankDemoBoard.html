@@ -45,12 +45,11 @@
 				demoBoard: true,
 			})
 
-            var orderedRowTypes = versionDetails.orderedRowTypes
-			var factoryColumnCount = 8
+			var rowTypesForVersion = versionDetails.getRowTypes()
+            var factoryColumnCount = versionDetails.getFactoryColumnCount()
 			gameBoard.createBoard({
-				columnsPerStrip: factoryColumnCount + 1,
-				maxRowsPerPage: orderedRowTypes.length,
-                factoryColumnCount: factoryColumnCount,
+				rowTypesForVersion: rowTypesForVersion,
+				factoryColumnCount: factoryColumnCount,
 			})
 		});
     </script>

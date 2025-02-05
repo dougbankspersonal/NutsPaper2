@@ -1,0 +1,27 @@
+.card.front.coffeeBreak {
+	padding-top: 27px;
+	padding-bottom: 27px;
+	padding-left: 14px;
+	padding-right: 14px;
+}
+
+.card.front.coffeeBreak div.title {
+	font-family: 'Courier';
+	font-weight: bold;
+	font-size: 30px;
+    white-space: pre-line;
+}
+
+.card.front.coffeeBreak div.details {
+	padding-top: 7px;
+	font-family: 'Courier';
+	font-size: 20px;
+	font-weight: bold;
+}
+
+.card.front.coffeeBreak div.timing {
+	padding-top: 7px;
+	font-family: 'Courier';
+	font-style: italic;
+	font-size: 18px;
+}

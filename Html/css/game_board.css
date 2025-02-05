@@ -97,7 +97,7 @@
 	position: relative;
 }
 
-.row.orders .content .slot {
+.row.boxes .content .slot {
 	align-items: start;
 }
 
@@ -139,7 +139,7 @@
 	font-weight: bold;
 }
 
-/* slot for card in an order row*/
+/* slot for card in a box  row*/
 .row .content .cardSlot {
 	outline-style: dotted;
 	outline-width: 4px;

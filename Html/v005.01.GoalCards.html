@@ -33,17 +33,34 @@
 
     <script>
 		require([
-			'javascript/cards',
-			'javascript/gameUtils',
-			'javascript/goalCards',
+            'javascript/cards',
+            'javascript/gameUtils',
+            'javascript/goalCards',
 		], function (cards, gameUtils, goalCards, dojo) {
             var goalCardConfigs = [
                 {
-                    title: "Squirrel Buddy",
-                    goal: "Lose 3 nuts to the Squirrel",
-                    points: "+3 points",
-                    reward: "When you roll for Squirrel movement, roll twice and use the lower result.",
-                    count: 12,
+                    title: "Almond Thought Leader",
+                    goal: "Player who shipped the most Almonds",
+                    points: "+12 points",
+                    count: 1,
+                },
+                {
+                    title: "Cashew Innovator",
+                    goal: "Player who shipped the most Cashews",
+                    points: "+12 points",
+                    count: 1,
+                },
+                {
+                    title: "Peanut Champion",
+                    goal: "Player who shipped the most Peanuts",
+                    points: "+12 points",
+                    count: 1,
+                },
+                {
+                    title: "Pistachio Monger",
+                    goal: "Player who shipped the most Pistachios",
+                    points: "+12 points",
+                    count: 1,
                 },
             ]
 

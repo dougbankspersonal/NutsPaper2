@@ -156,10 +156,17 @@
 			function scoreForDistribution(distribution, count) {
                 // Sum triangle numbers for each nut type.
 				var score = 0
-
+				console.log("Doug: distribution: ", distribution)
+				console.log("Doug: score: ", score)
+				console.log("Doug: nutTypes: ", nutTypes)
+				console.log("Doug: numNutTypes: ", numNutTypes)
                 for (var i  = 0; i < numNutTypes; i++) {
-					nutType = nutTypes[i]
-					score += distribution[nutType] * (distribution[nutType] + 1) / 2
+					var nutType = nutTypes[i]
+					console.log("  Doug: nutType: ", nutType)
+					console.log("  Doug: distribution[nutType]: ", distribution[nutType])
+					if (distribution[nutType] && distribution[nutType] > 0) {
+						score += distribution[nutType] * (distribution[nutType] + 1) / 2
+					}
                 }
                 return score
 			}
@@ -175,10 +182,10 @@
 				for (var i = 0; i < numNutTypes; i++) {
 					var nutType = nutTypes[i]
 					var typeCount = nutTypeDistribution[nutType]
-                    for (var j = 0; j < typeCount; j++) {
+					for (var j = 0; j < typeCount; j++) {
 						var prop = gameUtils.addDiv(wrapper, ["requirement"], "requirement")
-						var nutTypeImage = gameUtils.nutTypeImages[nutType]
-						gameUtils.addImage(prop, ["nutType"], "nutType", nutTypeImage)
+						console.log("Doug: 002 nutType = ", nutType)
+						gameUtils.addImage(prop, ["nutType", nutType], "nutType")
 					}
 				}
 

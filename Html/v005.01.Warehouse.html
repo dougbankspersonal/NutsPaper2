@@ -1,9 +1,9 @@
+<!-- DEPRECATED -->
 <html>
 
 <head>
 	<link rel="stylesheet" href="css/main.css">
-	<link rel="stylesheet" href="css/card.css">
-	<link rel="stylesheet" href="css/goal.css">
+	<link rel="stylesheet" href="css/warehouse.css">
 	<link href='https://fonts.googleapis.com/css?family=Courier' rel='stylesheet'>
     <meta content="text/html; charset=UTF-8" http-equiv="content-type">
     <style type="text/css">
@@ -33,27 +33,12 @@
 
     <script>
 		require([
-			'javascript/cards',
-			'javascript/gameUtils',
-			'javascript/goalCards',
-		], function (cards, gameUtils, goalCards, dojo) {
-            var goalCardConfigs = [
-                {
-                    title: "Squirrel Buddy",
-                    goal: "Lose 3 nuts to the Squirrel",
-                    points: "+3 points",
-                    reward: "When you roll for Squirrel movement, roll twice and use the lower result.",
-                    count: 12,
-                },
-            ]
-
-			cards.addCards("Goal", "#ffeedd", goalCards.getCount(goalCardConfigs), function(parent, index) {
-                goalCards.addGoalCard(parent, index, goalCardConfigs)
-            }, {
-                bigCards: true,
-                // ttsCards: true,
-            })
-		});
+        'javascript/gameUtils',
+        'javascript/warehouse',
+		], function (gameUtils, warehouse, dojo) {
+            gameUtils.setConfigs({landscape: true})
+            warehouse.createWarehouse()
+        });
     </script>
 </body>
 

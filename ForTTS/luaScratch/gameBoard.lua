@@ -1,3 +1,8 @@
+--[[
+gameBoard.lua
+set up and controls for Nuts game board.
+]]
+
 local boardBounds
 local boardSize
 local boardThickness
@@ -9,7 +14,7 @@ local columnWidth = 1.67
 local rowHeight = 1.48
 
 local xOffset = -7.5
-local zOffset = -9.1
+local zOffset = -7.62
 local orderRowExtraZOffset = 0.3
 
 -- Object ids.
@@ -25,31 +30,26 @@ local orderDeck
 local orderDiscardTile
 
 -- Wait times in frames.
-local waitForPlacement = 30
+local waitForPlacementSec = 0.5
 
-
-local crossTileRowIndices = {3, 4, 6, 7, 9, 10}
 local maxCrossTileRowIndex = 10
 local squirrelRowIndex = 8
 
 local snapPoints = {}
 
-local dispenserZones = {}
-local squirrelZones = {}
+local markerZonesByMarkerType = {}
 local orderZones = {}
 local crossTileZones = {}
 
-local dispenserZonePrefix = "dispenserZone"
-local squirrelZonePrefix = "squirrelZone"
-local orderZonePrefix = "orderZone"
-local crossTileZonePrefix = "crossTileZone"
-
-local allZonePrefixes = {dispenserZonePrefix, orderZonePrefix, crossTileZonePrefix, squirrelZonePrefix}
-
 local orderSlotToDispenserTypeMap = {}
-local squirrelAffectsOrderSlot = {}
+local orderSlotIndexAffectedBySquirrel = nil
+local ordersToDiscard = {}
 
 -- Local functions
+local function rowNameToZoneName(rowName)
+    return rowName .. "Zone"
+end
+
 local function mysplit(inputstr, sep)
     if sep == nil then
         sep = "%s"
@@ -61,6 +61,23 @@ local function mysplit(inputstr, sep)
     return t
 end
 
+local function isSquirrel(object)
+    return object.getName() == "dsb_Squirrel"
+end
+
+local function isCrossTile(object)
+    return object.getName() == "dsb_CrossTile"
+end
+
+local function isDispenser(object)
+    local pieces = mysplit(object.getName(), "_")
+    if pieces and pieces[1] == "dispenser" then
+        return true
+    else
+        return false
+    end
+end
+
 local function isOrderCard(object)
     local pieces = mysplit(object.getName(), "_")
     if pieces and pieces[1] == "order" then
@@ -70,20 +87,22 @@ local function isOrderCard(object)
     end
 end
 
+local function getObjectInZone(zone, callback)
+    local objectsInZone = zone.getObjects()
+    for _, objectInZone in pairs(objectsInZone) do
+        if callback(objectInZone) then
+            return objectInZone
+        end
+    end
+    return nil
+end
+
 local function findEmptyOrderZones()
     local emptyOrderZones = {}
     for _, orderZone in pairs(orderZones) do
-        local foundACard = false
-        local objectsInZone = orderZone.getObjects()
-        -- We only care about cards.
-        for _, objectInZone in pairs(objectsInZone) do
-            if not foundACard then
-                if isOrderCard(objectInZone) then
-                    foundACard = true
-                end
-            end
-        end
-        if not foundACard then
+        local orderCard = getObjectInZone(orderZone, isOrderCard)
+
+        if not orderCard then
             table.insert(emptyOrderZones, orderZone)
         end
     end
@@ -100,6 +119,14 @@ local function addSnapPointWithTag(localPosition, tagName)
     table.insert(snapPoints, snapPoint)
 end
 
+local function hideZones(zones, seatedPlayerColors)
+    for _, zone in pairs(zones) do
+        zone.setInvisibleTo(
+            seatedPlayerColors
+        )
+    end
+end
+
 local function addZone(localPosition, zoneNamePrefix, zoneTable, rowIndex, columnIndex, opt_isThin)
     local worldPosition = self.positionToWorld(localPosition)
     worldPosition.y = 2
@@ -109,7 +136,6 @@ local function addZone(localPosition, zoneNamePrefix, zoneTable, rowIndex, colum
     else
         zone = zoneToClone.clone()
     end
-    zone.setHiddenFrom(nil)
     zone.setPosition(worldPosition)
     local zoneName = zoneNamePrefix .. "_" .. tostring(rowIndex) .. "_" .. tostring(columnIndex)
     zone.setName(zoneName)
@@ -136,54 +162,45 @@ local function addSnapPointsAndZonesToRow(rowIndex, tagName, opt_configs)
     end
 end
 
-local function addDispenserSnapPointsAndZones()
-    addSnapPointsAndZonesToRow(2, "dispensers", {
-        zoneNamePrefix = dispenserZonePrefix,
-        zoneTable = dispenserZones,
+local function addMarkerSnapPointsAndZones(rowIndex, rowName)
+    markerZonesByMarkerType[rowName] = {}
+    addSnapPointsAndZonesToRow(rowIndex, rowName, {
+        zoneNamePrefix = rowNameToZoneName(rowName),
+        zoneTable = markerZonesByMarkerType[rowName],
     })
 end
 
-local function addSalterSnapPoints()
-    addSnapPointsAndZonesToRow(5, "salters")
-end
-
-local function addSquirrelSnapPointsAndZones()
-    addSnapPointsAndZonesToRow(squirrelRowIndex, "squirrels", {
-        zoneNamePrefix = squirrelZonePrefix,
-        zoneTable = squirrelZones,
-    })
-end
-
-local function addOrderSnapPointsAndZones()
-    addSnapPointsAndZonesToRow(11, "orders", {
+local function addOrderSnapPointsAndZones(rowIndex, rowName)
+    addSnapPointsAndZonesToRow(rowIndex, rowName, {
         extraZOffset = orderRowExtraZOffset,
-        zoneNamePrefix = orderZonePrefix,
+        zoneNamePrefix = rowNameToZoneName(rowName),
         zoneTable = orderZones,
     })
 end
 
-local function addCrossTileSnapPointsAndZones()
-    for _, rowIndex in pairs(crossTileRowIndices) do
-        for i = 1, numColumns-1 do
-            local snapX = xOffset + columnWidth * (numColumns - 0.5 - i)
-            local snapY = boardThickness
-            local snapZ = zOffset + (rowIndex) * rowHeight
-            local localPosition = Vector{snapX, snapY, snapZ}
-            addSnapPointWithTag(localPosition, "crossTiles")
+local function addCrossTileSnapPointsAndZones(rowIndex, rowName)
+    for i = 1, numColumns-1 do
+        local snapX = xOffset + columnWidth * (numColumns - 0.5 - i)
+        local snapY = boardThickness
+        local snapZ = zOffset + (rowIndex) * rowHeight
+        local localPosition = Vector{snapX, snapY, snapZ}
+        addSnapPointWithTag(localPosition, rowName)
 
-            addZone(localPosition, crossTileZonePrefix, crossTileZones, rowIndex, i, true)
-        end
+        addZone(localPosition, rowNameToZoneName(rowName), crossTileZones, rowIndex, i, true)
     end
 end
 
-local function orderMatchesDispenser(orderCard, emptyOrderZone)
-    -- FIXME(dbanks)
-    -- Lie.
-    -- For now, reject all almond cards.
-    print("Doug: orderMatchesDispenser")
-    print("  Doug: orderCard.getName() = ", orderCard.getName())
-    print("  Doug: emptyOrderZone = ", emptyOrderZone.getName())
-    local zonePiecces = mysplit(emptyOrderZone.getName(), "_")
+local function prepForDiscard(orderCard)
+    local position = orderCard.getPosition()
+    position.y = position.y + 2
+    position.z = position.z - 3
+    orderCard.setPositionSmooth(position)
+
+    table.insert(ordersToDiscard, orderCard)
+end
+
+local function orderCardMatchesDispenserForZone(orderCard, orderZone)
+    local zonePiecces = mysplit(orderZone.getName(), "_")
     local orderSlotIndex = tonumber(zonePiecces[3])
     local pieces = mysplit(orderCard.getName(), "_")
     local cardType = pieces[2]
@@ -200,24 +217,28 @@ local function tryToPlaceCardInNthEmptyZone(card, emptyOrderZones, zoneIndex, ca
     local cardPosition = slotPosition
     cardPosition.y = cardPosition.y + 2
     card.setPositionSmooth(cardPosition)
-    Wait.frames(function()
+    Wait.time(function()
         -- Card doesn't match attached dispenser?  Good: leave it.
-        if not orderMatchesDispenser(card, emptyOrderZone) then
+        if not orderCardMatchesDispenserForZone(card, emptyOrderZone) then
             -- It's good, leave it there, and move on to resolve the next one.
             table.remove(emptyOrderZones, zoneIndex)
             callback(true)
         else
             callback(false)
         end
-    end, waitForPlacement)
+    end, waitForPlacementSec)
 end
 
-local function discardCard(card)
+local function discardCard(card, opt_callback)
     local orderDiscardTilePosition = orderDiscardTile.getPosition()
-    local cardPosition = orderDiscardTilePosition
-    cardPosition.y = cardPosition.y + 2
-    card.setPositionSmooth(cardPosition)
-    Wait.frames(function() local foo = 5 end, waitForPlacement)
+    local cardDestinationPosition = orderDiscardTilePosition
+    cardDestinationPosition.y = cardDestinationPosition.y + 2
+    card.setPositionSmooth(cardDestinationPosition)
+    Wait.time(function()
+        if opt_callback then
+            opt_callback()
+        end
+    end, waitForPlacementSec)
 end
 
 local function tryToPlaceCardInFirstEmptyZone(card, emptyOrderZones, callback)
@@ -229,8 +250,7 @@ local function tryToPlaceCardInFirstEmptyZone(card, emptyOrderZones, callback)
             if index <= #emptyOrderZones then
                 tryToPlaceCardInNthEmptyZone(card, emptyOrderZones, index, myCallback)
             else
-                discardCard(card)
-                callback()
+                discardCard(card, callback)
             end
         else
             callback()
@@ -257,12 +277,10 @@ end
 local function makeDispenserTypesByColumnNumber()
     local dispenserTypesByColumnNumber = {}
     for index, dispenserZone in pairs(dispenserZones) do
-        local objectsInZone = dispenserZone.getObjects()
-        for _, objectInZone in pairs(objectsInZone) do
-            local pieces = mysplit(objectInZone.getName(), "_")
-            if pieces and pieces[1] == "dispenser" then
-                dispenserTypesByColumnNumber[index] = pieces[2]
-            end
+        local dispenser = getObjectInZone(dispenserZone, isDispenser)
+        if dispenser then
+            local pieces = mysplit(dispenser.getName(), "_")
+            dispenserTypesByColumnNumber[index] = pieces[2]
         end
     end
     return dispenserTypesByColumnNumber
@@ -271,36 +289,44 @@ end
 local function makeCrossTilesByRowAndColumn()
     local crossTilesByRowAndColumn = {}
     for _, crossTileZone in pairs(crossTileZones) do
-        local objectsInZone = crossTileZone.getObjects()
-        for _, objectInZone in pairs(objectsInZone) do
-            if objectInZone.getName() == "dsb_CrossTile" then
-                local pieces = mysplit(crossTileZone.getName(), "_")
-                local row = tonumber(pieces[2])
-                local column = tonumber(pieces[3])
-                crossTilesByRowAndColumn[row] = crossTilesByRowAndColumn[row] or {}
-                crossTilesByRowAndColumn[row][column] = true
-            end
+        local crossTileObject = getObjectInZone(crossTileZone, isCrossTile)
+
+        if crossTileObject then
+            local pieces = mysplit(crossTileZone.getName(), "_")
+            local row = tonumber(pieces[2])
+            local column = tonumber(pieces[3])
+            crossTilesByRowAndColumn[row] = crossTilesByRowAndColumn[row] or {}
+            crossTilesByRowAndColumn[row][column] = true
         end
     end
     return crossTilesByRowAndColumn
 end
 
 local function getSquirrelColumn()
-    local squirrelColumn
+    local squirrelZones = markerZonesByMarkerType["Squirrel"]
     for index, squirrelZone in pairs(squirrelZones) do
-        local objectsInZone = squirrelZone.getObjects()
-        for _, objectInZone in pairs(objectsInZone) do
-            if objectInZone.getName() == "dsb_Squirrel" then
-                squirrelColumn = index
-            end
+        local squirrelObject = getObjectInZone(squirrelZone, isSquirrel)
+
+        if squirrelObject then
+            return index
         end
     end
-    return squirrelColumn
+    return nil
+end
+
+local function discardNextOrderCard()
+    if #ordersToDiscard == 0 then
+        return
+    end
+
+    local card = table.remove(ordersToDiscard, 1)
+
+    discardCard(card, discardNextOrderCard)
 end
 
 local function resetOrderSlotToDispenserTypeMap()
     orderSlotToDispenserTypeMap = {}
-    squirrelAffectsOrderSlot = {}
+    orderSlotIndexAffectedBySquirrel = nil
 
     local dispenserTypesByColumnNumber = makeDispenserTypesByColumnNumber()
 
@@ -309,22 +335,6 @@ local function resetOrderSlotToDispenserTypeMap()
     -- Find the squirrel.
     local squirrelColumn = getSquirrelColumn()
 
-    --[[
-    print("Doug: dispenserTypesByColumnNumber")
-    for j, dispenserType in pairs(dispenserTypesByColumnNumber) do
-        print("  Doug: dispenserType = ", dispenserType)
-        print("  Doug: j = ", j)
-    end
-    print("Doug: crossTilesByRowAndColumn")
-    for rowNumber, columns in pairs(crossTilesByRowAndColumn) do
-        for columnNumber, value in pairs(columns) do
-            if value then
-                print(  "Doug: cross tile at rowNumber = ", rowNumber, " columnNumber = ", columnNumber)
-            end
-        end
-    end
-    print("Doug: twiddling")
-]]
     for columnNumber = 1, numColumns do
         local adjustedColumnNumber = columnNumber
         for rowNumber = maxCrossTileRowIndex, 1, -1 do
@@ -336,24 +346,15 @@ local function resetOrderSlotToDispenserTypeMap()
                 columnMod = -1
             end
             adjustedColumnNumber = adjustedColumnNumber + columnMod
-           -- print("  Doug: rowNumber = ", rowNumber, " columnNumber = ", columnNumber, " adjustedColumnNumber = ", adjustedColumnNumber)
 
             if rowNumber == squirrelRowIndex then
                 if squirrelColumn == adjustedColumnNumber then
-                    squirrelAffectsOrderSlot = columnNumber
+                    orderSlotIndexAffectedBySquirrel = columnNumber
                 end
             end
         end
         orderSlotToDispenserTypeMap[columnNumber] = dispenserTypesByColumnNumber[adjustedColumnNumber]
     end
-
-    --[[
-    print("Doug: orderSlotToDispenserMap")
-    for orderSlot, dispenserType in pairs(orderSlotToDispenserTypeMap) do
-        print("  Doug: dispenserType = ", dispenserType, " goes to order slot" , orderSlot)
-    end
-    print("Doug: squirrelAffectsOrderSlot = ", squirrelAffectsOrderSlot)
-    ]]
 end
 
 -- Member functions
@@ -369,19 +370,31 @@ function onLoad()
 end
 
 function setup()
-    addDispenserSnapPointsAndZones()
-    addSalterSnapPoints()
-    addSquirrelSnapPointsAndZones()
-    addCrossTileSnapPointsAndZones()
-    addOrderSnapPointsAndZones()
+    local rowNames = Global.call("getRowNames")
+
+    for index, rowName in pairs(rowNames) do
+        if rowName == "Dispensers" or rowName == "Squirrel" or rowName == "Salters" or rowName == "Roasters" then
+            addMarkerSnapPointsAndZones(index, rowName)
+        elseif rowName == "Orders" then
+            addOrderSnapPointsAndZones(index, rowName)
+        elseif rowName == "Conveyors" then
+            addCrossTileSnapPointsAndZones(index, rowName)
+        end
+    end
     self.setSnapPoints(snapPoints)
 end
 
 function cleanup()
-    dispenserZones = {}
+    markerZonesByMarkerType = {}
     orderZones = {}
     crossTileZones = {}
-    squirrelZones = {}
+
+    local allZonePrefixes = {}
+    local rowNames = Global.call("getRowNames")
+    for _, rowName in pairs(rowNames) do
+        local zoneNamePrefix = rowNameToZoneName(rowName)
+        allZonePrefixes[zoneNamePrefix] = true
+    end
 
     local printedTypes = {}
     self.setSnapPoints({})
@@ -396,7 +409,7 @@ function cleanup()
             local pieces = mysplit(objectName, "_")
             if pieces and pieces[1] then
                 local shouldDelete = false
-                for _, zonePrefix in pairs(allZonePrefixes) do
+                for zonePrefix, _ in pairs(allZonePrefixes) do
                     if pieces[1] == zonePrefix then
                         shouldDelete = true
                     end
@@ -409,42 +422,47 @@ function cleanup()
     end
 end
 
+function discardOrderCards()
+    discardNextOrderCard()
+end
+
+function resolveOrders()
+    resetOrderSlotToDispenserTypeMap()
+
+    for _, orderCardZone in pairs(orderZones) do
+        local orderCard = getObjectInZone(orderCardZone, isOrderCard)
+        if orderCard then
+            if orderCardMatchesDispenserForZone(orderCard, orderCardZone) then
+                prepForDiscard(orderCard)
+            end
+        end
+    end
+end
+
+function resolveSquirrel()
+    resetOrderSlotToDispenserTypeMap()
+
+    -- What order slot does the squirrel affect?
+    if orderSlotIndexAffectedBySquirrel then
+        local dispenserTypeForOrderSlot = orderSlotToDispenserTypeMap[orderSlotIndexAffectedBySquirrel]
+
+        -- Move that card out/down a little.  Add to "to discard" array.
+        local orderCardZone = orderZones[orderSlotIndexAffectedBySquirrel]
+        local orderCard = getObjectInZone(orderCardZone, isOrderCard)
+        if orderCard then
+            if orderCardMatchesDispenserForZone(orderCard, orderCardZone) then
+                prepForDiscard(orderCard)
+            end
+        end
+    end
+end
+
 function refillOrderSlots()
     resetOrderSlotToDispenserTypeMap()
 
     -- 1. Figure out which order slots are empty.
     local emptyOrderZones = findEmptyOrderZones()
-    print("Doug: #emptyOrderZones = ", #emptyOrderZones)
 
     -- This is recursive.
     resolveNextEmptyOrderZone(emptyOrderZones)
-end
-
-function hidePlacementZones(params)
-    local seatedPlayerObjects = params.seatedPlayerObjects
-    local seatedPlayerColors = {}
-    for _, seatedPlayerObject in pairs(seatedPlayerObjects) do
-        table.insert(seatedPlayerColors, seatedPlayerObject.color)
-    end
-
-    for _, zone in pairs(dispenserZones) do
-        zone.setInvisibleTo(
-            seatedPlayerColors
-        )
-    end
-    for _, zone in pairs(squirrelZones) do
-        zone.setInvisibleTo(
-            seatedPlayerColors
-        )
-    end
-    for _, zone in pairs(orderZones) do
-        zone.setInvisibleTo(
-            seatedPlayerColors
-        )
-    end
-    for _, zone in pairs(crossTileZones) do
-        zone.setInvisibleTo(
-            seatedPlayerColors
-        )
-    end
 end

@@ -13,11 +13,6 @@ define([
     var leftPx = gameUtils.slotWidth - gameUtils.arrowWidth/2
     var topPx = gameUtils.standardRowHeight/2 - gameUtils.arrowHeight/2
 
-    var imagesByType = {}
-	imagesByType[arrowTypes.LeftArrow] = "images/Arrows/LeftArrow.png"
-	imagesByType[arrowTypes.RightArrow] = "images/Arrows/RightArrow.png"
-	imagesByType[arrowTypes.DoubleArrow] = "images/Arrows/DoubleArrow.png"
-
 	function addArrow(rowIndex, columnIndex, arrowType) {
 		var classArray = ["arrow"]
         var slot = gameUtils.getSlot(rowIndex, columnIndex)
@@ -30,8 +25,7 @@ define([
 			"height": `${gameUtils.arrowHeight}px`,
         })
 
-		var image = imagesByType[arrowType]
-        gameUtils.addImage(node, ["image"], "image", image)
+        gameUtils.addImage(node, ["image", arrowType], "image")
 
         return node
 	}

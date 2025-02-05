@@ -1,0 +1,87 @@
+<html>
+
+<head>
+	<link rel="stylesheet" href="../css/main.css">
+	<link rel="stylesheet" href="../css/card.css">
+	<link rel="stylesheet" href="../css/coffeeBreak.css">
+	<link rel="stylesheet" href="../css/image.css">
+	<link href='https://fonts.googleapis.com/css?family=Courier' rel='stylesheet'>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+    <style type="text/css">
+	</style>
+</head>
+
+<body id="body">
+	<!-- configure Dojo -->
+	<script>
+		// Instead of using data-dojo-config, we're creating a dojoConfig
+		// object *before* we load dojo.js; they're functionally identical,
+		// it's just easier to read this approach with a larger configuration.
+		var dojoConfig = {
+			baseUrl: "..",
+			async: true,
+			// This code registers the correct location of the "demo"
+			// package so we can load Dojo from the CDN whilst still
+			// being able to load local modules
+			packages: [
+				{ name: "dojo", location: "../../bower_components/dojo" },
+				{ name: "javascript", location: "javascript" }
+			]
+		};
+	</script>
+	<!-- load Dojo -->
+	<script src="../../../bower_components/dojo/dojo.js"></script>
+
+    <script>
+		require([
+			'javascript/cards',
+			'javascript/gameUtils',
+		], function (cards, gameUtils, dojo) {
+            var coffeBreakConfigs = [
+				{
+					title: "Bob\nAdder",
+					details: "Add a Cross Tile.",
+					timing: "Building",
+				},
+				{
+					title: "Bob\nWrecker",
+					details: "Remove a Cross Tile.",
+					timing: "Building",
+				},
+				{
+					title: "Bob\nSlider",
+					details: "Slide a Cross Tile.",
+					timing: "Building",
+				},
+				{
+					title: "Bob\nWarehouse",
+					details: "You may ignore warehouse size limit this turn.",
+					timing: "Any time",
+				},
+				{
+					title: "Bob\nDispatcher",
+					details: "Recall one Truck.",
+					timing: "Any time",
+				},
+				{
+					title: "Bob\nSloppytruck",
+					details: "One box in a shipment doesn't have to match the others.",
+					timing: "Shipping",
+				},
+            ]
+			var numCopies = 5
+            var numCoffeeConfigs = coffeBreakConfigs.length
+		    var numCoffeeBreakCards = numCoffeeConfigs * numCopies
+
+			function addCoffeeBreakCard(parent, index) {
+			return cards.addNthCoffeeBreakCard(parent, index, coffeBreakConfigs)
+			}
+
+			cards.addCards("Coffee Break", "#ccccff", numCoffeeBreakCards, addCoffeeBreakCard,  {
+                bigCards: true,
+            })
+		});
+    </script>
+</body>
+
+</html>

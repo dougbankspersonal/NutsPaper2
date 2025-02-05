@@ -1,9 +1,9 @@
 <html>
 
 <head>
-	<link rel="stylesheet" href="css/main.css">
-	<link rel="stylesheet" href="css/card.css">
-	<link rel="stylesheet" href="css/goal.css">
+	<link rel="stylesheet" href="../css/main.css">
+	<link rel="stylesheet" href="../css/card.css">
+	<link rel="stylesheet" href="../css/image.css">
 	<link href='https://fonts.googleapis.com/css?family=Courier' rel='stylesheet'>
     <meta content="text/html; charset=UTF-8" http-equiv="content-type">
     <style type="text/css">
@@ -17,7 +17,7 @@
 		// object *before* we load dojo.js; they're functionally identical,
 		// it's just easier to read this approach with a larger configuration.
 		var dojoConfig = {
-			baseUrl: ".",
+			baseUrl: "..",
 			async: true,
 			// This code registers the correct location of the "demo"
 			// package so we can load Dojo from the CDN whilst still
@@ -29,29 +29,24 @@
 		};
 	</script>
 	<!-- load Dojo -->
-	<script src="../../bower_components/dojo/dojo.js"></script>
+	<script src="../../../bower_components/dojo/dojo.js"></script>
 
     <script>
 		require([
 			'javascript/cards',
 			'javascript/gameUtils',
-			'javascript/goalCards',
-		], function (cards, gameUtils, goalCards, dojo) {
-            var goalCardConfigs = [
-                {
-                    title: "Squirrel Buddy",
-                    goal: "Lose 3 nuts to the Squirrel",
-                    points: "+3 points",
-                    reward: "When you roll for Squirrel movement, roll twice and use the lower result.",
-                    count: 12,
-                },
-            ]
+		], function (cards, gameUtils, dojo) {
+			var numBoxCardsEachType = 10
+			var nutTypes = gameUtils.nutTypes
+			var numNutTypes = nutTypes.length
+			var numBoxCards = numNutTypes * numBoxCardsEachType
 
-			cards.addCards("Goal", "#ffeedd", goalCards.getCount(goalCardConfigs), function(parent, index) {
-                goalCards.addGoalCard(parent, index, goalCardConfigs)
-            }, {
-                bigCards: true,
-                // ttsCards: true,
+			function addBoxCard(parent, index) {
+				return cards.addNthBoxCardSingleNut(parent, index, numBoxCardsEachType)
+			}
+
+			cards.addCards("Box", "#aaaaaa", numBoxCards, addBoxCard,  {
+            //    ttsCards: false,
             })
 		});
     </script>

@@ -1,4 +1,5 @@
 local tokenId = "442fb4"
+local moveTokenSec = 2
 
 local function moveTokenPrototype(theToken)
     Global.call("movePrototype", {
@@ -9,5 +10,5 @@ end
 
 -- If this is the source score card, move it out of the way.
 function onLoad()
-    Wait.frames(function() moveTokenPrototype(self) end, 2)
+    Wait.time(function() moveTokenPrototype(self) end, moveTokenSec)
 end

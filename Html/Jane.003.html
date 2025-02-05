@@ -54,15 +54,15 @@
 
             gameUtils.setConfigs({demoBoard: true})
 
-			var orderedRowTypes = versionDetails.orderedRowTypes
+			var rowTypesForVersion = versionDetails.getRowTypes()
+            var factoryColumnCount = versionDetails.getFactoryColumnCount()
 			gameBoard.createBoard({
-				columnsPerStrip: 13,
-				maxRowsPerPage: orderedRowTypes.length,
-                factoryColumnCount: 8,
+				rowTypesForVersion: rowTypesForVersion,
+				factoryColumnCount: factoryColumnCount,
 			})
 
             // Add nut dispensers
-           var dispenserRowIndex = gameUtils.getIndexForFirstRowType(orderedRowTypes, rowTypes.Dispenser)
+            var dispenserRowIndex = gameUtils.getIndexForFirstRowType(rowTypesForVersion, rowTypes.RowTypes.Dispenser)
             gameBoard.addMarker(dispenserRowIndex, 0, gameUtils.nutTypeAlmond)
             gameBoard.addMarker(dispenserRowIndex, 1, gameUtils.nutTypeCashew)
             gameBoard.addMarker(dispenserRowIndex, 2, gameUtils.nutTypePeanut)
@@ -74,26 +74,26 @@
             gameBoard.addMarker(dispenserRowIndex, 7, gameUtils.nutTypeAlmond)
 
             // Squirrel.
-            var firstSquirrelRowIndex = gameUtils.getIndexForFirstRowType(orderedRowTypes, rowTypes.Squirrel)
+            var firstSquirrelRowIndex = gameUtils.getIndexForFirstRowType(rowTypesForVersion, rowTypes.RowTypes.Squirrel)
             gameBoard.addMarker(firstSquirrelRowIndex, 4, markers.markerTypes.Squirrel)
 
 
             // Add Salters.
-            var salterRowIndex = gameUtils.getIndexForFirstRowType(orderedRowTypes, rowTypes.Salter)
+            var salterRowIndex = gameUtils.getIndexForFirstRowType(rowTypesForVersion, rowTypes.RowTypes.Salter)
             gameBoard.addMarker(salterRowIndex, 1, markers.markerTypes.Salter)
             gameBoard.addMarker(salterRowIndex, 6, markers.markerTypes.Salter)
 
-            // add Orders.
-            var orderRowIndex = gameUtils.getIndexForFirstRowType(orderedRowTypes, rowTypes.Order)
+            // add Boxes.
+            var boxRowIndex = gameUtils.getIndexForFirstRowType(rowTypesForVersion, rowTypes.RowTypes.Boxes)
 
-            gameBoard.addOrder(gameUtils.nutTypeCashew, orderRowIndex, 0)
-            gameBoard.addOrder(gameUtils.nutTypeAlmond, orderRowIndex, 1)
-            gameBoard.addOrder(gameUtils.nutTypeCashew, orderRowIndex, 2)
-            gameBoard.addOrder(gameUtils.nutTypePeanut, orderRowIndex, 3)
-            gameBoard.addOrder(gameUtils.nutTypePistachio, orderRowIndex, 4)
-            gameBoard.addOrder(gameUtils.nutTypePistachio, orderRowIndex, 5)
-            gameBoard.addOrder(gameUtils.nutTypeAlmond, orderRowIndex, 6)
-            gameBoard.addOrder(gameUtils.nutTypePistachio, orderRowIndex, 7)
+            gameBoard.addBox(gameUtils.nutTypeCashew, boxRowIndex, 0)
+            gameBoard.addBox(gameUtils.nutTypeAlmond, boxRowIndex, 1)
+            gameBoard.addBox(gameUtils.nutTypeCashew, boxRowIndex, 2)
+            gameBoard.addBox(gameUtils.nutTypePeanut, boxRowIndex, 3)
+            gameBoard.addBox(gameUtils.nutTypePistachio, boxRowIndex, 4)
+            gameBoard.addBox(gameUtils.nutTypePistachio, boxRowIndex, 5)
+            gameBoard.addBox(gameUtils.nutTypeAlmond, boxRowIndex, 6)
+            gameBoard.addBox(gameUtils.nutTypePistachio, boxRowIndex, 7)
 
             gameBoard.addCrossTile(2, 6)
             gameBoard.addCrossTile(5, 0)

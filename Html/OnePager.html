@@ -40,7 +40,13 @@
 			'javascript/gameUtils',
 			'javascript/rowTypes',
 			'javascript/versionDetails',
-		], function (gameBoard, gameUtils, rowTypes, versionDetails) {
+			'javascript/markers',
+		], function (gameBoard, gameUtils, rowTypes, versionDetails, markers) {
+            var blueHighlight = "rgb(170, 170, 255)"
+            var yellowHighlight = "rgb(255, 255, 68)"
+
+            versionDetails.setVersion(versionDetails.version_onePager)
+
             gameUtils.setConfigs({
 				noSpaceForCards: false,
 				demoBoard: true,
@@ -53,27 +59,30 @@
 				factoryColumnCount: factoryColumnCount,
 			})
 
-            var dispenserRowIndex = gameUtils.getIndexForFirstRowType(rowTypesForVersion, rowTypes.RowTypes.Dispenser)
+            var startRowIndex = gameUtils.getIndexForFirstRowType(rowTypesForVersion, rowTypes.RowTypes.Start)
             console.log("adding markers")
-            gameBoard.addMarker(dispenserRowIndex, 0, gameUtils.nutTypeAlmond)
-            gameBoard.addMarker(dispenserRowIndex, 1, gameUtils.nutTypeCashew)
-            gameBoard.addMarker(dispenserRowIndex, 2, gameUtils.nutTypePeanut)
-            gameBoard.addMarker(dispenserRowIndex, 3, gameUtils.nutTypePistachio)
-            gameBoard.addMarker(dispenserRowIndex, 4, gameUtils.nutTypeAlmond)
-            gameBoard.addMarker(dispenserRowIndex, 5, gameUtils.nutTypeCashew)
-            gameBoard.addMarker(dispenserRowIndex, 6, gameUtils.nutTypePeanut)
-            gameBoard.addMarker(dispenserRowIndex, 7, gameUtils.nutTypePistachio)
+            gameBoard.addMarker(startRowIndex, 3, markers.markerTypes.Star)
 
-            var boxRowIndex = gameUtils.getIndexForFirstRowType(rowTypesForVersion, rowTypes.RowTypes.Boxes)
-            gameBoard.addBox(gameUtils.nutTypeCashew, boxRowIndex, 0)
-            gameBoard.addBox(gameUtils.nutTypePeanut, boxRowIndex, 1)
-            gameBoard.addBox(gameUtils.nutTypeAlmond, boxRowIndex, 2)
-            gameBoard.addBox(gameUtils.nutTypeCashew, boxRowIndex, 3)
-            gameBoard.addBox(gameUtils.nutTypePistachio, boxRowIndex, 4)
-            gameBoard.addBox(gameUtils.nutTypePistachio, boxRowIndex, 5)
-            gameBoard.addBox(gameUtils.nutTypeAlmond, boxRowIndex, 6)
-            gameBoard.addBox(gameUtils.nutTypePeanut, boxRowIndex, 7)
+            var firstHeartRowIndex = 4
+            gameBoard.addMarker(firstHeartRowIndex, 1, markers.markerTypes.Heart)
+            gameBoard.addMarker(firstHeartRowIndex, 5, markers.markerTypes.Heart)
 
+            var skullRowIndex = 6
+            gameBoard.addMarker(skullRowIndex, 2, markers.markerTypes.Skull)
+            gameBoard.addMarker(skullRowIndex, 4, markers.markerTypes.Skull)
+            gameBoard.addMarker(skullRowIndex, 6, markers.markerTypes.Skull)
+
+            var secondHeartRowIndex = 8
+            gameBoard.addMarker(secondHeartRowIndex, 3, markers.markerTypes.Heart)
+            gameBoard.addMarker(secondHeartRowIndex, 7, markers.markerTypes.Heart)
+
+            var endRowIndex = gameUtils.getIndexForFirstRowType(rowTypesForVersion, rowTypes.RowTypes.End)
+            gameBoard.addMarker(endRowIndex, 1, markers.markerTypes.Star)
+            gameBoard.addMarker(endRowIndex, 7, markers.markerTypes.Star)
+
+            gameBoard.addCrossTile(2, 2)
+            gameBoard.addCrossTile(5, 1)
+            gameBoard.addCrossTile(7, 2)
 		});
     </script>
 </body>

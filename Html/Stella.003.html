@@ -49,15 +49,14 @@
 				demoBoard: true,
 			})
 
-            var orderedRowTypes = versionDetails.orderedRowTypes
-			var factoryColumnCount = 8
+			var rowTypesForVersion = versionDetails.getRowTypes()
+            var factoryColumnCount = versionDetails.getFactoryColumnCount()
 			gameBoard.createBoard({
-				columnsPerStrip: factoryColumnCount + 1,
-				maxRowsPerPage: orderedRowTypes.length,
-                factoryColumnCount: factoryColumnCount,
+				rowTypesForVersion: rowTypesForVersion,
+				factoryColumnCount: factoryColumnCount,
 			})
 
-            var dispenserRowIndex = gameUtils.getIndexForFirstRowType(orderedRowTypes, rowTypes.Dispenser)
+            var dispenserRowIndex = gameUtils.getIndexForFirstRowType(rowTypesForVersion, rowTypes.RowTypes.Dispenser)
             console.log("adding markers")
             gameBoard.addMarker(dispenserRowIndex, 0, gameUtils.nutTypeAlmond)
             gameBoard.addMarker(dispenserRowIndex, 1, gameUtils.nutTypeCashew)
@@ -68,15 +67,15 @@
             gameBoard.addMarker(dispenserRowIndex, 6, gameUtils.nutTypePeanut)
             gameBoard.addMarker(dispenserRowIndex, 7, gameUtils.nutTypePistachio)
 
-            var orderRowIndex = gameUtils.getIndexForFirstRowType(orderedRowTypes, rowTypes.Order)
-            gameBoard.addOrder(gameUtils.nutTypePeanut, orderRowIndex, 0)
-            gameBoard.addOrder(gameUtils.nutTypeCashew, orderRowIndex, 1)
-            gameBoard.addOrder(gameUtils.nutTypePistachio, orderRowIndex, 2)
-            gameBoard.addOrder(gameUtils.nutTypeCashew, orderRowIndex, 3)
-            gameBoard.addOrder(gameUtils.nutTypeAlmond, orderRowIndex, 4)
-            gameBoard.addOrder(gameUtils.nutTypePistachio, orderRowIndex, 5)
-            gameBoard.addOrder(gameUtils.nutTypeAlmond, orderRowIndex, 6)
-            gameBoard.addOrder(gameUtils.nutTypePeanut, orderRowIndex, 7)
+            var boxRowIndex = gameUtils.getIndexForFirstRowType(rowTypesForVersion, rowTypes.RowTypes.Boxes)
+            gameBoard.addBox(gameUtils.nutTypePeanut, boxRowIndex, 0)
+            gameBoard.addBox(gameUtils.nutTypeCashew, boxRowIndex, 1)
+            gameBoard.addBox(gameUtils.nutTypePistachio, boxRowIndex, 2)
+            gameBoard.addBox(gameUtils.nutTypeCashew, boxRowIndex, 3)
+            gameBoard.addBox(gameUtils.nutTypeAlmond, boxRowIndex, 4)
+            gameBoard.addBox(gameUtils.nutTypePistachio, boxRowIndex, 5)
+            gameBoard.addBox(gameUtils.nutTypeAlmond, boxRowIndex, 6)
+            gameBoard.addBox(gameUtils.nutTypePeanut, boxRowIndex, 7)
 
             gameBoard.addCrossTile(5, 1)
             gameBoard.addCrossTile(6, 4)

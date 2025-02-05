@@ -35,7 +35,8 @@
 		require([
 			'javascript/cards',
 			'javascript/gameUtils',
-		], function (cards, gameUtils, dojo) {
+			'javascript/goalCards',
+		], function (cards, gameUtils, goalCards, dojo) {
             var goalCardConfigs = [
                 {
                     title: "Peanut Champion",
@@ -89,40 +90,11 @@
                 },*/
             ]
 
-            var numGoalCards = 0
-            for (var i = 0; i < goalCardConfigs.length; i++) {
-                numGoalCards = numGoalCards + goalCardConfigs[i].count
-            }
-
-            function mapIndexToCardType(index) {
-                for (var i = 0; i < goalCardConfigs.length; i++) {
-                    if (index < goalCardConfigs[i].count) {
-                        return i
-                    }
-                    index -= goalCardConfigs[i].count
-                }
-                // How did we get here?
-                console.assert("mapIndexToCardType error")
-                return 0
-            }
-
-			function addGoalCard(parent, index) {
-                var cardType = mapIndexToCardType(index)
-				var fromNode = cards.addCardFront(parent, ["goal"], "goal.".concat(index.toString()))
-                var config = goalCardConfigs[cardType]
-                var node = gameUtils.addDiv(fromNode, ["title"], "title")
-				node.innerHTML = config.title
-                var node = gameUtils.addDiv(fromNode, ["goal"], "goal")
-				node.innerHTML = config.goal
-                var node = gameUtils.addDiv(fromNode, ["points"], "points")
-				node.innerHTML = config.points
-                var node = gameUtils.addDiv(fromNode, ["reward"], "reward")
-				node.innerHTML = config.reward
-			}
-
-			cards.addCards("Goal", "#ffeedd", numGoalCards, addGoalCard, {
+			cards.addCards("Goal", "#ffeedd", goalCards.getCount(goalCardConfigs), function(parent, index) {
+                goalCards.addGoalCard(parent, index, goalCardConfigs)
+            }, {
                 bigCards: true,
-                // ttsCards: true,
+                ttsCards: true,
             })
 		});
     </script>

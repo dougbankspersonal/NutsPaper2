@@ -1,14 +1,25 @@
 --[[
+global.lua
+global logic and values.
+]]
+
+--[[
 Local vars
 ]]
+-- versions, current version.
+local version_004_02 = "v004.02"
+local version_005_01 = "v005.01"
+
+local currentVersion = version_005_01
+
 -- Storage
 local createdObjectsByPlayerColor = {}
 local scoresByPlayerColor = {}
 
 -- Times
-local sumWait = 2
-local standardWait = 20
-local waitForCardToFall = 30
+local sumWaitSec = 0.1
+local standardWaitSec = 0.5
+local waitForCardToFallSec = 2
 
 -- Positions
 local outOfTheWayPositionY = -10
@@ -22,7 +33,6 @@ local squirrelDeckId = "0db96d"
 local orderDeckId = "6e5f4b"
 local scoreCardId = "dd5da2"
 local tokenId = "442fb4"
-local ordersDiscardTileId = "cf0ba4"
 local crossTilePileId = "661366"
 local gameBoardId = "cbf28b"
 
@@ -51,7 +61,8 @@ local evenRowColor = "#aacccc"
 local oddRowColor = "#aaaacc"
 local sumRowColor = "#cccccc"
 
-local inputCellNames = {
+local inputCellNamesByVersion = {}
+inputCellNamesByVersion[version_004_02] = {
     "Cells",
     "Rows",
     "Salt",
@@ -59,9 +70,67 @@ local inputCellNames = {
     "Agenda Cards",
 }
 
+inputCellNamesByVersion[version_005_01] = {
+    "Cells",
+    "Rows",
+    "Salted",
+    "Roasted",
+    "Roasted and Salted",
+}
+
+local decksIdsByVersion = {}
+decksIdsByVersion[version_004_02] = {
+    [agendaDeckId] = true,
+    [nonSquirrelGoalDeckId] = true,
+    [squirrelDeckId] = true,
+    [orderDeckId] = true,
+    [crossTilePileId] = true,
+}
+decksIdsByVersion[version_005_01] = {
+    [orderDeckId] = true,
+    [crossTilePileId] = true,
+}
+
+local rowNamesByVersion = {}
+rowNamesByVersion[version_004_02] = {
+    "Dispensers",
+    "Conveyors",
+    "Conveyors",
+    "Salters",
+    "Conveyors",
+    "Conveyors",
+    "Squirrel",
+    "Conveyors",
+    "Conveyors",
+    "Orders",
+}
+
+rowNamesByVersion[version_005_01] = {
+    "Dispensers",
+    "Conveyors",
+    "Conveyors",
+    "Salters",
+    "Conveyors",
+    "Squirrel",
+    "Conveyors",
+    "Roasters",
+    "Conveyors",
+    "Conveyors",
+    "Orders",
+}
+
+
 --[[
 Local functions
 ]]
+local function deckIsInUse(guid)
+    return decksIdsByVersion[currentVersion][guid] ~= nil
+end
+
+local function getInputCellNames()
+    return inputCellNamesByVersion[currentVersion]
+end
+
 local function mysplit(inputstr, sep)
     if sep == nil then
         sep = "%s"
@@ -116,8 +185,10 @@ local function dump(blob, opt_params)
 end
 
 local function resetDeck(guid)
-    local deck = getObjectFromGUID(guid)
-    deck.reset()
+    if deckIsInUse(guid) then
+        local deck = getObjectFromGUID(guid)
+        deck.reset()
+    end
 end
 
 local function shuffleDeck(guid)
@@ -185,24 +256,26 @@ local function storeCreatedObject(playerColor, obj)
     table.insert(createdObjectsByPlayerColor[playerColor], obj)
 end
 
-local function findXMLTableWithId(xml, name, opt_params)
+-- Given an XML id, walk the given xml blob to find an element with given
+-- id.
+local function findXMLNodeWithId(xmlNode, name, opt_params)
     local params = opt_params or {}
     local recursive = true
     if params.nonRecursive then
         recursive = false
     end
-    for _, xmlBlob in pairs(xml) do
-        for key, value in pairs(xmlBlob) do
+    for _, childXmlNode in pairs(xmlNode) do
+        for key, value in pairs(childXmlNode) do
             if key == "attributes" then
                 for attributeKey, attributeValue in pairs(value) do
                     if attributeKey == "id" and attributeValue == name then
-                        return xmlBlob
+                        return childXmlNode
                     end
                 end
             end
             if recursive then
                 if key == "children" then
-                    local result = findXMLTableWithId(value, name, params)
+                    local result = findXMLNodeWithId(value, name, params)
                     if result then
                         return result
                     end
@@ -271,7 +344,7 @@ local function makeXmlText(textId, text, classPrefix)
     return xmlText
 end
 
-local function makeXmlTextCell(rowIndex, columnIndex, rowLabel, classPrefix)
+local function makeXmlTextCell(rowIndex, columnIndex, cellText, classPrefix)
     local cellId = makeId("Cell", rowIndex, columnIndex)
     local textId = makeId("Text", rowIndex, columnIndex)
 
@@ -279,23 +352,23 @@ local function makeXmlTextCell(rowIndex, columnIndex, rowLabel, classPrefix)
         class = classPrefix .. "CellClass",
         id = cellId,
     })
-    local xmlText = makeXmlText(textId, rowLabel, classPrefix)
+    local xmlText = makeXmlText(textId, cellText, classPrefix)
     safeAddToXmlChildren(xmlCell, xmlText)
     return xmlCell
 end
 
-local function makeXmlLabelCell(rowIndex, columnIndex, rowLabel)
-    local xmlLabelCell = makeXmlTextCell(rowIndex, columnIndex, rowLabel, "Label")
+local function makeXmlLabelCell(rowIndex, columnIndex, cellText)
+    local xmlLabelCell = makeXmlTextCell(rowIndex, columnIndex, cellText, "Label")
     return xmlLabelCell
 end
 
-local function makeXmlPlayerNameCell(rowIndex, columnIndex, rowLabel)
-    local xmlPlayerNameCell = makeXmlTextCell(rowIndex, columnIndex, rowLabel, "PlayerName")
+local function makeXmlPlayerNameCell(rowIndex, columnIndex, cellText)
+    local xmlPlayerNameCell = makeXmlTextCell(rowIndex, columnIndex, cellText, "PlayerName")
     return xmlPlayerNameCell
 end
 
-local function makeXmlSumCell(rowIndex, columnIndex, rowLabel)
-    local xmlSumCell = makeXmlTextCell(rowIndex, columnIndex, rowLabel, "Sum")
+local function makeXmlSumCell(rowIndex, columnIndex, cellText)
+    local xmlSumCell = makeXmlTextCell(rowIndex, columnIndex, cellText, "Sum")
     return xmlSumCell
 end
 
@@ -310,6 +383,7 @@ local function makeXmlInputCell(rowIndex, columnIndex, seatedPlayerColor)
     })
     dump(xmlCell)
 
+    local inputCellNames = getInputCellNames()
     local scoreForCellNumber = getStoredScore(seatedPlayerColor, inputCellNames[rowIndex])
 
     local xmlInput = makeXmlNode("InputField", {
@@ -415,8 +489,9 @@ Member functions
 ]]
 function updateScore(_, textValue, inputId)
     UI.setAttribute(inputId, "text", textValue)
-    Wait.frames(function()
+    Wait.time(function()
         local rowIndex, columnIndex = getRowAndColumn(inputId)
+        local inputCellNames = getInputCellNames()
 
         -- Store the value.
         -- What player color are we dealing with?
@@ -435,8 +510,7 @@ function updateScore(_, textValue, inputId)
         end
         local sumId = makeId("Text", #inputCellNames + 1, columnIndex)
         UI.setAttribute(sumId, "text", tostring(sum))
-
-    end, sumWait)
+    end, sumWaitSec)
 end
 
 function onObjectLeaveContainer(container, leave_object)
@@ -474,9 +548,9 @@ function setupSeatedPlayer(seatedPlayer)
     scoreCard.setPosition(spawnPosition)
     storeCreatedObject(seatedPlayer.color, scoreCard)
     scoreCard.setRotation(spawnRotation)
-    Wait.frames(function()
+    Wait.time(function()
         scoreCard.locked = true
-    end, waitForCardToFall)
+    end, waitForCardToFallSec)
 
     for i = 1, numTokenRows do
         for j = 1, tokensPerRow do
@@ -499,18 +573,16 @@ function setupSeatedPlayer(seatedPlayer)
         end
     end
 
-    -- Give everyone 2 agendas.
-    local agendaDeck = getObjectFromGUID(agendaDeckId)
-    agendaDeck.deal(3, seatedPlayer.color)
+    if deckIsInUse(agendaDeckId) then
+        -- Give everyone 2 agendas.
+        local agendaDeck = getObjectFromGUID(agendaDeckId)
+        agendaDeck.deal(3, seatedPlayer.color)
+    end
 end
 
 function setupSeatedPlayers()
     -- Do per-player setup.
     local seatedPlayerObjects = getSeatedPlayerObjects()
-
-    gameBoard.call("hidePlacementZones", {
-        seatedPlayerObjects = seatedPlayerObjects,
-    })
 
     for _, seatedPlayer in pairs(seatedPlayerObjects) do
         setupSeatedPlayer(seatedPlayer)
@@ -518,35 +590,11 @@ function setupSeatedPlayers()
     return 1
 end
 
-function shuffleOrderCards()
-    shuffleDeck(orderDeckId)
-    Wait.frames(function()
-        startLuaCoroutine(Global, "setupSeatedPlayers")
-    end, standardWait)
-    return 1
-end
-
-function shuffleNonSquirrelGoalCards()
-    shuffleDeck(nonSquirrelGoalDeckId)
-    Wait.frames(function()
-        startLuaCoroutine(Global, "shuffleOrderCards")
-    end, standardWait)
-    return 1
-end
-
-function shuffleAgendaCards()
-    shuffleDeck(agendaDeckId)
-    Wait.frames(function()
-        startLuaCoroutine(Global, "shuffleNonSquirrelGoalCards")
-    end, standardWait)
-    return 1
-end
-
 function updateXML()
     local seatedPlayerObjects = getSeatedPlayerObjects()
     local numSeatedPlayerObjects = #seatedPlayerObjects
     local moddedXML = UI.GetXmlTable()
-    local panel = findXMLTableWithId(moddedXML, "FinalTallyPanel")
+    local panel = findXMLNodeWithId(moddedXML, "FinalTallyPanel")
 
     local panelWidth = labelColumnWidth + nonLabelColumnWidth * numSeatedPlayerObjects
     local panelHeight = titleHeight + rowHeight * (#inputCellNames + 2)
@@ -590,21 +638,29 @@ function updateXML()
     UI.setXmlTable(moddedXML)
 end
 
+--[[
+Functions called from global.xml
+]]
 function setup(clickedPlayer)
     -- Cleanup old spawns.
     cleanupEverything()
 
-    gameBoard.call("setup")
-
-    -- Shuffe and place the decks.
-    -- This kicks off a string of coroutines.
-    startLuaCoroutine(Global, "shuffleAgendaCards")
+    Wait.time(function()
+        gameBoard.call("setup")
+        Wait.time(function()
+            startLuaCoroutine(Global, "setupSeatedPlayers")
+        end, standardWaitSec)
+    end, standardWaitSec)
 end
 
 function cleanup()
     cleanupEverything()
     gameBoard.call("cleanup")
 end
+
+--[[
+Functions called from global.xml
+]]
 
 function toggleFinalTally()
     local finalTallyActiveValue = UI.getAttribute("FinalTallyPanel", "active")
@@ -621,8 +677,23 @@ function toggleFinalTally()
 end
 
 function refillOrderSlots()
-    -- 2. Have him deal witht his.
     gameBoard.call("refillOrderSlots")
+end
+
+function resolveSquirrel()
+    gameBoard.call("resolveSquirrel")
+end
+
+function resolveOrders()
+    gameBoard.call("resolveOrders")
+end
+
+function discardOrderCards()
+    gameBoard.call("discardOrderCards")
+end
+
+function getRowNames()
+    return rowNamesByVersion[currentVersion]
 end
 
 --[[
@@ -631,8 +702,11 @@ Main onLoad/onUpdate functions
 -- The onLoad event is called after the game save finishes loading.
 function onLoad()
     -- Keep a clean copy around for when we reset.
+    print("Doug: onLoad 001")
     pristineXML = UI.GetXmlTable();
+    print("Doug: onLoad 002")
     gameBoard = getObjectFromGUID(gameBoardId)
+    print("Doug: onLoad 003")
 end
 
 -- The onUpdate event is called once per frame.
@@ -646,23 +720,4 @@ end
 function onPlayerDisconnect(player)
     cleanupObjectsForPlayer(player.color)
     cleanupScoresForPlayer(player.color)
-end
-
-function globalObjectEnterZone(params)
-    local zone = params.zone
-    local object = params.obj
-    local pieces = mysplit(zone.getName(), "_")
-    local zoneType = pieces[1]
-    local rowIndex = pieces[1]
-    local columnIndex = pieces[1]
-
-    local objectName = object.getName()
-    local objectNamePieces = mysplit(objectName, "_")
-    local objectType = objectNamePieces[1]
-    local objectSubtype = objectNamePieces[2]
-
-    -- We only care if object is same.
-    if objectType == zoneType then
-        local foo = 5
-    end
 end

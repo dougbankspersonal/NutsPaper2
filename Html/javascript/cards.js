@@ -6,8 +6,8 @@ define([
 	'dojo/domReady!'
 ], function(string, dom, gameUtils, domStyle){
 
-	var adjustedPageWidth = gameUtils.printedPageWidth - 2 * gameUtils.pagePadding
-	var adjustedPageHeight = gameUtils.printedPageHeight - 2 * gameUtils.pagePadding
+	var adjustedPageWidth = gameUtils.printedPagePortraitWidth - 2 * gameUtils.pagePadding
+	var adjustedPageHeight = gameUtils.printedPagePortraitHeight - 2 * gameUtils.pagePadding
 	var cardFitHorizontally = Math.floor(adjustedPageWidth / gameUtils.cardWidth)
 	var cardFitVertically = Math.floor(adjustedPageHeight / gameUtils.cardHeight)
 
@@ -16,13 +16,6 @@ define([
 
 	var cardsPerPage = cardFitHorizontally * cardFitVertically
 	var bigCardsPerPage = bigCardFitHorizontally * bigCardFitVertically
-
-	console.log("Doug: cardsPerPage: ", cardsPerPage)
-	console.log("Doug: cardFitHorizontally: ", cardFitHorizontally)
-	console.log("Doug: gameUtils.printedPageWidth: ", gameUtils.printedPageWidth)
-	console.log("adjustedPageWidth: ", adjustedPageWidth)
-	console.log("Doug: gameUtils.pagePadding: ", gameUtils.pagePadding)
-	console.log("Doug: gameUtils.cardWidth: ", gameUtils.cardWidth)
 
 	var ttsCardsPerPage = 70
 
@@ -73,30 +66,35 @@ define([
 	}
 
 	function addNutDesc(parent, nutType) {
+		console.log("Doug: nutType = ", nutType)
 		var wrapper = gameUtils.addDiv(parent, ["wrapper"], "wrapper")
 		var nutPropsTopNode = gameUtils.addDiv(wrapper, ["nutProps"], "nutProps")
 
-		var nutTypeImage = nutType == -1 ? gameUtils.wildImage: gameUtils.nutTypeImages[nutType]
+		var nutType
+		if (nutType == -1) {
+			nutType = "Wild"
+		}
 
 		var prop = gameUtils.addDiv(nutPropsTopNode, ["nutProp", "nutType"], "nutType")
-		gameUtils.addImage(prop, ["nutType"], "nutType", nutTypeImage)
+		console.log("Doug: 001 nutType = ", nutType)
+		gameUtils.addImage(prop, ["nutType", nutType], "nutType")
 		return wrapper
 	}
 
-	function addOrderCardSingleNut(parent, nutType, index, opt_classArray) {
-		var classArray = gameUtils.extendOptClassArray(opt_classArray, "order")
-		var cardId = "order.".concat(index.toString())
+	function addBoxCardSingleNut(parent, nutType, index, opt_classArray) {
+		var classArray = gameUtils.extendOptClassArray(opt_classArray, "box")
+		var cardId = "box.".concat(index.toString())
 		var node = addCardFront(parent, classArray, cardId)
 		addNutDesc(node, nutType)
 		return node
 	}
 
-	function addNthOrderCardSingleNut(parent, index, numOrderCardsEachType, opt_classArray) {
-		var nutTypeIndex = Math.floor(index/numOrderCardsEachType)
+	function addNthBoxCardSingleNut(parent, index, numBoxCardsEachType, opt_classArray) {
+		var nutTypeIndex = Math.floor(index/numBoxCardsEachType)
 		var nutTypes = gameUtils.nutTypes
 		var nutType = nutTypes[nutTypeIndex]
 
-		return addOrderCardSingleNut(parent, nutType, index, opt_classArray)
+		return addBoxCardSingleNut(parent, nutType, index, opt_classArray)
 	}
 
 	function addCards(title, color, numCards, contentCallback, opt_configs) {
@@ -116,29 +114,77 @@ define([
 			timeForNewPageDivisor = cardsPerPage
 		}
 
-		for (let i = 0; i < numCards; i++) {
-			var timeForNewPage = i % timeForNewPageDivisor
-			if (timeForNewPage == 0) {
-				pageOfFronts = gameUtils.addPageOfItems(bodyNode)
+		if (configs.separateBacks) {
+			for (let i = 0; i < numCards; i++) {
+				var timeForNewPage = i % timeForNewPageDivisor
+				if (timeForNewPage == 0) {
+					pageOfFronts = gameUtils.addPageOfItems(bodyNode)
+				}
+				contentCallback(pageOfFronts, i)
 			}
-			contentCallback(pageOfFronts, i)
+
+			if (!configs.ttsCards)
+			{
+				for (let i = 0; i < numCards; i++) {
+					var timeForNewPage = i % timeForNewPageDivisor
+					if (timeForNewPage == 0) {
+						pageOfBacks = gameUtils.addPageOfItems(bodyNode, ["back"])
+					}
+					addCardBack(pageOfBacks, title, color, configs)
+				}
+			}
 		}
-		if (!configs.ttsCards)
+		else
 		{
 			for (let i = 0; i < numCards; i++) {
 				var timeForNewPage = i % timeForNewPageDivisor
 				if (timeForNewPage == 0) {
-					pageOfBacks = gameUtils.addPageOfItems(bodyNode, ["back"])
+					pageOfFronts = gameUtils.addPageOfItems(bodyNode)
+					if (!configs.ttsCards) {
+						pageOfBacks = gameUtils.addPageOfItems(bodyNode, ["back"])
+					}
 				}
-				addCardBack(pageOfBacks, title, color, configs)
+				contentCallback(pageOfFronts, i)
+				if (!configs.ttsCards)
+				{
+					addCardBack(pageOfBacks, title, color, configs)
+				}
 			}
 		}
 	}
 
+	function addCoffeeBreakConfig(parent, config)
+	{
+        if (config.title) {
+            var node = gameUtils.addDiv(parent, ["title"], "title")
+            node.innerHTML = config.title
+        }
+        if (config.details) {
+            var node = gameUtils.addDiv(parent, ["details"], "details")
+            node.innerHTML = config.details
+        }
+        if (config.timing) {
+            var node = gameUtils.addDiv(parent, ["timing"], "timing")
+            node.innerHTML = "When to play: " + config.timing
+        }
+	}
+
+	function addNthCoffeeBreakCard(parent, index, coffeeBreakConfigs)
+	{
+		var classArray = ["coffeeBreak"]
+		var cardId = "coffeeBreak.".concat(index.toString())
+		var node = addCardFront(parent, classArray, cardId)
+		var configIndex = index % coffeeBreakConfigs.length
+		var config = coffeeBreakConfigs[configIndex]
+		addCoffeeBreakConfig(node, config)
+		return node
+	}
+
     // This returned object becomes the defined value of this module
     return {
-		addNthOrderCardSingleNut:addNthOrderCardSingleNut,
-		addOrderCardSingleNut: addOrderCardSingleNut,
+		addNthBoxCardSingleNut:addNthBoxCardSingleNut,
+		addBoxCardSingleNut: addBoxCardSingleNut,
+		addNthCoffeeBreakCard: addNthCoffeeBreakCard,
 
 		getCardDescAtIndex: function(index, descs)
 		{

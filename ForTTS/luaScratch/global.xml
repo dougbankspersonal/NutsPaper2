@@ -30,6 +30,6 @@
 <Button id="RefillButton" visibility="Host" class="HostButton" onClick="refillOrderSlots" text="Refill" offsetXY="0 10"/>
 <Button id="ResolveSquirrelButton" visibility="Host" class="HostButton" onClick="resolveSquirrel" text="Squirrel" offsetXY="120 10"/>
 <Button id="ResolveOrdersButton" visibility="Host" class="HostButton" onClick="resolveOrders" text="Filled Orders" offsetXY="240 10"/>
-<Button id="ReturnOrderCards" visibility="Host" class="HostButton" onClick="returnOrderCards" text="Discard Orders" offsetXY="360 10"/>
+<Button id="ReturnOrderCards" visibility="Host" class="HostButton" onClick="discardOrderCards" text="Discard Orders" offsetXY="360 10"/>
 <Panel id="FinalTallyPanel" class="FinalTallyPanelClass" active="false">
 </Panel>

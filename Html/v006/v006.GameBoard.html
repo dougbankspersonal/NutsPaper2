@@ -1,9 +1,9 @@
 <html>
 
 <head>
-	<link rel="stylesheet" href="css/main.css">
-	<link rel="stylesheet" href="css/game_board.css">
-	<link rel="stylesheet" href="css/belt.css">
+	<link rel="stylesheet" href="../css/main.css">
+	<link rel="stylesheet" href="../css/game_board.css">
+	<link rel="stylesheet" href="../css/belt.css">
     <meta content="text/html; charset=UTF-8" http-equiv="content-type">
     <style type="text/css">
 	</style>
@@ -22,20 +22,24 @@
 			// package so we can load Dojo from the CDN whilst still
 			// being able to load local modules
 			packages: [
-				{ name: "dojo", location: "../../bower_components/dojo" },
-				{ name: "javascript", location: "javascript" }
+				{ name: "dojo", location: "../../../bower_components/dojo" },
+				{ name: "javascript", location: "../javascript" }
 			]
 		};
 	</script>
 	<!-- load Dojo -->
-	<script src="../../bower_components/dojo/dojo.js"></script>
+	<script src="../../../bower_components/dojo/dojo.js"></script>
 
     <script>
+		console.log("Hi Doug 001")
 		require([
 			'javascript/gameBoard',
 			'javascript/versionDetails',
 			'javascript/gameUtils',
 		], function (gameBoard, versionDetails, gameUtils) {
+			console.log("Hi Doug 002")
+            versionDetails.setVersion(versionDetails.version_006)
+
 			var rowTypesForVersion = versionDetails.getRowTypes()
 			var factoryColumnCount = versionDetails.getFactoryColumnCount()
 			gameBoard.createBoard({

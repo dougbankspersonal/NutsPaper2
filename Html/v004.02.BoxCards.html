@@ -35,16 +35,16 @@
 			'javascript/cards',
 			'javascript/gameUtils',
 		], function (cards, gameUtils, dojo) {
-			var numOrderCardsEachType = 10
+			var numBoxCardsEachType = 10
 			var nutTypes = gameUtils.nutTypes
 			var numNutTypes = nutTypes.length
-			var numOrderCards = numNutTypes * numOrderCardsEachType
+			var numBoxCards = numNutTypes * numBoxCardsEachType
 
-			function addOrderCard(parent, index) {
-				return cards.addNthOrderCardSingleNut(parent, index, numOrderCardsEachType)
+			function addBoxCard(parent, index) {
+				return cards.addNthBoxCardSingleNut(parent, index, numBoxCardsEachType)
 			}
 
-			cards.addCards("Order", "#f0d0d0", numOrderCards, addOrderCard,  {
+			cards.addCards("Box", "#f0d0d0", numBoxCards, addBoxCard,  {
             //    ttsCards: false,
             })
 		});

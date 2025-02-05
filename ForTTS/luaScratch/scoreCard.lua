@@ -2,6 +2,8 @@ local bounds = self.getBoundsNormalized()
 local sizeVector = bounds.size
 local sizeY = sizeVector.y
 
+local moveCardTimeSec = 0.5
+
 local nutTableColumnWidth = 0.167
 local nutTableRowHeight = 0.178
 local nutTableZOffset = -0.52
@@ -17,9 +19,9 @@ local nutTableDesc = {
 }
 
 local bottomCellColumnWidth = 0.2
-local bottomCellRowHeight = 0.1
+local bottomCellRowHeight = 0.16
 local bottomCellXOffset = -0.5
-local bottomCellZOffset = 0.25
+local bottomCellZOffset = 0.22
 
 local otherTableWiggle = -0.02
 
@@ -86,6 +88,6 @@ function onLoad()
 
     self.setSnapPoints(snapPoints)
 
-    Wait.frames(function() moveCardPrototype(self) end, 2)
+    Wait.time(function() moveCardPrototype(self) end, moveCardTimeSec)
 
 end

@@ -12,17 +12,15 @@ define([
 		Pistachio: gameUtils.nutTypePistachio,
 		Salter: "Salter",
 		Squirrel: "Squirrel",
-		SquirrelHunger: "SquirrelHunger",
 		StartingPlayer: "StartingPlayer",
+
+		// For demo.
+		Heart: "Heart",
+		Skull: "Skull",
+		Star: "Star",
 	}
 
-	var imagesByType = {}
-	imagesByType[markerTypes.Almond] = "images/Markers/Simple.Almond.png"
-	imagesByType[markerTypes.Cashew] = "images/Markers/Simple.Cashew.png"
-	imagesByType[markerTypes.Peanut] = "images/Markers/Simple.Peanut.png"
-	imagesByType[markerTypes.Pistachio] = "images/Markers/Simple.Pistachio.png"
-	imagesByType[markerTypes.Salter] = "images/Markers/Simple.Salter.png"
-	imagesByType[markerTypes.Squirrel] = "images/Markers/Simple.Squirrel.png"
+	console.log("Doug: gameUtils.nutTypeAlmond = ", gameUtils.nutTypeAlmond)
 
 	var shrinkage = 3
 	var markersPerPage = 42
@@ -38,10 +36,8 @@ define([
 			"z-index": `${gameUtils.markerZIndex}`,
 		})
 
-		var image = imagesByType[markerType]
-
 		if (image) {
-			gameUtils.addImage(node, ["image"], "image", image)
+			gameUtils.addImage(node, ["image", markerType], "image")
 		}
 
 		var text = additionalConfig.text ? additionalConfig.text: null
@@ -71,5 +67,5 @@ define([
 				contentCallback(pageOfMarkers, i)
 			}
         },
-    };
-});
+    }
+})

@@ -7,8 +7,6 @@ define([
 
     function addDieFace(pageOfItems, opt_styleDescs) {
         var dieFace = gameUtils.addDiv(pageOfItems, ["dieFace"], "dieFace")
-        console.log("Doug: gameUtils.dieHeight = " + gameUtils.dieHeight)
-        console.log("Doug: gameUtils.dieWidth = " + gameUtils.dieWidth)
         domStyle.set(dieFace, {
             height: gameUtils.dieHeight + "px",
             width: gameUtils.dieWidth + "px",
@@ -16,8 +14,6 @@ define([
 
         if (opt_styleDescs) {
             for (var styleDesc of opt_styleDescs) {
-                console.log("Doug: styleDesc = ", styleDesc)
-                console.log("Doug: styleDesc.img = ", styleDesc.img)
                 var image = gameUtils.addImage(dieFace, ["dieImage"], "dieImage", styleDesc.img)
                 domStyle.set(image, styleDesc)
             }

@@ -1,0 +1,27 @@
+.card.front.truck {
+	padding-top: 27px;
+	padding-bottom: 27px;
+	padding-left: 14px;
+	padding-right: 14px;
+}
+
+.card.front.truck div.title {
+	font-family: 'Courier';
+	font-weight: bold;
+	font-size: 36px;
+    white-space: pre-line;
+}
+
+.card.front.truck div.capacity {
+	padding-top: 20px;
+	font-family: 'Courier';
+	font-size: 30px;
+	font-weight: bold;
+}
+
+.card.front.truck div.reward {
+	padding-top: 20px;
+	font-family: 'Courier';
+	font-style: italic;
+	font-size: 30px;
+}

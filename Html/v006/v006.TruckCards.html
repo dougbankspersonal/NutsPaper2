@@ -1,0 +1,78 @@
+<html>
+
+<head>
+	<link rel="stylesheet" href="../css/main.css">
+	<link rel="stylesheet" href="../css/card.css">
+	<link rel="stylesheet" href="../css/truck.css">
+	<link rel="stylesheet" href="../css/image.css">
+	<link href='https://fonts.googleapis.com/css?family=Courier' rel='stylesheet'>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+    <style type="text/css">
+	</style>
+</head>
+
+<body id="body">
+	<!-- configure Dojo -->
+	<script>
+		// Instead of using data-dojo-config, we're creating a dojoConfig
+		// object *before* we load dojo.js; they're functionally identical,
+		// it's just easier to read this approach with a larger configuration.
+		var dojoConfig = {
+			baseUrl: "..",
+			async: true,
+			// This code registers the correct location of the "demo"
+			// package so we can load Dojo from the CDN whilst still
+			// being able to load local modules
+			packages: [
+				{ name: "dojo", location: "../../bower_components/dojo" },
+				{ name: "javascript", location: "javascript" }
+			]
+		};
+	</script>
+	<!-- load Dojo -->
+	<script src="../../../bower_components/dojo/dojo.js"></script>
+
+    <script>
+		require([
+		'javascript/cards',
+		'javascript/truckCards',
+		'javascript/gameUtils',
+		], function (cards, truckCards, gameUtils, dojo) {
+            var truckCardDescs = [
+			{
+					title: "Van",
+					capacity: "2 Boxes",
+					reward: "3 points",
+				},
+				{
+					title: "Van",
+					capacity: "2 Boxes",
+					reward: "3 points",
+				},
+				{
+					title: "Cargo Van",
+					capacity: "3 Boxes",
+					reward: "6 points",
+				},
+				{
+					title: "Semi",
+					capacity: "5 Boxes",
+					reward: "15 points",
+				},
+            ]
+			var numPlayers = 6
+            var numTruckCardsPerPlayer = truckCardDescs.length
+		    var numTruckCards = numPlayers * numTruckCardsPerPlayer
+
+			function addTruckCard(parent, index) {
+				return truckCards.addNthTruckCard(parent, index, truckCardDescs)
+			}
+
+			cards.addCards("Truck", "#ffcc00", numTruckCards, addTruckCard,  {
+                bigCards: true,
+            })
+		});
+    </script>
+</body>
+
+</html>

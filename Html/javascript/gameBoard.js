@@ -22,7 +22,6 @@ define([
 
 	var numSquirrelRows = 0
 
-	var maxRowsPerPage
 	var firstFactoryColumnIndexThisStrip
 
 	// Add a sideBar to the row with labels & whatnot.
@@ -155,8 +154,8 @@ define([
 		return standardSlot
 	}
 
-	function adjustNumFactoryColumnsInThisRow(numFactoryColumnsInThisRow) {
-		var numFactoryColumnsLeft = gameUtils.getFactoryColumnCount() - firstFactoryColumnIndexThisStrip
+	function adjustNumFactoryColumnsInThisRow(factoryColumnCount, numFactoryColumnsInThisRow) {
+		var numFactoryColumnsLeft = factoryColumnCount - firstFactoryColumnIndexThisStrip
 		numFactoryColumnsInThisRow = Math.min(numFactoryColumnsLeft, numFactoryColumnsInThisRow)
 		return numFactoryColumnsInThisRow
 	}
@@ -184,33 +183,11 @@ define([
 		return standardSlot
 	}
 
-	function getSquirrelRangeStartForRow(rowType, numSquirrelRows)
-	{
-		switch (rowType) {
-			case rowTypes.Roaster:
-			case rowTypes.Salter:
-				{
-					return null
-				}
-			// deliberate fallthrough
-			case rowTypes.Squirrel:
-				{
-					var squirrelRangeStart = numSquirrelRows * gameUtils.getFactoryColumnCount() + 1
-					return squirrelRangeStart
-				}
-			default:
-				{
-
-					return [null, null]
-				}
-		}
-	}
-
-	function addNColumnRowWithElements(parentNode, rowIndex, rowType, numFactoryColumnsInThisRow, opt_configs) {
+	function addNColumnRowWithElements(parentNode, rowIndex, rowType, factoryColumnCount, numFactoryColumnsInThisRow, opt_configs) {
 		var configs = opt_configs ? opt_configs : {}
 		var squirrelRangeStart
-		if (rowType == rowTypes.Squirrel) {
-			squirrelRangeStart = numSquirrelRows * gameUtils.getFactoryColumnCount() + 1
+		if (rowType == rowTypes.RowTypes.Squirrel) {
+			squirrelRangeStart = numSquirrelRows * factoryColumnCount + 1
 		}
 		if (squirrelRangeStart != null) {
 			numSquirrelRows++
@@ -252,43 +229,41 @@ define([
 		return row
 	}
 
-	function tweakOrderRowCardSlot(node)	{
-		var cardSlotHeight = gameUtils.standardRowHeight/2 - 2 * (gameUtils.ordersRowMarginTop)
+	function tweakBoxesRowCardSlot(node)	{
+		var cardSlotHeight = gameUtils.standardRowHeight/2 - 2 * (gameUtils.boxesRowMarginTop)
 		domStyle.set(node, {
 			"width": `${gameUtils.cardWidth}px`,
 			"height": `${cardSlotHeight}px`,
-			"margin-top": `${gameUtils.ordersRowMarginTop}px`,
+			"margin-top": `${gameUtils.boxesRowMarginTop}px`,
 			"display": "block",
 		})
 	}
 
-	function addNColumnOrdersRow(parentNode, rowIndex, rowType, numFactoryColumnsInThisRow, opt_sideBarInfo) {
-		addNColumnRowWithElements(parentNode, rowIndex, rowType, numFactoryColumnsInThisRow, {
-			classArray: ["orders"],
+	function addNColumnBoxesRow(parentNode, rowIndex, rowType, factoryColumnCount, numFactoryColumnsInThisRow, opt_sideBarInfo) {
+		addNColumnRowWithElements(parentNode, rowIndex, rowType, factoryColumnCount, numFactoryColumnsInThisRow, {
+			classArray: ["boxes"],
 			sideBarInfo: opt_sideBarInfo,
 			darkBackground: true,
-			customRowHeight: gameUtils.ordersRowHeight,
+			customRowHeight: gameUtils.boxesRowHeight,
 			elementConfigs: {
 				classArray: ["cardSlot"],
-				tweakElement: tweakOrderRowCardSlot,
+				tweakElement: tweakBoxesRowCardSlot,
 				hideBeltBottom: true,
 			}
 		})
 	}
 
-	function addNColumnStrip(parentNode, numFactoryColumnsInThisRow, opt_addSidebar) {
+	function addNColumnStrip(parentNode, rowTypesForVersion, factoryColumnCount, numFactoryColumnsInThisRow, maxRowsPerPage, opt_addSidebar) {
 		var pageNode = gameUtils.addPageOfItems(parentNode)
-
-		var orderedRowTypes = versionDetails.orderedRowTypes
 
 		numSquirrelRows = 0
 
-		numFactoryColumnsInThisRow = adjustNumFactoryColumnsInThisRow(numFactoryColumnsInThisRow)
+		numFactoryColumnsInThisRow = adjustNumFactoryColumnsInThisRow(factoryColumnCount, numFactoryColumnsInThisRow)
 
 		var rowsThisPage = 0
-		for (let i = 0; i < orderedRowTypes.length; i++) {
+		for (let i = 0; i < rowTypesForVersion.length; i++) {
 			var rowIndex = i
-			var rowType = orderedRowTypes[i]
+			var rowType = rowTypesForVersion[i]
 
 			if (rowsThisPage >= maxRowsPerPage)
 			{
@@ -297,16 +272,16 @@ define([
 			}
 
 			switch (rowType) {
-				case rowTypes.Number:
+				case rowTypes.RowTypes.Number:
 					addNColumnRowWithNumbers(pageNode, rowIndex, numFactoryColumnsInThisRow, {
 						classArray: ["numbers"],
 						sideBarInfo: opt_addSidebar? {
 							title: "",
 						} : null,
 					})
-					break;
-				case rowTypes.Dispenser:
-					addNColumnRowWithElements(pageNode, rowIndex, rowType, numFactoryColumnsInThisRow, {
+					break
+				case rowTypes.RowTypes.Dispenser:
+					addNColumnRowWithElements(pageNode, rowIndex, rowType, factoryColumnCount, numFactoryColumnsInThisRow, {
 						classArray: ["nutDispensers"],
 						sideBarInfo: opt_addSidebar? {
 							title: "Dispensers",
@@ -315,42 +290,38 @@ define([
 							hideBeltTop: true,
 						},
 					})
-					break;
-				case rowTypes.Conveyor:
+					break
+				case rowTypes.RowTypes.Conveyor:
+				case rowTypes.RowTypes.Path:
+					var title = rowTypes.rowTitle(rowType)
 					addNColumnRowWithConveyors(pageNode, rowIndex, numFactoryColumnsInThisRow, {
 						classArray: ["conveyors"],
 						sideBarInfo: opt_addSidebar? {
-							title: "Conveyor",
+							title: title,
 						} : null,
 					})
-					break;
-				case rowTypes.Roaster:
-					addNColumnRowWithElements(pageNode, rowIndex, rowType, numFactoryColumnsInThisRow, {
+					break
+				case rowTypes.RowTypes.Heart:
+				case rowTypes.RowTypes.Skull:
+				case rowTypes.RowTypes.Start:
+				case rowTypes.RowTypes.End:
+				case rowTypes.RowTypes.Salter:
+				case rowTypes.RowTypes.Roaster:
+				case rowTypes.RowTypes.Squirrel:
+					var title = rowTypes.rowTitle(rowType)
+					addNColumnRowWithElements(pageNode, rowIndex, rowType, factoryColumnCount, numFactoryColumnsInThisRow, {
 						sideBarInfo: opt_addSidebar? {
-							title: "Roasters",
+							title: title,
 						} : null,
 					})
-					break;
-				case rowTypes.Salter:
-					addNColumnRowWithElements(pageNode, rowIndex, rowType, numFactoryColumnsInThisRow, {
-						sideBarInfo: opt_addSidebar? {
-							title: "Salters",
-						} : null,
-					})
-					break;
-				case rowTypes.Squirrel:
-					addNColumnRowWithElements(pageNode, rowIndex, rowType, numFactoryColumnsInThisRow, {
-						sideBarInfo: opt_addSidebar? {
-							title: "Squirrel",
-						} : null,
-					})
-					break;
-				case rowTypes.Order:
+					break
+				case rowTypes.RowTypes.Boxes:
+					var title = rowTypes.rowTitle(rowType)
 					var sideBarInfo = opt_addSidebar? {
-						title: "Orders",
+						title: title,
 					} : null
-					addNColumnOrdersRow(pageNode, rowIndex, rowType, numFactoryColumnsInThisRow, sideBarInfo)
-					break;
+					addNColumnBoxesRow(pageNode, rowIndex, rowType, factoryColumnCount, numFactoryColumnsInThisRow, sideBarInfo)
+					break
 			}
 			rowsThisPage++
 		}
@@ -358,32 +329,41 @@ define([
 	}
 
 	function createBoard(configs) {
-		maxRowsPerPage =  configs.maxRowsPerPage
-		var columnsPerStrip = configs.columnsPerStrip
+		var rowTypesForVersion = configs.rowTypesForVersion
+		var factoryColumnCount = configs.factoryColumnCount
+		var maxRowsPerPage
+		if (configs.maxRowsPerPage) {
+			maxRowsPerPage = configs.maxRowsPerPage
+		} else {
+			maxRowsPerPage = rowTypesForVersion.length
+		}
+
+		var columnsPerStrip
+		if (configs.columnsPerStrip) {
+			columnsPerStrip = configs.columnsPerStrip
+		} else {
+			columnsPerStrip = factoryColumnCount + 1
+		}
+
 		var bodyNode = dom.byId("body");
 
 		firstFactoryColumnIndexThisStrip = 0
-		if (configs.factoryColumnCount) {
-			gameUtils.setFactoryColumnCount(configs.factoryColumnCount)
-		} else {
-			gameUtils.setFactoryColumnCount(versionDetails.factoryColumnCount)
-		}
 
 		// Special case if we are doing all the columns in one go.
-		if (columnsPerStrip >= gameUtils.getFactoryColumnCount()) {
-			addNColumnStrip(bodyNode, gameUtils.getFactoryColumnCount(), true)
+		if (columnsPerStrip >= factoryColumnCount) {
+			addNColumnStrip(bodyNode, rowTypesForVersion, factoryColumnCount, factoryColumnCount, maxRowsPerPage, true)
 			return
 		}
 
 		// Put the sideBar alone.
-		if (columnsPerStrip < gameUtils.getFactoryColumnCount()) {
-			addNColumnStrip(bodyNode, 0, true)
+		if (columnsPerStrip < factoryColumnCount) {
+			addNColumnStrip(bodyNode, rowTypesForVersion, factoryColumnCount, 0, maxRowsPerPage, true)
 		}
 
-		var outstandingNumColumns = gameUtils.getFactoryColumnCount()
+		var outstandingNumColumns = factoryColumnCount
 		while (outstandingNumColumns > 0) {
 			var numFactoryColumnsInThisRow = Math.min(outstandingNumColumns, columnsPerStrip)
-			addNColumnStrip(bodyNode, numFactoryColumnsInThisRow)
+			addNColumnStrip(bodyNode, rowTypesForVersion, factoryColumnCount, numFactoryColumnsInThisRow, maxRowsPerPage)
 			outstandingNumColumns = outstandingNumColumns - numFactoryColumnsInThisRow
 		}
 	}
@@ -397,6 +377,9 @@ define([
 
 	// columnnIndex is 0-based, ignoring the sideBar.
 	function addMarker(rowIndex, columnIndex, markerType, opt_classArray, opt_additionalConfig) {
+		console.log("Doug: rowIndex = ", rowIndex)
+		console.log("Doug: columnIndex = ", columnIndex)
+		console.log("Doug: markerType = ", markerType)
 		var rowId = gameUtils.getRowId(rowIndex)
 		var rowNode = dom.byId(rowId)
 		// add a marker to this element.
@@ -488,7 +471,6 @@ define([
 
 	function highlightCrossTile(rowIndex, columnIndex, color, opt_translucentColor) {
 		var crossTile = getStoredCrossTile(rowIndex, columnIndex)
-		console.log("Doug: crossTile = ", crossTile)
 		if (crossTile) {
 			if (domClass.contains(crossTile, "ghost") && opt_translucentColor)
 			{
@@ -506,11 +488,11 @@ define([
 		if (!slot) {
 			return null
 		}
-		// highlight elements, markers, order cards in this slot.
+		// highlight elements, markers, box cards in this slot.
 		var elementId = gameUtils.getElementId(columnIndex)
 		highlightQueryResult(slot, "#" + elementId, color)
 		highlightQueryResult(slot, ".marker", color)
-		highlightQueryResult(slot, ".order", color)
+		highlightQueryResult(slot, ".box", color)
 		return slot
 	}
 
@@ -581,12 +563,13 @@ define([
 	}
 
 	// columnnIndex is 0-based, ignoring the sideBar.
-	function addOrder(nutType, rowIndex, columnIndex, opt_classArray)
-	{		var ordersRowId = gameUtils.getRowId(rowIndex)
-		var ordersRow = dom.byId(ordersRowId)
-		var element = gameUtils.getElementFromRow(ordersRow, columnIndex)
+	function addBox(nutType, rowIndex, columnIndex, opt_classArray)
+	{
+		var boxesRowId = gameUtils.getRowId(rowIndex)
+		var boxesRow = dom.byId(boxesRowId)
+		var element = gameUtils.getElementFromRow(boxesRow, columnIndex)
 		// add an oredr card to this element.
-		return cards.addOrderCardSingleNut(element, nutType, columnIndex, opt_classArray)
+		return cards.addBoxCardSingleNut(element, nutType, columnIndex, opt_classArray)
 	}
 
 	// This returned object becomes the defined value of this module
@@ -595,7 +578,7 @@ define([
 		createBoard: createBoard,
 
 		addMarker: addMarker,
-		addOrder: addOrder,
+		addBox: addBox,
 		addCrossTile: addCrossTile,
 		highlightPath: highlightPath,
 		highlightQueryResult: highlightQueryResult,

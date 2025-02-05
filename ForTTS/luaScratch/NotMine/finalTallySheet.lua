@@ -1,8 +1,8 @@
 -- Global Variables
-XML = {}
-Scores = {}
-RowsAdded = 1
-ColumnsAdded = 1
+local XML = {}
+local Scores = {}
+local RowsAdded = 1
+local ColumnsAdded = 1
 
 function onLoad(saved_data)
   XML = UI.GetXmlTable();

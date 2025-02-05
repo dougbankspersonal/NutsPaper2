@@ -1,14 +1,17 @@
 define([
     'dojo/dom',
+	'javascript/rowTypes',
+	'javascript/versionDetails',
 	'dojo/dom-construct',
 	'dojo/dom-style',
 	"dojo/query",
 	'dojo/domReady!'
-], function(dom, domConstruct, domStyle, query) {
+], function(dom, rowTypes, versionDetails, domConstruct, domStyle, query) {
+	var pixelsPerInch = 300
 	var pageNumber = 0
 	var cardNumber = 0
 
-	var factoryColumnCount
+	var pageOfItemsContentsPaddingPx = 10
 
 	var sideBarWidth = 360
 	var standardBorderWidth = 2
@@ -17,7 +20,7 @@ define([
 	var slotWidth = 180
 
 	var standardRowHeight = 180;
-	var ordersRowHeight = standardRowHeight * 0.5
+	var boxesRowHeight = standardRowHeight * 0.5
 	var elementHeight = slotWidth - 20
 	var elementWidth = elementHeight
 
@@ -51,8 +54,10 @@ define([
 	// put the belt in the center of a slot?
 	var beltCenterOffsetInTile = slotWidth/2 - crossTileOnBoardLeftMargin - crossTileBorder
 
-	var printedPageWidth = 816
-	var printedPageHeight = 1056
+	var printedPagePortraitWidth = 816
+	var printedPagePortraitHeight = 1056
+	var printedPageLandscapeWidth = printedPagePortraitHeight
+	var printedPageLandscapeHeight = printedPagePortraitWidth
 	var pagePadding = 10
 
 	// Cards.
@@ -68,24 +73,12 @@ define([
 	var ttsCardPageWidth = 10 * cardWidth
 	var ttsBigCardPageWidth = 10 * bigCardWidth
 
-	var ordersRowMarginTop = 5
-
-	var demoBoardNoCardsHeight = standardBorderWidth + 10 * standardRowHeight + ordersRowHeight + standardBorderWidth
-	var demoBoardWithCardsHeight = standardBorderWidth + 10 * standardRowHeight + standardBorderWidth + ordersRowMarginTop + cardBorderWidth + cardHeight + cardBorderWidth
-
-	console.log("Doug: standardBorderWidth = ", standardBorderWidth)
-	console.log("Doug: standardRowHeight = ", standardRowHeight)
-	console.log("Doug: ordersRowMarginTop = ", ordersRowMarginTop)
-	console.log("Doug: cardBorderWidth = ", cardBorderWidth)
-	console.log("Doug: cardHeight = ", cardHeight)
-	console.log("Doug: demoBoardWithCardsHeight = ", demoBoardWithCardsHeight)
+	var boxesRowMarginTop = 5
 
 	var nutTypeAlmond = "Almond"
 	var nutTypeCashew = "Cashew"
 	var nutTypePeanut = "Peanut"
 	var nutTypePistachio = "Pistachio"
-	var nutTypeWalnut = "Walnut"
-
 	var configs = {}
 
 	var nutTypes = [
@@ -95,12 +88,9 @@ define([
 		nutTypePistachio,
 	]
 
-	var nutTypeImages = {}
-	nutTypeImages[nutTypeAlmond] = "images/NutProps/Simple.Almond.png"
-	nutTypeImages[nutTypeCashew] = "images/NutProps/Simple.Cashew.png"
-	nutTypeImages[nutTypePeanut] = "images/NutProps/Simple.Peanut.png"
-	nutTypeImages[nutTypePistachio] = "images/NutProps/Simple.Pistachio.png"
-	nutTypeImages[nutTypeWalnut] = "images/NutProps/Simple.Walnut.png"
+	var starImage = "images/Markers/Simple.Star.png"
+	var salterImage = "images/Markers/Simple.Salter.png"
+	var squirrelImage = "images/Markers/Simple.Squirrel.png"
 
 	var saltedTypes = [
 		"Salted",
@@ -184,16 +174,74 @@ define([
 		return elementNodes[0]
 	}
 
-	function addImage(parent, opt_classArray, id, image) {
+	function addImage(parent, opt_classArray, id, opt_image) {
 		var classArray = opt_classArray ? opt_classArray: []
+		if (!opt_image) {
+			classArray.unshift("pseudoImage")
+		}
 		var classes = classArray.join(" ")
-		var node = domConstruct.create("img", {
+		var props = {
 			innerHTML: "",
 			className: classes,
 			id: id,
-			src: image
-		}, parent)
+		}
+		var node
+		if (opt_image) {
+			props.src = opt_image
+			node = domConstruct.create("img", props, parent)
+		} else {
+			node = domConstruct.create("div", props, parent)
+		}
 		return node
+	}
+
+	function getPageWidth(configs) {
+		if (configs.demoBoard) {
+			var demoBoardWidth = sideBarWidth + versionDetails.getFactoryColumnCount() * slotWidth + 2 * standardBorderWidth
+			return demoBoardWidth
+		}
+		if (configs.landscape) {
+			return printedPageLandscapeWidth
+		}
+
+		if (configs.ttsCards) {
+			if (configs.bigCards) {
+				return ttsBigCardPageWidth
+			} else {
+				return ttsCardPageWidth
+			}
+		}
+
+		if (configs.ttsDie) {
+			return dieColulmnsAcross * dieWidth
+		}
+
+		return printedPagePortraitWidth
+	}
+
+
+	var getPageHeight = function() {
+		if (configs.landscape) {
+			return printedPageLandscapeHeight
+		}
+		if (configs.demoBoard) {
+			var rowTypesForVersion = versionDetails.getRowTypes()
+			var numRows = rowTypesForVersion.length
+			var lastRowType = rowTypesForVersion[numRows - 1]
+			if (lastRowType == rowTypes.RowTypes.Boxes) {
+				var numNonOrderRows = numRows - 1
+				if (configs.noSpaceForCards) {
+					return 2 * standardBorderWidth + numNonOrderRows * standardRowHeight + boxesRowHeight
+				}
+				else
+				{
+					return 2 * standardBorderWidth + numNonOrderRows * standardRowHeight + boxesRowMarginTop + cardBorderWidth + cardHeight + cardBorderWidth
+				}
+			} else {
+				return numRows * standardRowHeight
+			}
+		}
+		return null
 	}
 
 	function addPageOfItems(parent, opt_classArray) {
@@ -206,9 +254,6 @@ define([
 		}
 
 		var pageOfItems = addDiv(parent, classArray, pageId)
-		domStyle.set(pageOfItems, {
-			padding: pagePadding + "px",
-		})
 		if (configs.ttsCards || configs.ttsDie) {
 			domStyle.set(pageOfItems, {
 				display: "inline-block",
@@ -217,19 +262,8 @@ define([
 
 		var pageOfItemsContents = addDiv(pageOfItems, ["pageOfItemsContents"], "pageOfItemsContents")
 
-		var demoBoardWidth = sideBarWidth + getFactoryColumnCount() * slotWidth + 2 * standardBorderWidth
-
-		var width = printedPageWidth
-		var height = null
-
-		if (configs.demoBoard) {
-			width = demoBoardWidth
-			if (configs.noSpaceForCards) {
-				height = demoBoardNoCardsHeight
-			} else {
-				height = demoBoardWithCardsHeight
-			}
-		}
+		var width = getPageWidth(configs)
+		var height = getPageHeight(configs)
 
 		if (configs.ttsCards || configs.ttsDie) {
 			domStyle.set(pageOfItemsContents, {
@@ -241,20 +275,9 @@ define([
 			})
 		}
 
-		if (configs.ttsCards) {
-			if (configs.bigCards) {
-				width = ttsBigCardPageWidth
-			} else {
-				width = ttsCardPageWidth
-			}
-		}
-
-		if (configs.ttsDie) {
-			width = dieColulmnsAcross * dieWidth
-		}
-
 		domStyle.set(pageOfItemsContents, {
 			width: width + "px",
+			padding: pageOfItemsContentsPaddingPx + "px",
 		})
 
 		if (height !== null) {
@@ -363,10 +386,10 @@ define([
 		return configs
 	}
 
-	function getIndexForFirstRowType(orderedRowTypes, thisRowType) {
-		for (var i  = 0; i < orderedRowTypes.length; i++)
+	function getIndexForFirstRowType(rowTypesForVersion, thisRowType) {
+		for (var i  = 0; i < rowTypesForVersion.length; i++)
 		{
-			var rowType = orderedRowTypes[i]
+			var rowType = rowTypesForVersion[i]
 			if (rowType == thisRowType) {
 				return i
 			}
@@ -379,21 +402,13 @@ define([
 		return dom.byId(slotId)
 	}
 
-	var setFactoryColumnCount = function(count) {
-		factoryColumnCount = count
-	}
-
-	var getFactoryColumnCount = function() {
-		return factoryColumnCount
-	}
-
     // This returned object becomes the defined value of this module
     return {
 		slotWidth: slotWidth,
 		standardBorderWidth: standardBorderWidth,
 		beltCenterOffsetInTile: beltCenterOffsetInTile,
 		standardRowHeight: standardRowHeight,
-		ordersRowHeight: ordersRowHeight,
+		boxesRowHeight: boxesRowHeight,
 		elementHeight: elementHeight,
 		elementWidth: elementWidth,
 		arrowWidth: elementWidth/2,
@@ -414,7 +429,6 @@ define([
 		nutTypeCashew: nutTypeCashew,
 		nutTypePeanut: nutTypePeanut,
 		nutTypePistachio: nutTypePistachio,
-		nutTypeWalnut: nutTypeWalnut,
 
 		cardHeight: cardHeight,
 		cardWidth: cardWidth,
@@ -425,7 +439,9 @@ define([
 		bigCardBackFontSize: bigCardBackFontSize,
 
 		nutTypes: nutTypes,
-		nutTypeImages: nutTypeImages,
+		starImage: starImage,
+		salterImage: salterImage,
+		squirrelImage: squirrelImage,
 
 		saltedTypes: saltedTypes,
 		numSaltedTypes: saltedTypes.length,
@@ -436,7 +452,7 @@ define([
 		roastedTypeImages: roastedTypeImages,
 
 		wildImage: wildImage,
-		ordersRowMarginTop: ordersRowMarginTop,
+		boxesRowMarginTop: boxesRowMarginTop,
 		cardSlotOutlineHeight: cardSlotOutlineHeight,
 		elementZIndex: elementZIndex,
 		markerZIndex: markerZIndex,
@@ -446,11 +462,14 @@ define([
 		crossTileOnBoardLeftMargin: crossTileOnBoardLeftMargin,
 		crossTileOnBoardTopMargin: crossTileOnBoardTopMargin,
 		sideBarWidth: sideBarWidth,
-		printedPageWidth: printedPageWidth,
-		printedPageHeight: printedPageHeight,
+		printedPagePortraitWidth: printedPagePortraitWidth,
+		printedPagePortraitHeight: printedPagePortraitHeight,
+		printedPageLandscapeWidth: printedPageLandscapeWidth,
+		printedPageLandscapeHeight: printedPageLandscapeHeight,
 		dieWidth: dieWidth,
 		dieHeight: dieHeight,
 		pagePadding: pagePadding,
+		pixelsPerInch: pixelsPerInch,
 
 		addDiv: addDiv,
 		addImage: addImage,
@@ -469,7 +488,5 @@ define([
 		getElementId: getElementId,
 		getElementFromRow: getElementFromRow,
 		addStandardBorder: addStandardBorder,
-		setFactoryColumnCount: setFactoryColumnCount,
-		getFactoryColumnCount: getFactoryColumnCount,
 	};
 });
