@@ -30,7 +30,7 @@ define([
             var nutType = nut.type
             var prop = gameUtils.addDiv(wrapper, ["requirement"], "requirement")
             console.log("Doug: 003 nutType = ", nutType)
-            gameUtils.addImage(prop, ["nutType", nutType], "nutType")
+            gameUtils.addImage(prop, "nutType", ["nutType", nutType])
         }
 
         var points = shipmentCardConfig.points

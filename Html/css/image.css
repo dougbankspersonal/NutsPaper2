@@ -6,17 +6,17 @@ div.pseudoImage {
 	width: 100%;
 }
 
-div.pseudoImage.nutType.Almond {
-	background-image: url("../images/NutProps/Simple.Almond.png");
+div.pseudoImage.Almond {
+	background-image: url("../images/NutProps/Almond.png");
 }
-div.pseudoImage.nutType.Peanut {
-	background-image: url("../images/NutProps/Simple.Peanut.png");
+div.pseudoImage.Peanut {
+	background-image: url("../images/NutProps/Peanut.png");
 }
-div.pseudoImage.nutType.Cashew {
-	background-image: url("../images/NutProps/Simple.Cashew.png");
+div.pseudoImage.Cashew {
+	background-image: url("../images/NutProps/Cashew.png");
 }
-div.pseudoImage.nutType.Pistachio {
-	background-image: url("../images/NutProps/Simple.Pistachio.png");
+div.pseudoImage.Pistachio {
+	background-image: url("../images/NutProps/Pistachio.png");
 }
 
 div.pseudoImage.LeftArrow {

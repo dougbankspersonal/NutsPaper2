@@ -14,7 +14,7 @@ define([
 
         if (opt_styleDescs) {
             for (var styleDesc of opt_styleDescs) {
-                var image = gameUtils.addImage(dieFace, ["dieImage"], "dieImage", styleDesc.img)
+                var image = gameUtils.addImage(dieFace, "dieImage", ["dieImage"], styleDesc.img)
                 domStyle.set(image, styleDesc)
             }
         }

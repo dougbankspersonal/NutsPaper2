@@ -25,7 +25,7 @@ define([
 			"height": `${gameUtils.arrowHeight}px`,
         })
 
-        gameUtils.addImage(node, ["image", arrowType], "image")
+        gameUtils.addImage(node, "image", ["image", arrowType])
 
         return node
 	}

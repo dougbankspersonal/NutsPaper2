@@ -3,8 +3,7 @@ define([
 	'javascript/gameUtils',
 	'dojo/dom-style',
 	'dojo/domReady!'
-], function(dom, gameUtils, domStyle){
-
+], function(dom, gameUtils, domStyle) {
 	var markerTypes = {
 		Almond: gameUtils.nutTypeAlmond,
 		Cashew: gameUtils.nutTypeCashew,
@@ -18,6 +17,21 @@ define([
 		Heart: "Heart",
 		Skull: "Skull",
 		Star: "Star",
+	}
+
+	var markerTypeToImageMap = {
+		Almond: "almond.png",
+		Cashew: "cashew.png",
+		Peanut: "peanut.png",
+		Pistachio: "pistachio.png",
+		Salter: "salter.png",
+		Squirrel: "squirrel.png",
+		StartingPlayer: "startingPlayer.png",
+
+		// For demo.
+		Heart: "heart.png",
+		Skull: "skull.png",
+		Star: "star.png",
 	}
 
 	console.log("Doug: gameUtils.nutTypeAlmond = ", gameUtils.nutTypeAlmond)
@@ -36,9 +50,7 @@ define([
 			"z-index": `${gameUtils.markerZIndex}`,
 		})
 
-		if (image) {
-			gameUtils.addImage(node, ["image", markerType], "image")
-		}
+		gameUtils.addImage(node, "image", ["image", markerType])
 
 		var text = additionalConfig.text ? additionalConfig.text: null
 

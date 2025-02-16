@@ -88,9 +88,9 @@ define([
 		nutTypePistachio,
 	]
 
-	var starImage = "images/Markers/Simple.Star.png"
-	var salterImage = "images/Markers/Simple.Salter.png"
-	var squirrelImage = "images/Markers/Simple.Squirrel.png"
+	var starImage = "images/Markers/Star.png"
+	var salterImage = "images/Markers/Salter.png"
+	var squirrelImage = "images/Markers/Squirrel.png"
 
 	var saltedTypes = [
 		"Salted",
@@ -174,7 +174,7 @@ define([
 		return elementNodes[0]
 	}
 
-	function addImage(parent, opt_classArray, id, opt_image) {
+	function addImage(parent, id, opt_classArray, opt_image) {
 		var classArray = opt_classArray ? opt_classArray: []
 		if (!opt_image) {
 			classArray.unshift("pseudoImage")

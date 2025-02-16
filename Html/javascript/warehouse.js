@@ -43,7 +43,7 @@ define([
         var numTypeIndex = getRandomNutTypeIndex()
         var nutType = gameUtils.nutTypes[numTypeIndex]
 		console.log("Doug: 004 nutType = ", nutType)
-        var image = gameUtils.addImage(parent, ["nutType", nutType], "nutType")
+        var image = gameUtils.addImage(parent, "nutType", ["nutType", nutType])
         domStyle.set(image, {
             width: `${imageSizePx}px`,
             height: `${imageSizePx}px`,
@@ -52,7 +52,7 @@ define([
     }
 
     function addStarIcon(parent) {
-        var image = gameUtils.addImage(parent, ["star"], "star", gameUtils.starImage)
+        var image = gameUtils.addImage(parent, "star", ["star"], gameUtils.starImage)
         domStyle.set(image, {
             width: `${imageSizePx}px`,
             height: `${imageSizePx}px`,
@@ -61,7 +61,7 @@ define([
     }
 
     function addSaltIcon(parent) {
-        var image = gameUtils.addImage(parent, ["salt"], "salt", "images/Markers/Simple.Salter.png")
+        var image = gameUtils.addImage(parent, "salt", ["salt"], "images/Markers/Salter.png")
         domStyle.set(image, {
             width: `${imageSizePx * 0.6}px`,
             height: `${imageSizePx * 0.6}px`,

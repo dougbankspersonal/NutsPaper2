@@ -77,7 +77,7 @@ define([
 
 		var prop = gameUtils.addDiv(nutPropsTopNode, ["nutProp", "nutType"], "nutType")
 		console.log("Doug: 001 nutType = ", nutType)
-		gameUtils.addImage(prop, ["nutType", nutType], "nutType")
+		gameUtils.addImage(prop, "nutType", ["nutType", nutType])
 		return wrapper
 	}
 
