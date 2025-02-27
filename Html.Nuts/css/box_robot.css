@@ -1,0 +1,30 @@
+
+div.box_robot {
+    position: relative;
+}
+
+div.box_robot div.quadrant {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+div.box_robot div.quadrant div.pseudo_image {
+    position:absolute;
+}
+
+div.box_robot #quadrant_0 {
+    transform: rotate(0deg)
+}
+
+div.box_robot #quadrant_1 {
+    transform: rotate(90deg)
+}
+
+div.box_robot #quadrant_2 {
+    transform: rotate(180deg)
+}
+
+div.box_robot #quadrant_3 {
+    transform: rotate(270deg)
+}

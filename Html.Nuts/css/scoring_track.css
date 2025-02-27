@@ -1,0 +1,25 @@
+.row {
+	position: relative;
+    display: flex;
+	align-items: center;
+	break-inside: avoid;
+	box-sizing: border-box;
+    width: fit-content;
+    overflow: hidden;
+    font-family: "DynaPuff", serif;;
+}
+
+.row.title_row {
+    font-size: 36px;
+    font-weight: bold;
+}
+
+.row.scoring_row {
+    font-weight: bold;
+}
+
+.row.scoring_row .scoring_cell {
+    border-radius: 50%;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
