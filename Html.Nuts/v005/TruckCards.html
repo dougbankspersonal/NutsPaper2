@@ -46,11 +46,10 @@
         // Config setup
         //
         //-------------------------------------------------
-        gameUtils.setConfigs({
-          bigCards: true,
+        gameUtils.setSystemConfigs({
           ttsCards: true,
+          skipBacks: true,
         });
-
 
         //-------------------------------------------------
         //
@@ -58,7 +57,12 @@
         //
         //-------------------------------------------------
         // Main code block
-        cards.addCards("Truck", "#88aaee", truckCards.numTruckCards, truckCards.addTruckCard);
+        cards.addCards(
+          "Truck",
+          "#88aaee",
+          truckCards.numTruckCards,
+          truckCards.addTruckCard
+        );
       });
     </script>
   </body>

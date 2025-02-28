@@ -8,7 +8,11 @@ local function moveTokenPrototype(theToken)
     })
 end
 
--- If this is the source score card, move it out of the way.
+--[[
+-- TTS system calls.
+]]
+--[[
 function onLoad()
     Wait.time(function() moveTokenPrototype(self) end, moveTokenSec)
 end
+]]

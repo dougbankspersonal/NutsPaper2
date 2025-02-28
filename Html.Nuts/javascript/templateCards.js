@@ -65,7 +65,7 @@ define([
             "top": `${pointsTop}px`,
             "text-align": "center",
             "height": `${pointsHeight}px`,
-            "width": `${cardWidth - padding*2}px`,
+            "width": `${smallCardWidth - padding*2}px`,
         })
 
         if (points == 1) {

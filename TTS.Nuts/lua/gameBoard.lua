@@ -461,32 +461,11 @@ local function resetOrderSlotToDispenserTypeMap()
     end
 end
 
--- Member functions
-function onLoad()
-    boardBounds = self.getBounds()
-    boardSize = boardBounds.size
-    boardThickness = boardSize.y
-
-    zoneToClone = getObjectFromGUID(zoneToCloneGUID)
-    thinZoneToClone = getObjectFromGUID(thinZoneToCloneGUID)
-    local orderDeck = getObjectFromGUID(orderDeckGUID)
-    orderDeckPosition = orderDeck.getPosition()
-    orderDiscardTile = getObjectFromGUID(orderDiscardTileGUID)
-
-    -- Setup zones to track order deck and discard deck.
-    orderDeckDiscardZone = zoneToClone.clone()
-    orderDeckZone = zoneToClone.clone()
-
-    orderDeckDiscardZone.setTags({"orders"})
-    orderDeckZone.setTags({"orders"})
-
-    local orderDeckDiscardZonePosition = orderDiscardTile.getPosition()
-    local orderDeckZonePosition = orderDeck.getPosition()
-    orderDeckDiscardZone.setPosition(orderDeckDiscardZonePosition)
-    orderDeckZone.setPosition(orderDeckZonePosition)
-end
-
-function setup()
+--[[
+Called by other files with "call".
+]]
+--[[
+function setupGameBoard()
     addDispenserSnapPointsAndZones()
     addSalterSnapPoints()
     addSquirrelSnapPointsAndZones()
@@ -495,7 +474,7 @@ function setup()
     self.setSnapPoints(snapPoints)
 end
 
-function cleanup()
+function cleanupGameBoard()
     dispenserZones = {}
     orderCardZones = {}
     crossTileZones = {}
@@ -527,22 +506,14 @@ function cleanup()
     end
 end
 
-function discardOrderCards()
-    print("Doug: discardOrderCard")
-    discardNextOrderCard()
-end
-
-function resolveOrders()
+function refillOrderSlots()
     resetOrderSlotToDispenserTypeMap()
 
-    for _, orderCardZone in pairs(orderCardZones) do
-        local orderCard = getObjectInZone(orderCardZone, isOrderCard)
-        if orderCard then
-            if orderCardMatchesDispenserForZone(orderCard, orderCardZone) then
-                prepForDiscard(orderCard)
-            end
-        end
-    end
+    -- 1. Figure out which order slots are empty.
+    local emptyOrderZones = findEmptyOrderZones()
+
+    -- This is recursive.
+    resolveNextEmptyOrderZone(emptyOrderZones)
 end
 
 function resolveSquirrel()
@@ -563,12 +534,51 @@ function resolveSquirrel()
     end
 end
 
-function refillOrderSlots()
+function resolveOrders()
     resetOrderSlotToDispenserTypeMap()
 
-    -- 1. Figure out which order slots are empty.
-    local emptyOrderZones = findEmptyOrderZones()
-
-    -- This is recursive.
-    resolveNextEmptyOrderZone(emptyOrderZones)
+    for _, orderCardZone in pairs(orderCardZones) do
+        local orderCard = getObjectInZone(orderCardZone, isOrderCard)
+        if orderCard then
+            if orderCardMatchesDispenserForZone(orderCard, orderCardZone) then
+                prepForDiscard(orderCard)
+            end
+        end
+    end
 end
+
+function discardOrderCards()
+    print("Doug: discardOrderCard")
+    discardNextOrderCard()
+end
+]]
+
+
+--[[
+-- TTS system calls.
+]]
+--[[
+function onLoad()
+    boardBounds = self.getBounds()
+    boardSize = boardBounds.size
+    boardThickness = boardSize.y
+
+    zoneToClone = getObjectFromGUID(zoneToCloneGUID)
+    thinZoneToClone = getObjectFromGUID(thinZoneToCloneGUID)
+    local orderDeck = getObjectFromGUID(orderDeckGUID)
+    orderDeckPosition = orderDeck.getPosition()
+    orderDiscardTile = getObjectFromGUID(orderDiscardTileGUID)
+
+    -- Setup zones to track order deck and discard deck.
+    orderDeckDiscardZone = zoneToClone.clone()
+    orderDeckZone = zoneToClone.clone()
+
+    orderDeckDiscardZone.setTags({"orders"})
+    orderDeckZone.setTags({"orders"})
+
+    local orderDeckDiscardZonePosition = orderDiscardTile.getPosition()
+    local orderDeckZonePosition = orderDeck.getPosition()
+    orderDeckDiscardZone.setPosition(orderDeckDiscardZonePosition)
+    orderDeckZone.setPosition(orderDeckZonePosition)
+end
+]]

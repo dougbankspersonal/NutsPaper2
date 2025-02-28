@@ -1,121 +1,128 @@
 <html>
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DynaPuff:wght@400..700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DynaPuff:wght@400..700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/card.css" />
+    <link rel="stylesheet" href="../css/bonus_card.css" />
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+    <style type="text/css"></style>
+  </head>
 
-<head>
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=DynaPuff:wght@400..700&display=swap" rel="stylesheet">
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=DynaPuff:wght@400..700&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="../css/main.css">
-	<link rel="stylesheet" href="../css/card.css">
-	<link rel="stylesheet" href="../css/bonus_card.css">
-    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
-    <style type="text/css">
-	</style>
-</head>
-
-<body id="body">
-	<!-- configure Dojo -->
-	<script>
-		// Instead of using data-dojo-config, we're creating a dojoConfig
-		// object *before* we load dojo.js; they're functionally identical,
-		// it's just easier to read this approach with a larger configuration.
-		var dojoConfig = {
-			baseUrl: "..",
-			async: true,
-			// This code registers the correct location of the "demo"
-			// package so we can load Dojo from the CDN whilst still
-			// being able to load local modules
-			packages: [
-				{ name: "dojo", location: "../../bower_components/dojo" },
-				{ name: "javascript", location: "javascript" }
-			]
-		};
-	</script>
-	<!-- load Dojo -->
-	<script src="../../../bower_components/dojo/dojo.js"></script>
+  <body id="body">
+    <!-- configure Dojo -->
+    <script>
+      // Instead of using data-dojo-config, we're creating a dojoConfig
+      // object *before* we load dojo.js; they're functionally identical,
+      // it's just easier to read this approach with a larger configuration.
+      var dojoConfig = {
+        baseUrl: "..",
+        async: true,
+        // This code registers the correct location of the "demo"
+        // package so we can load Dojo from the CDN whilst still
+        // being able to load local modules
+        packages: [
+          { name: "dojo", location: "../../bower_components/dojo" },
+          { name: "javascript", location: "javascript" },
+        ],
+      };
+    </script>
+    <!-- load Dojo -->
+    <script src="../../../bower_components/dojo/dojo.js"></script>
 
     <script>
-		require([
-			'javascript/cards',
-			'javascript/gameUtils',
-		], function (cards, gameUtils) {
-			gameUtils.setConfigs({
-				bigCards: true,
-				skipBacks: false,
-				ttsCards: false,
-			})
+      require(["javascript/cards", "javascript/gameUtils"], function (
+        cards,
+        gameUtils
+      ) {
+        gameUtils.setSystemConfigs({
+          skipBacks: false,
+          ttsCards: false,
+        });
 
-			var bonusCardConfigs = [
-				{
-					rulesText: `
+        var bonusCardConfigs = [
+          {
+            rulesText: `
 						<div class="clause first">Ignore the warehouse size limit this turn.</div>
 						<div class=or>~or~</div>
 						<div class="clause">If your warehouse is empty, add any nut from the supply.</div>
 					`,
-					count: 4,
-                },
-				{
-					rulesText: `
+            count: 4,
+          },
+          {
+            rulesText: `
 						<div class="clause first">The Squirrel cannot move this turn.</div>
 						<div class=or>~or~</div>
-						<div class="clause">Turn any Box Robot a quarter turn to the right or left.</div>
+						<div class="clause">Turn any Box Robot a quarter turn to the right.</div>
 					`,
-					count: 4,
-                },
-				{
-					rulesText: `
+            count: 4,
+          },
+          {
+            rulesText: `
 						<div class="clause first">Add a Cashew from the supply to your warehouse.</div>
 						<div class=or>~or~</div>
 						<div class="clause">Remove any conveyor tile from the board.</div>
 					`,
-					count: 4,
-                },
-                {
-					rulesText: `
+            count: 4,
+          },
+          {
+            rulesText: `
 						<div class="clause first">Use the "Add Tile" action to add a Splitter/Joiner.</div>
 						<div class=or>~or~</div>
 						<div class="clause">Rotate a Splitter/Joiner tile on the board (so a Splitter becomes a Joiner and vice versa).</div>
 					`,
-					count: 4,
-                },
-				{
-					rulesText: `
+            count: 4,
+          },
+          {
+            rulesText: `
 						<div class="clause first">Swap a Boxed Nut in your warehouse for a Boxed Nut of any other type in the supply.</div>
 						<div class=or>~or~</div>
 						<div class="clause">Add an Almond from the supply to your warehouse.</div>
 					`,
-					count: 4,
-                },
-				{
-					rulesText: `
+            count: 4,
+          },
+          {
+            rulesText: `
 						<div class="clause first">Use the "Slide" action to slide the tile as far as you choose (even over other tiles on the row).</div>
 						<div class=or>~or~</div>
 						<div class="clause">Add a Peanut from the supply to your warehouse.</div>
 					`,
-					count: 4,
-                },
-				{
-					rulesText: `
+            count: 4,
+          },
+          {
+            rulesText: `
 						<div class="clause">Swap a Boxed Nut in your warehouse with one in another player's warehouse (this player must agree).</div>
 						<div class=or>~or~</div>
 						<div class="clause">Add a Pistachio from the supply to your warehouse.</div>
 					`,
-					count: 4,
-                },
-				]
+            count: 4,
+          },
+        ];
 
-			var numBonusCards = cards.getNumCardsFromConfigs(bonusCardConfigs)
+        var numBonusCards = cards.getNumCardsFromConfigs(bonusCardConfigs);
 
-			function addBonusCard(parent, index) {
-				var node = cards.addFormattedCardFront(parent, index, "bonus", bonusCardConfigs)
-				return node
-			}
+        function addBonusCard(parent, index) {
+          var node = cards.addFormattedCardFront(
+            parent,
+            index,
+            "bonus",
+            bonusCardConfigs
+          );
+          return node;
+        }
 
-			cards.addCards("Bonus", "#d0f0d0", numBonusCards, addBonusCard)
-		});
+        cards.addCards("Bonus", "#d0f0d0", numBonusCards, addBonusCard);
+      });
     </script>
-</body>
-
+  </body>
 </html>

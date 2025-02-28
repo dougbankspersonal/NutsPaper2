@@ -1,113 +1,48 @@
 <html>
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DynaPuff:wght@400..700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/scoring_track.css" />
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+    <style type="text/css"></style>
+  </head>
 
-<head>
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=DynaPuff:wght@400..700&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="../css/main.css">
-	<link rel="stylesheet" href="../css/scoring_track.css">
-    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
-    <style type="text/css">
-	</style>
-</head>
-
-<body class="c1 doc-content" id="body">
-	<!-- configure Dojo -->
-	<script>
-		// Instead of using data-dojo-config, we're creating a dojoConfig
-		// object *before* we load dojo.js; they're functionally identical,
-		// it's just easier to read this approach with a larger configuration.
-		var dojoConfig = {
-			baseUrl: "..",
-			async: true,
-			// This code registers the correct location of the "demo"
-			// package so we can load Dojo from the CDN whilst still
-			// being able to load local modules
-			packages: [
-				{ name: "dojo", location: "../../bower_components/dojo" },
-				{ name: "javascript", location: "javascript" }
-			]
-		};
-	</script>
-	<!-- load Dojo -->
-	<script src="../../../bower_components/dojo/dojo.js"></script>
+  <body class="c1 doc-content" id="body">
+    <!-- configure Dojo -->
+    <script>
+      // Instead of using data-dojo-config, we're creating a dojoConfig
+      // object *before* we load dojo.js; they're functionally identical,
+      // it's just easier to read this approach with a larger configuration.
+      var dojoConfig = {
+        baseUrl: "..",
+        async: true,
+        // This code registers the correct location of the "demo"
+        // package so we can load Dojo from the CDN whilst still
+        // being able to load local modules
+        packages: [
+          { name: "dojo", location: "../../bower_components/dojo" },
+          { name: "javascript", location: "javascript" },
+        ],
+      };
+    </script>
+    <!-- load Dojo -->
+    <script src="../../../bower_components/dojo/dojo.js"></script>
 
     <script>
-			require([
-                'dojo/dom',
-                'javascript/cards',
-                'javascript/debugLog',
-                'javascript/gameUtils',
-                'dojo/dom-style',
-            ], function (dom, cards, debugLog, gameUtils, domStyle) {
-
-            var numRows = 10
-            var numColumns = 10
-            var titleRowHeight = 80
-            var cellBorder = 3
-            var cellInnerWidth = 50
-            var cellInnerHeight = cellInnerWidth
-            var cellWidth = cellInnerWidth + 2 * cellBorder
-            var cellHeight = cellInnerHeight + 2 * cellBorder
-            var normalRowHeight = cellHeight
-            var normalRowMargin = 10
-            var cellSideMargin = normalRowMargin/2
-            var totalHeight = titleRowHeight + numRows * normalRowHeight + (numRows) * normalRowMargin
-            var totalWidth = numColumns * (cellWidth + cellSideMargin * 2)
-
-            // Make the body node.
-            var bodyNode = dom.byId("body")
-
-            debugLog.debugLog("ScoringTrack", "Doug: in main")
-            var pageNode = gameUtils.addPageOfItems(bodyNode)
-
-            var mainDiv = gameUtils.addDiv(pageNode, ["main_div"], "mainDiv", "")
-            domStyle.set(mainDiv, {
-                height: totalHeight + "px",
-                width: totalWidth + "px",
-                border: "4px solid black",
-                padding: "10px"
-            })
-
-            var titleRow = gameUtils.addRow(mainDiv, ["title_row"], 0)
-            domStyle.set(titleRow, {
-                width: "100%",
-                height: titleRowHeight + "px",
-            })
-
-            var titleText = gameUtils.addDiv(titleRow, ["title_text"], "titleText", "Scoring Track")
-            domStyle.set(titleText, {
-                width: "100%",
-                height: "100%",
-                "font-size": "40px",
-                "text-align": "center",
-                "line-height": titleRowHeight + "px",
-            })
-
-            for (i = 0; i < numRows; i++) {
-                var row = gameUtils.addRow(mainDiv, ["scoring_row"], i + 1)
-                domStyle.set(row, {
-                    width: "100%",
-                    height: normalRowHeight + "px",
-                    "margin-top": normalRowMargin + "px",
-                    "justify-content": "center",
-                })
-                for (j = 0; j < numColumns; j++) {
-                    var div = gameUtils.addDiv(row, ["scoring_cell"], "scoringCell", `${i * 10 + j}`)
-                    domStyle.set(div, {
-                        width: cellInnerWidth + "px",
-                        height: cellInnerHeight + "px",
-                        "font-size": "20px",
-                        "text-align": "center",
-                        "line-height": cellInnerHeight + "px",
-                        "border": cellBorder + "px solid black",
-                        "margin-left": cellSideMargin + "px",
-                        "margin-right": cellSideMargin + "px",
-                    })
-                }
-            }
-		});
+      require([
+        "dojo/dom",
+        "javascript/cards",
+        "javascript/debugLog",
+        "javascript/gameUtils",
+        "dojo/dom-style",
+      ], function (dom, cards, debugLog, gameUtils, domStyle) {
+        scoringTrack.makeScoringTrack(dom);
+      });
     </script>
-</body>
-
+  </body>
 </html>

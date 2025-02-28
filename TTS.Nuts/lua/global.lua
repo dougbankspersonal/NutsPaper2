@@ -31,10 +31,10 @@ local gameBoard
 local numTokens = 30
 local tokensPerRow = 6
 local tokenRowWidth = 0.6
-local numTokenRows = math.floor(numTokens/tokensPerRow)
+local numTokenRows = math.floor(numTokens / tokensPerRow)
 local tokenColumnHeight = 0.6
 local tokenRightOffset = 3
-local tokenForwardAdjustment = -tokenColumnHeight * (numTokenRows-1)/2
+local tokenForwardAdjustment = -tokenColumnHeight * (numTokenRows - 1) / 2
 
 -- XML stuff.
 local pristineXML = {}
@@ -66,7 +66,7 @@ local function mysplit(inputstr, sep)
         sep = "%s"
     end
     local t = {}
-    for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
+    for str in string.gmatch(inputstr, "([^" .. sep .. "]+)") do
         table.insert(t, str)
     end
     return t
@@ -255,7 +255,7 @@ local function makeXmlRow(rowIndex, rowClass)
     local xmlRow = makeXmlNode("Row", {
         id = rowId,
         class = rowClass,
-        preferredHeight=tostring(rowHeight),
+        preferredHeight = tostring(rowHeight),
     })
     return xmlRow
 end
@@ -319,7 +319,7 @@ local function makeXmlInputCell(rowIndex, columnIndex, seatedPlayerColor)
     })
     safeAddToXmlChildren(xmlCell, xmlInput)
 
-    xmlInput.attributes.width = tostring(nonLabelColumnWidth/2)
+    xmlInput.attributes.width = tostring(nonLabelColumnWidth / 2)
     xmlInput.attributes.height = tostring(rowHeight)
 
     return xmlCell
@@ -328,7 +328,7 @@ end
 local function makeTitleRow(numSeatedPlayerObjects)
     local xmlRow = makeXmlRow("title", "TextRowClass")
     safeAddToXmlAttributes(xmlRow, {
-        color  = titleRowColor,
+        color = titleRowColor,
     })
 
     -- Label cell.
@@ -345,7 +345,7 @@ end
 local function makePlayerRow(rowIndex, seatedPlayerObjects)
     local xmlRow = makeXmlRow(rowIndex, "TextRowClass")
     safeAddToXmlAttributes(xmlRow, {
-        color  = playerRowColor,
+        color = playerRowColor,
     })
 
     -- Label cell.
@@ -369,7 +369,7 @@ local function makeNthInputRow(rowIndex, rowLabel, seatedPlayerObjects)
     end
     local xmlRow = makeXmlRow(rowIndex, "InputRowClass")
     safeAddToXmlAttributes(xmlRow, {
-        color=rowColor,
+        color = rowColor,
     })
 
     -- Label cell.
@@ -387,7 +387,7 @@ end
 local function makeSumRow(rowIndex, numSeatedPlayerObjects)
     local xmlRow = makeXmlRow(rowIndex, "TextRowClass")
     safeAddToXmlAttributes(xmlRow, {
-        color  = sumRowColor,
+        color = sumRowColor,
     })
 
     -- Label cell.
@@ -412,6 +412,12 @@ end
 --[[
 Member functions
 ]]
+local debugLogGUID = "bbfccf"
+function getDebugLog()
+    local debugLog = getObjectFromGUID(debugLogGUID)
+    return debugLog
+end
+
 function updateScore(_, textValue, inputId)
     UI.setAttribute(inputId, "text", textValue)
     Wait.time(function()
@@ -438,9 +444,9 @@ function updateScore(_, textValue, inputId)
 end
 
 function onObjectLeaveContainer(container, leave_object)
-   if container.type == "Deck" then
-    leave_object.setTags(container.getTags())
-  end
+    if container.type == "Deck" then
+        leave_object.setTags(container.getTags())
+    end
 end
 
 -- For score card and tokens we have prototypes: move them somewhere hidden from players.
@@ -456,7 +462,7 @@ end
 
 function setupSeatedPlayer(seatedPlayer)
     local handTransform = seatedPlayer.getHandTransform()
-    local spawnRotation = handTransform.rotation + Vector{0,180,0}
+    local spawnRotation = handTransform.rotation + Vector{0, 180, 0}
     local forward_unit = handTransform.forward
     local right_unit = handTransform.right
     local spawnPosition = handTransform.position + forward_unit * scoreSheetPositionX
@@ -478,8 +484,8 @@ function setupSeatedPlayer(seatedPlayer)
 
     for i = 1, numTokenRows do
         for j = 1, tokensPerRow do
-            local rightAdjustment = right_unit * (tokenRightOffset + (j-1) * tokenRowWidth)
-            local forwardAdjustment = forward_unit * (tokenForwardAdjustment + (i-1) * tokenColumnHeight)
+            local rightAdjustment = right_unit * (tokenRightOffset + (j - 1) * tokenRowWidth)
+            local forwardAdjustment = forward_unit * (tokenForwardAdjustment + (i - 1) * tokenColumnHeight)
             local tokenPosition = spawnPosition + rightAdjustment + forwardAdjustment
             local token = sourceToken.clone({
                 position = tokenPosition
@@ -491,7 +497,7 @@ function setupSeatedPlayer(seatedPlayer)
             local color = seatedPlayer.color
             if color == "White" then
                 -- Make it a little off-white to make it more visible.
-                color = {200/255, 200/255, 200/255,}
+                color = {200 / 255, 200 / 255, 200 / 255, }
             end
             token.setColorTint(color)
         end
@@ -536,7 +542,7 @@ function updateXML()
         class = "FinalTallyTableLayoutClass",
         id = "FinalTallyTableLayout",
         columnWidths = columnWidths,
-        ignoreLayout="true",
+        ignoreLayout = "true",
     })
     safeAddToXmlChildren(panel, xmlTableLayout)
 
@@ -560,24 +566,28 @@ function updateXML()
     UI.setXmlTable(moddedXML)
 end
 
-function setup(clickedPlayer)
+--[[
+Click handlers
+]]
+--[[
+function setupClickHandler(clickedPlayer)
     -- Cleanup old spawns.
     cleanupEverything()
 
     Wait.time(function()
-        gameBoard.call("setup")
+        gameBoard.call("setupGameBoard")
         Wait.time(function()
             startLuaCoroutine(Global, "setupSeatedPlayers")
         end, standardWaitSec)
     end, standardWaitSec)
 end
 
-function cleanup()
+function cleanupClickHandler()
     cleanupEverything()
-    gameBoard.call("cleanup")
+    gameBoard.call("cleanupGameBoard")
 end
 
-function toggleFinalTally()
+function toggleFinalTallyClickHandler()
     local finalTallyActiveValue = UI.getAttribute("FinalTallyPanel", "active")
     if finalTallyActiveValue == "true" then
         UI.hide("FinalTallyPanel")
@@ -591,26 +601,27 @@ function toggleFinalTally()
     end
 end
 
-function refillOrderSlots()
+function refillOrderSlotsClickHandler()
     gameBoard.call("refillOrderSlots")
 end
 
-function resolveSquirrel()
+function resolveSquirrelClickHandler()
     gameBoard.call("resolveSquirrel")
 end
 
-function resolveOrders()
+function resolveOrdersClickHandler()
     gameBoard.call("resolveOrders")
 end
 
-function discardOrderCards()
+function discardOrderCardsClickHandler()
     gameBoard.call("discardOrderCards")
 end
+]]
 
 --[[
-Main onLoad/onUpdate functions
+-- TTS system calls.
 ]]
--- The onLoad event is called after the game save finishes loading.
+--[[
 function onLoad()
     -- Keep a clean copy around for when we reset.
     pristineXML = UI.GetXmlTable();
@@ -619,7 +630,7 @@ end
 
 -- The onUpdate event is called once per frame.
 function onUpdate()
-    --[[ print('onUpdate loop!') --]]
+-- print('onUpdate loop!')
 end
 
 function onPlayerChangeColor(color)
@@ -629,3 +640,4 @@ function onPlayerDisconnect(player)
     cleanupObjectsForPlayer(player.color)
     cleanupScoresForPlayer(player.color)
 end
+]]

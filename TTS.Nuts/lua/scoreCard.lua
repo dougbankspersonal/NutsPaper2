@@ -77,8 +77,12 @@ local function moveCardPrototype(theCard)
     })
 end
 
--- If this is the source score card, move it out of the way.
+--[[
+-- TTS system calls.
+]]
+--[[
 function onLoad()
+    -- If this is the source score card, move it out of the way.
     bounds = self.getBoundsNormalized()
     sizeVector = bounds.size
     sizeY = sizeVector.y
@@ -91,3 +95,4 @@ function onLoad()
     Wait.time(function() moveCardPrototype(self) end, moveCardTimeSec)
 
 end
+]]

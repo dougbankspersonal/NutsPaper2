@@ -1,116 +1,133 @@
 <html>
+  <head>
+    <link rel="stylesheet" href="../css/arrow.css" />
+    <link rel="stylesheet" href="../css/belt.css" />
+    <link rel="stylesheet" href="../css/card.css" />
+    <link rel="stylesheet" href="../css/conveyor_tile.css" />
+    <link rel="stylesheet" href="../css/game_board.css" />
+    <link rel="stylesheet" href="../css/image.css" />
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/marker.css" />
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+    <style type="text/css"></style>
+  </head>
 
-<head>
-	<link rel="stylesheet" href="../css/arrow.css">
-	<link rel="stylesheet" href="../css/belt.css">
-	<link rel="stylesheet" href="../css/card.css">
-	<link rel="stylesheet" href="../css/conveyor_tile.css">
-	<link rel="stylesheet" href="../css/game_board.css">
-	<link rel="stylesheet" href="../css/image.css">
-	<link rel="stylesheet" href="../css/main.css">
-	<link rel="stylesheet" href="../css/marker.css">
-    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
-    <style type="text/css">
-	</style>
-</head>
-
-<body class="c1 doc-content" id="body">
-	<!-- configure Dojo -->
-	<script>
-		// Instead of using data-dojo-config, we're creating a dojoConfig
-		// object *before* we load dojo.js; they're functionally identical,
-		// it's just easier to read this approach with a larger configuration.
-		var dojoConfig = {
-			baseUrl: "..",
-			async: true,
-			// This code registers the correct location of the "demo"
-			// package so we can load Dojo from the CDN whilst still
-			// being able to load local modules
-			packages: [
-				{ name: "dojo", location: "../../bower_components/dojo" },
-				{ name: "javascript", location: "javascript" }
-			]
-		};
-	</script>
-	<!-- load Dojo -->
-	<script src="../../../bower_components/dojo/dojo.js"></script>
+  <body class="c1 doc-content" id="body">
+    <!-- configure Dojo -->
+    <script>
+      // Instead of using data-dojo-config, we're creating a dojoConfig
+      // object *before* we load dojo.js; they're functionally identical,
+      // it's just easier to read this approach with a larger configuration.
+      var dojoConfig = {
+        baseUrl: "..",
+        async: true,
+        // This code registers the correct location of the "demo"
+        // package so we can load Dojo from the CDN whilst still
+        // being able to load local modules
+        packages: [
+          { name: "dojo", location: "../../bower_components/dojo" },
+          { name: "javascript", location: "javascript" },
+        ],
+      };
+    </script>
+    <!-- load Dojo -->
+    <script src="../../../bower_components/dojo/dojo.js"></script>
 
     <script>
-		require([
-			'javascript/gameBoard',
-			'javascript/gameUtils',
-			'javascript/markers',
-			'javascript/arrows',
-			'javascript/rowTypes',
-			'javascript/versionDetails',
-		], function (gameBoard, gameUtils, markers, arrows, rowTypes, versionDetails) {
+      require([
+        "javascript/gameBoard",
+        "javascript/gameUtils",
+        "javascript/markers",
+        "javascript/arrows",
+        "javascript/rowTypes",
+        "javascript/versionDetails",
+      ], function (
+        gameBoard,
+        gameUtils,
+        markers,
+        arrows,
+        rowTypes,
+        versionDetails
+      ) {
+        var undoTokenColor = "#aaaadd";
+        var runTokenColor = "#aaddaa";
 
-            var undoTokenColor = "#aaaadd"
-            var runTokenColor = "#aaddaa"
+        var yellowHighlight = "rgb(255, 255, 68)";
+        var blueHighlight = "rgb(170, 170, 255)";
+        var blueAlphaHighlight = "rgba(170, 170, 255, 0.3)";
+        var translucentYellowHighlight = "rgba(255, 255, 68, 0.2)";
 
-            var yellowHighlight = "rgb(255, 255, 68)"
-            var blueHighlight = "rgb(170, 170, 255)"
-            var blueAlphaHighlight = "rgba(170, 170, 255, 0.3)"
-            var translucentYellowHighlight = "rgba(255, 255, 68, 0.2)"
+        gameUtils.setSystemConfigs({ demoBoard: true });
 
-            gameUtils.setConfigs({demoBoard: true})
+        var orderedRowTypes = versionDetails.getOrderedRowTypes();
+        var totalNumColumns = versionDetails.getTotalNumColumns();
+        gameBoard.addGameBoard({
+          orderedRowTypes: orderedRowTypes,
+          totalNumColumns: totalNumColumns,
+        });
 
-			var orderedRowTypes = versionDetails.getOrderedRowTypes()
-            var totalNumColumns = versionDetails.getTotalNumColumns()
-			gameBoard.addGameBoard({
-				orderedRowTypes: orderedRowTypes,
-				totalNumColumns: totalNumColumns,
-			})
+        // Add nut dispensers
+        var dispenserRowIndex = gameUtils.getIndexForFirstRowType(
+          orderedRowTypes,
+          rowTypes.RowTypes.Dispenser
+        );
+        gameBoard.addMarker(dispenserRowIndex, 0, gameUtils.nutTypeAlmond);
+        gameBoard.addMarker(dispenserRowIndex, 1, gameUtils.nutTypeCashew);
+        gameBoard.addMarker(dispenserRowIndex, 2, gameUtils.nutTypePeanut);
+        gameBoard.addMarker(dispenserRowIndex, 3, gameUtils.nutTypePistachio);
+        gameBoard.addMarker(dispenserRowIndex, 5, gameUtils.nutTypeCashew);
+        gameBoard.addMarker(dispenserRowIndex, 6, gameUtils.nutTypePeanut);
 
-            // Add nut dispensers
-           var dispenserRowIndex = gameUtils.getIndexForFirstRowType(orderedRowTypes, rowTypes.RowTypes.Dispenser)
-            gameBoard.addMarker(dispenserRowIndex, 0, gameUtils.nutTypeAlmond)
-            gameBoard.addMarker(dispenserRowIndex, 1, gameUtils.nutTypeCashew)
-            gameBoard.addMarker(dispenserRowIndex, 2, gameUtils.nutTypePeanut)
-            gameBoard.addMarker(dispenserRowIndex, 3, gameUtils.nutTypePistachio)
-            gameBoard.addMarker(dispenserRowIndex, 5, gameUtils.nutTypeCashew)
-            gameBoard.addMarker(dispenserRowIndex, 6, gameUtils.nutTypePeanut)
+        gameBoard.addMarker(dispenserRowIndex, 4, gameUtils.nutTypePistachio);
+        gameBoard.addMarker(dispenserRowIndex, 7, gameUtils.nutTypeAlmond);
 
-            gameBoard.addMarker(dispenserRowIndex, 4, gameUtils.nutTypePistachio)
-            gameBoard.addMarker(dispenserRowIndex, 7, gameUtils.nutTypeAlmond)
+        // Squirrel.
+        var firstSquirrelRowIndex = gameUtils.getIndexForFirstRowType(
+          orderedRowTypes,
+          rowTypes.RowTypes.Squirrel
+        );
+        gameBoard.addMarker(
+          firstSquirrelRowIndex,
+          4,
+          markers.markerTypes.Squirrel
+        );
 
-            // Squirrel.
-            var firstSquirrelRowIndex = gameUtils.getIndexForFirstRowType(orderedRowTypes, rowTypes.RowTypes.Squirrel)
-            gameBoard.addMarker(firstSquirrelRowIndex, 4, markers.markerTypes.Squirrel)
+        // Add Salters.
+        var salterRowIndex = gameUtils.getIndexForFirstRowType(
+          orderedRowTypes,
+          rowTypes.RowTypes.Salter
+        );
+        gameBoard.addMarker(salterRowIndex, 1, markers.markerTypes.Salter);
+        gameBoard.addMarker(salterRowIndex, 6, markers.markerTypes.Salter);
 
+        // add Boxes.
+        var boxRowIndex = gameUtils.getIndexForFirstRowType(
+          orderedRowTypes,
+          rowTypes.RowTypes.Boxes
+        );
 
-            // Add Salters.
-            var salterRowIndex = gameUtils.getIndexForFirstRowType(orderedRowTypes, rowTypes.RowTypes.Salter)
-            gameBoard.addMarker(salterRowIndex, 1, markers.markerTypes.Salter)
-            gameBoard.addMarker(salterRowIndex, 6, markers.markerTypes.Salter)
+        gameBoard.addBox(gameUtils.nutTypeCashew, boxRowIndex, 0);
+        gameBoard.addBox(gameUtils.nutTypeAlmond, boxRowIndex, 1);
+        gameBoard.addBox(gameUtils.nutTypeCashew, boxRowIndex, 2);
+        gameBoard.addBox(gameUtils.nutTypePeanut, boxRowIndex, 3);
+        gameBoard.addBox(gameUtils.nutTypePistachio, boxRowIndex, 4);
+        gameBoard.addBox(gameUtils.nutTypePistachio, boxRowIndex, 5);
+        gameBoard.addBox(gameUtils.nutTypeAlmond, boxRowIndex, 6);
+        gameBoard.addBox(gameUtils.nutTypePistachio, boxRowIndex, 7);
 
-            // add Boxes.
-            var boxRowIndex = gameUtils.getIndexForFirstRowType(orderedRowTypes, rowTypes.RowTypes.Boxes)
+        // Add some tiles.
+        // First arg is nth row (which should be conveyor row).
+        // Second is column.
+        // Both zero-indexed.
+        gameBoard.placeConveyorTileOnBoard(2, 6);
+        gameBoard.placeConveyorTileOnBoard(5, 0);
+        gameBoard.placeConveyorTileOnBoard(6, 4);
 
-            gameBoard.addBox(gameUtils.nutTypeCashew, boxRowIndex, 0)
-            gameBoard.addBox(gameUtils.nutTypeAlmond, boxRowIndex, 1)
-            gameBoard.addBox(gameUtils.nutTypeCashew, boxRowIndex, 2)
-            gameBoard.addBox(gameUtils.nutTypePeanut, boxRowIndex, 3)
-            gameBoard.addBox(gameUtils.nutTypePistachio, boxRowIndex, 4)
-            gameBoard.addBox(gameUtils.nutTypePistachio, boxRowIndex, 5)
-            gameBoard.addBox(gameUtils.nutTypeAlmond, boxRowIndex, 6)
-            gameBoard.addBox(gameUtils.nutTypePistachio, boxRowIndex, 7)
-
-            // Add some tiles.
-            // First arg is nth row (which should be conveyor row).
-            // Second is column.
-            // Both zero-indexed.
-            gameBoard.placeConveyorTileOnBoard(2, 6)
-            gameBoard.placeConveyorTileOnBoard(5, 0)
-            gameBoard.placeConveyorTileOnBoard(6, 4)
-
-            gameBoard.getSlotAndHighlightContents(1, 4, yellowHighlight)
-            gameBoard.getSlotAndHighlightContents(1, 7, yellowHighlight)
-            gameBoard.highlightConveyorTile(5, 0, yellowHighlight)
-            arrows.addArrow(5, 1, arrows.arrowTypes.LeftArrow)
-
-		});
+        gameBoard.getSlotAndHighlightContents(1, 4, yellowHighlight);
+        gameBoard.getSlotAndHighlightContents(1, 7, yellowHighlight);
+        gameBoard.highlightConveyorTile(5, 0, yellowHighlight);
+        arrows.addArrow(5, 1, arrows.arrowTypes.LeftArrow);
+      });
     </script>
-</body>
-
+  </body>
 </html>

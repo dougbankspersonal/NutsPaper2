@@ -11,9 +11,9 @@ define([
     var padding = 20
 
     function addShipmentDesc(parentNode, shipmentCardConfig) {
-        var cardWidth = gameUtils.bigCardWidth
-        var cardHeight = gameUtils.bigCardHeight
-        var pointsTop = cardHeight - pointsHeight
+        var smallCardWidth = gameUtils.cardWidth
+        var smallCardHeight = gameUtils.cardHeight
+        var pointsTop = smallCardHeight - pointsHeight
 
         var wrapper = gameUtils.addDiv(parentNode, ["wrapper"], "wrapper")
         domStyle.set(wrapper, {
@@ -38,7 +38,7 @@ define([
             "top": `${pointsTop}px`,
             "text-align": "center",
             "height": `${pointsHeight}px`,
-            "width": `${cardWidth - padding*2}px`,
+            "width": `${smallCardWidth - padding*2}px`,
         })
 
         if (points == 1) {

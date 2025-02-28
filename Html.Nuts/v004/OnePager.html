@@ -1,92 +1,101 @@
 <html>
+  <head>
+    <link rel="stylesheet" href="../css/arrow.css" />
+    <link rel="stylesheet" href="../css/belt.css" />
+    <link rel="stylesheet" href="../css/card.css" />
+    <link rel="stylesheet" href="../css/conveyor_tile.css" />
+    <link rel="stylesheet" href="../css/game_board.css" />
+    <link rel="stylesheet" href="../css/image.css" />
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/marker.css" />
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+    <style type="text/css"></style>
+  </head>
 
-<head>
-	<link rel="stylesheet" href="../css/arrow.css">
-	<link rel="stylesheet" href="../css/belt.css">
-	<link rel="stylesheet" href="../css/card.css">
-	<link rel="stylesheet" href="../css/conveyor_tile.css">
-	<link rel="stylesheet" href="../css/game_board.css">
-	<link rel="stylesheet" href="../css/image.css">
-	<link rel="stylesheet" href="../css/main.css">
-	<link rel="stylesheet" href="../css/marker.css">
-    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
-    <style type="text/css">
-	</style>
-</head>
-
-<body class="c1 doc-content" id="body">
-	<!-- configure Dojo -->
-	<script>
-		// Instead of using data-dojo-config, we're creating a dojoConfig
-		// object *before* we load dojo.js; they're functionally identical,
-		// it's just easier to read this approach with a larger configuration.
-		var dojoConfig = {
-			baseUrl: "..",
-			async: true,
-			// This code registers the correct location of the "demo"
-			// package so we can load Dojo from the CDN whilst still
-			// being able to load local modules
-			packages: [
-				{ name: "dojo", location: "../../bower_components/dojo" },
-				{ name: "javascript", location: "javascript" }
-			]
-		};
-	</script>
-	<!-- load Dojo -->
-	<script src="../../../bower_components/dojo/dojo.js"></script>
+  <body class="c1 doc-content" id="body">
+    <!-- configure Dojo -->
+    <script>
+      // Instead of using data-dojo-config, we're creating a dojoConfig
+      // object *before* we load dojo.js; they're functionally identical,
+      // it's just easier to read this approach with a larger configuration.
+      var dojoConfig = {
+        baseUrl: "..",
+        async: true,
+        // This code registers the correct location of the "demo"
+        // package so we can load Dojo from the CDN whilst still
+        // being able to load local modules
+        packages: [
+          { name: "dojo", location: "../../bower_components/dojo" },
+          { name: "javascript", location: "javascript" },
+        ],
+      };
+    </script>
+    <!-- load Dojo -->
+    <script src="../../../bower_components/dojo/dojo.js"></script>
 
     <script>
-		require([
-            'javascript/arrows',
-            'javascript/gameBoard',
-            'javascript/gameUtils',
-            'javascript/markers',
-            'javascript/rowTypes',
-            'javascript/versionDetails',
-		], function (arrows, gameBoard, gameUtils, markers, rowTypes, versionDetails) {
-            var blueHighlight = "rgb(170, 170, 255)"
-            var yellowHighlight = "rgb(255, 255, 68)"
+      require([
+        "javascript/arrows",
+        "javascript/gameBoard",
+        "javascript/gameUtils",
+        "javascript/markers",
+        "javascript/rowTypes",
+        "javascript/versionDetails",
+      ], function (
+        arrows,
+        gameBoard,
+        gameUtils,
+        markers,
+        rowTypes,
+        versionDetails
+      ) {
+        var blueHighlight = "rgb(170, 170, 255)";
+        var yellowHighlight = "rgb(255, 255, 68)";
 
-            versionDetails.setVersion(versionDetails.version_onePager)
+        versionDetails.setVersion(versionDetails.version_onePager);
 
-            gameUtils.setConfigs({
-				noSpaceForCards: false,
-				demoBoard: true,
-			})
+        gameUtils.setSystemConfigs({
+          demoBoard: true,
+        });
 
-			var orderedRowTypes = versionDetails.getOrderedRowTypes()
-            var totalNumColumns = versionDetails.getTotalNumColumns()
-			gameBoard.addGameBoard({
-				orderedRowTypes: orderedRowTypes,
-				totalNumColumns: totalNumColumns,
-			})
+        var orderedRowTypes = versionDetails.getOrderedRowTypes();
+        var totalNumColumns = versionDetails.getTotalNumColumns();
+        gameBoard.addGameBoard({
+          orderedRowTypes: orderedRowTypes,
+          totalNumColumns: totalNumColumns,
+        });
 
-            var startRowIndex = gameUtils.getIndexForFirstRowType(orderedRowTypes, rowTypes.RowTypes.Start)
-            console.log("adding markers")
-            gameBoard.addMarker(startRowIndex, 3, markers.markerTypes.Star)
+        var startRowIndex = gameUtils.getIndexForFirstRowType(
+          orderedRowTypes,
+          rowTypes.RowTypes.Start
+        );
+        console.log("adding markers");
+        gameBoard.addMarker(startRowIndex, 3, markers.markerTypes.Star);
 
-            var firstHeartRowIndex = 4
-            gameBoard.addMarker(firstHeartRowIndex, 1, markers.markerTypes.Heart)
-            gameBoard.addMarker(firstHeartRowIndex, 5, markers.markerTypes.Heart)
+        var firstHeartRowIndex = 4;
+        gameBoard.addMarker(firstHeartRowIndex, 1, markers.markerTypes.Heart);
+        gameBoard.addMarker(firstHeartRowIndex, 5, markers.markerTypes.Heart);
 
-            var skullRowIndex = 6
-            gameBoard.addMarker(skullRowIndex, 2, markers.markerTypes.Skull)
-            gameBoard.addMarker(skullRowIndex, 4, markers.markerTypes.Skull)
-            gameBoard.addMarker(skullRowIndex, 6, markers.markerTypes.Skull)
+        var skullRowIndex = 6;
+        gameBoard.addMarker(skullRowIndex, 2, markers.markerTypes.Skull);
+        gameBoard.addMarker(skullRowIndex, 4, markers.markerTypes.Skull);
+        gameBoard.addMarker(skullRowIndex, 6, markers.markerTypes.Skull);
 
-            var secondHeartRowIndex = 8
-            gameBoard.addMarker(secondHeartRowIndex, 3, markers.markerTypes.Heart)
-            gameBoard.addMarker(secondHeartRowIndex, 7, markers.markerTypes.Heart)
+        var secondHeartRowIndex = 8;
+        gameBoard.addMarker(secondHeartRowIndex, 3, markers.markerTypes.Heart);
+        gameBoard.addMarker(secondHeartRowIndex, 7, markers.markerTypes.Heart);
 
-            var endRowIndex = gameUtils.getIndexForFirstRowType(orderedRowTypes, rowTypes.RowTypes.End)
-            gameBoard.addMarker(endRowIndex, 1, markers.markerTypes.Star)
-            gameBoard.addMarker(endRowIndex, 7, markers.markerTypes.Star)
+        var endRowIndex = gameUtils.getIndexForFirstRowType(
+          orderedRowTypes,
+          rowTypes.RowTypes.End
+        );
+        gameBoard.addMarker(endRowIndex, 1, markers.markerTypes.Star);
+        gameBoard.addMarker(endRowIndex, 7, markers.markerTypes.Star);
 
-            gameBoard.placeConveyorTileOnBoard(2, 2)
-            gameBoard.placeConveyorTileOnBoard(5, 1)
-            gameBoard.placeConveyorTileOnBoard(7, 2)
-		});
+        gameBoard.placeConveyorTileOnBoard(2, 2);
+        gameBoard.placeConveyorTileOnBoard(5, 1);
+        gameBoard.placeConveyorTileOnBoard(7, 2);
+      });
     </script>
-</body>
-
+  </body>
 </html>

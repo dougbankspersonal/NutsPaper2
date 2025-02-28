@@ -11,93 +11,90 @@ define([
   //
   //-------------------------------------------------
   var truckCardConfigs = [
-    // Small trucks: 4 items.
-    {
-      permanent: true,
-      distribution: {
-        Almond: 4,
-      },
-    },
-    {
-      permanent: true,
-      distribution: {
-        Cashew: 4,
-      },
-    },
-    {
-      permanent: true,
-      distribution: {
-        Peanut: 4,
-      },
-    },
-    {
-      permanent: true,
-      distribution: {
-        Pistachio: 4,
-      },
-    },
-    {
-      permanent: true,
-      distribution: {
-        Almond: 1,
-        Cashew: 1,
-        Peanut: 1,
-        Pistachio: 1,
-      },
-    },
-    {
-      distribution: {
-        Almond: 1,
-        Peanut: 3,
-      },
-    },
-    {
-      distribution: {
-        Cashew: 1,
-        Pistachio: 3,
-      },
-    },
-    {
-      distribution: {
-        Almond: 2,
-        Pistachio: 2,
-      },
-    },
-    {
-      distribution: {
-        Cashew: 2,
-        Peanut: 2,
-      },
-
-      // Big trucks: 6
-    },
-    {
-      distribution: {
-        Almond: 1,
-        Pistachio: 5,
-      },
-    },
-    {
-      distribution: {
-        Cashew: 1,
-        Peanut: 5,
-      },
-    },
+    // Small trucks: Permanent, 3-4
     {
       distribution: {
         Almond: 3,
+      },
+    },
+    {
+      distribution: {
         Cashew: 3,
       },
     },
     {
       distribution: {
         Peanut: 3,
+      },
+    },
+    {
+      distribution: {
         Pistachio: 3,
       },
     },
     {
       distribution: {
+        Almond: 1,
+        Cashew: 1,
+        Peanut: 1,
+        Pistachio: 1,
+      },
+    },
+
+    // Medium trucks: 5 items.
+    {
+      distribution: {
+        Almond: 1,
+        Peanut: 4,
+      },
+    },
+    {
+      distribution: {
+        Cashew: 1,
+        Pistachio: 4,
+      },
+    },
+    {
+      distribution: {
+        Almond: 3,
+        Pistachio: 2,
+      },
+    },
+    {
+      distribution: {
+        Cashew: 3,
+        Peanut: 2,
+      },
+    },
+
+    // Big trucks: 7 items.
+    {
+      distribution: {
+        Almond: 2,
+        Pistachio: 5,
+      },
+    },
+    {
+      distribution: {
+        Cashew: 2,
+        Peanut: 5,
+      },
+    },
+    {
+      distribution: {
         Almond: 4,
+        Cashew: 3,
+      },
+    },
+    {
+      distribution: {
+        Peanut: 4,
+        Pistachio: 3,
+      },
+    },
+    {
+      distribution: {
+        Almond: 5,
         Peanut: 1,
         Pistachio: 1,
       },
@@ -106,7 +103,19 @@ define([
       distribution: {
         Almond: 1,
         Cashew: 1,
-        Pistachio: 4,
+        Pistachio: 5,
+      },
+    },
+    {
+      distribution: {
+        Cashew: 6,
+        Pistachio: 1,
+      },
+    },
+    {
+      distribution: {
+        Peanut: 6,
+        Almond: 1,
       },
     },
   ];
@@ -114,7 +123,7 @@ define([
   var nutTypes = gameUtils.nutTypes;
   var numNutTypes = nutTypes.length;
 
-  var closedBoxSize = 65;
+  var closedBoxSize = 55;
   var nutTypeSize = closedBoxSize * 0.8;
   var boxTilt = 10;
 
@@ -253,19 +262,19 @@ define([
     // Calculate the score for this distribution
     var score = scoreForDistribution(nutTypeDistribution);
 
-    var bigCardWidth = gameUtils.bigCardWidth;
-    var bigCardHeight = gameUtils.bigCardHeight;
+    var cardWidth = gameUtils.cardWidth;
+    var cardHeight = gameUtils.cardHeight;
 
     var wrapper = gameUtils.addDiv(parentNode, ["wrapper"], "wrapper");
 
-    var innerCardWidth = bigCardWidth - 2 * gameUtils.cardBorderWidth;
-    var innerCardHeight = bigCardHeight - 2 * gameUtils.cardBorderWidth;
+    var innerCardWidth = cardWidth - 2 * gameUtils.cardBorderWidth;
+    var innerCardHeight = cardHeight - 2 * gameUtils.cardBorderWidth;
     domStyle.set(wrapper, {
       width: innerCardHeight + "px",
       height: innerCardWidth + "px",
     });
 
-    var truckScale = 0.97;
+    var truckScale = 0.8;
     var truckWidth = innerCardHeight * truckScale;
     var truckHeight = innerCardWidth * truckScale;
     var truckNode = gameUtils.addImage(wrapper, ["truck"], "truck");
@@ -279,7 +288,7 @@ define([
       ["requirements"],
       "requirements"
     );
-    domStyle.set(truckNode, {
+    domStyle.set(requirementsNode, {
       width: "100%",
       height: "90%",
     });
@@ -318,13 +327,6 @@ define([
 
     var scoreNode = gameUtils.addDiv(wrapper, ["score"], "score");
     scoreNode.innerHTML = score.toString().concat(" points");
-
-    if (truckCardConfig.permanent) {
-      markers.addMarker(wrapper, markers.markerTypes.Star, ["permanent"], {
-        height: permanentStarSize,
-        width: permanentStarSize,
-      });
-    }
 
     return truckNode;
   }
