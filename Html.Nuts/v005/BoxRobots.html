@@ -29,6 +29,10 @@
         packages: [
           { name: "dojo", location: "../../bower_components/dojo" },
           { name: "javascript", location: "javascript" },
+          {
+            name: "sharedJavascript",
+            location: "SharedWebBoardgame/javascript",
+          },
         ],
       };
     </script>
@@ -39,13 +43,14 @@
       require([
         "javascript/cards",
         "javascript/gameUtils",
+        "sharedJavascript/systemConfigs",
         "dojo/dom-style",
-      ], function (cards, gameUtils, domStyle) {
-        gameUtils.setSystemConfigs({
+      ], function (cards, gameUtils, systemConfigs, domStyle) {
+        systemConfigs.setSystemConfigs({
           ttsCards: false,
           smallSquares: true,
         });
-        var systemConfigs = gameUtils.getSystemConfigs();
+        var sc = systemConfigs.getSystemConfigs();
 
         var boxRobotCardConfigs = [
           ["Almond", "Cashew", "Peanut", "Pistachio"],
@@ -58,7 +63,7 @@
           ["Almond", "Peanut", "Cashew", "Pistachio"],
         ];
 
-        if (systemConfigs.ttsCards) {
+        if (sc.ttsCards) {
           // Need a min of 12.
           // FIXME(dbanks); refactor.
           while (boxRobotCardConfigs.length < 12) {

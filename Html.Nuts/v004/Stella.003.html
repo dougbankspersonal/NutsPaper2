@@ -41,18 +41,20 @@
         "javascript/markers",
         "javascript/rowTypes",
         "javascript/versionDetails",
+        "sharedJavascript/systemConfigs",
       ], function (
         arrows,
         gameBoard,
         gameUtils,
         markers,
         rowTypes,
-        versionDetails
+        versionDetails,
+        systemConfigs
       ) {
         var blueHighlight = "rgb(170, 170, 255)";
         var yellowHighlight = "rgb(255, 255, 68)";
 
-        gameUtils.setSystemConfigs({
+        systemConfigs.setSystemConfigs({
           demoBoard: true,
         });
 
@@ -68,14 +70,46 @@
           rowTypes.RowTypes.Dispenser
         );
         console.log("adding markers");
-        gameBoard.addMarker(dispenserRowIndex, 0, gameUtils.nutTypeAlmond);
-        gameBoard.addMarker(dispenserRowIndex, 1, gameUtils.nutTypeCashew);
-        gameBoard.addMarker(dispenserRowIndex, 2, gameUtils.nutTypePeanut);
-        gameBoard.addMarker(dispenserRowIndex, 3, gameUtils.nutTypePistachio);
-        gameBoard.addMarker(dispenserRowIndex, 4, gameUtils.nutTypeAlmond);
-        gameBoard.addMarker(dispenserRowIndex, 5, gameUtils.nutTypeCashew);
-        gameBoard.addMarker(dispenserRowIndex, 6, gameUtils.nutTypePeanut);
-        gameBoard.addMarker(dispenserRowIndex, 7, gameUtils.nutTypePistachio);
+        gameBoard.addMarkerToBoard(
+          dispenserRowIndex,
+          0,
+          gameUtils.nutTypeAlmond
+        );
+        gameBoard.addMarkerToBoard(
+          dispenserRowIndex,
+          1,
+          gameUtils.nutTypeCashew
+        );
+        gameBoard.addMarkerToBoard(
+          dispenserRowIndex,
+          2,
+          gameUtils.nutTypePeanut
+        );
+        gameBoard.addMarkerToBoard(
+          dispenserRowIndex,
+          3,
+          gameUtils.nutTypePistachio
+        );
+        gameBoard.addMarkerToBoard(
+          dispenserRowIndex,
+          4,
+          gameUtils.nutTypeAlmond
+        );
+        gameBoard.addMarkerToBoard(
+          dispenserRowIndex,
+          5,
+          gameUtils.nutTypeCashew
+        );
+        gameBoard.addMarkerToBoard(
+          dispenserRowIndex,
+          6,
+          gameUtils.nutTypePeanut
+        );
+        gameBoard.addMarkerToBoard(
+          dispenserRowIndex,
+          7,
+          gameUtils.nutTypePistachio
+        );
 
         var boxRowIndex = gameUtils.getIndexForFirstRowType(
           orderedRowTypes,

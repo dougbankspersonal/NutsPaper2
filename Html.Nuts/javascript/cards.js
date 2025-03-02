@@ -1,11 +1,12 @@
 define([
   "dojo/string",
   "dojo/dom",
+  "dojo/dom-style",
   "javascript/gameUtils",
   "javascript/debugLog",
-  "dojo/dom-style",
+  "sharedJavascript/systemConfigs",
   "dojo/domReady!",
-], function (string, dom, gameUtils, debugLog, domStyle) {
+], function (string, dom, domStyle, gameUtils, debugLog, systemConfigs) {
   var adjustedPageWidth =
     gameUtils.printedPagePortraitWidth - 2 * gameUtils.pagePadding;
   var adjustedPageHeight =
@@ -46,10 +47,10 @@ define([
   }
 
   function addCardBack(parent, title, color) {
-    var systemConfigs = gameUtils.getSystemConfigs();
+    var sc = systemConfigs.getSystemConfigs();
     var node = gameUtils.addCard(parent, ["back"], "back");
 
-    setCardSize(node, systemConfigs);
+    setCardSize(node, sc);
 
     var innerNode = gameUtils.addDiv(node, ["inset"], "inset");
     var otherColor = gameUtils.blendHexColors(color, "#ffffff");
@@ -60,11 +61,11 @@ define([
     domStyle.set(innerNode, "background", gradient);
     var title = gameUtils.addDiv(innerNode, ["title"], "title", title);
     var style = {};
-    style["font-size"] = systemConfigs.smallCards
+    style["font-size"] = sc.smallCards
       ? `${gameUtils.smallCardBackFontSize}px`
       : `${gameUtils.cardBackFontSize}px`;
-    if (systemConfigs.altCardBackTextColor) {
-      style["color"] = systemConfigs.altCardBackTextColor;
+    if (sc.altCardBackTextColor) {
+      style["color"] = sc.altCardBackTextColor;
     }
     domStyle.set(title, style);
 
@@ -72,10 +73,10 @@ define([
   }
 
   function addCardFront(parent, classArray, id) {
-    var systemConfigs = gameUtils.getSystemConfigs();
+    var sc = systemConfigs.getSystemConfigs();
     classArray.push("front");
     var node = gameUtils.addCard(parent, classArray, id);
-    setCardSize(node, systemConfigs);
+    setCardSize(node, sc);
 
     return node;
   }
@@ -120,22 +121,22 @@ define([
   }
 
   function addCards(title, color, numCards, contentCallback) {
-    var systemConfigs = gameUtils.getSystemConfigs();
+    var sc = systemConfigs.getSystemConfigs();
     var bodyNode = dom.byId("body");
 
     var pageOfFronts;
     var pageOfBacks;
 
     var timeForNewPageDivisor;
-    if (systemConfigs.ttsCards) {
+    if (sc.ttsCards) {
       timeForNewPageDivisor = ttsCardsPerPage;
-    } else if (systemConfigs.smallCards) {
+    } else if (sc.smallCards) {
       timeForNewPageDivisor = smallCardsPerPage;
     } else {
       timeForNewPageDivisor = cardsPerPage;
     }
 
-    if (systemConfigs.separateBacks) {
+    if (sc.separateBacks) {
       for (let i = 0; i < numCards; i++) {
         var timeForNewPage = i % timeForNewPageDivisor;
         if (timeForNewPage == 0) {
@@ -144,7 +145,7 @@ define([
         contentCallback(pageOfFronts, i);
       }
 
-      if (!systemConfigs.skipBacks) {
+      if (!sc.skipBacks) {
         for (let i = 0; i < numCards; i++) {
           var timeForNewPage = i % timeForNewPageDivisor;
           if (timeForNewPage == 0) {
@@ -158,12 +159,12 @@ define([
         var timeForNewPage = i % timeForNewPageDivisor;
         if (timeForNewPage == 0) {
           pageOfFronts = gameUtils.addPageOfItems(bodyNode);
-          if (!systemConfigs.skipBacks) {
+          if (!sc.skipBacks) {
             pageOfBacks = gameUtils.addPageOfItems(bodyNode, ["back"]);
           }
         }
         contentCallback(pageOfFronts, i);
-        if (!systemConfigs.skipBacks) {
+        if (!sc.skipBacks) {
           addCardBack(pageOfBacks, title, color);
         }
       }
@@ -214,8 +215,8 @@ define([
   }
 
   function getInstanceCountFromConfig(cardConfigs, index) {
-    var systemConfigs = gameUtils.getSystemConfigs();
-    if (systemConfigs.singleCardInstance) {
+    var sc = systemConfigs.getSystemConfigs();
+    if (sc.singleCardInstance) {
       // TTS is dumb, needs at least 12 cards.
       if (cardConfigs.length < 12 && index == 0) {
         return 12 - (cardConfigs.length - 1);

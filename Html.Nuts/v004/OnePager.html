@@ -41,20 +41,22 @@
         "javascript/markers",
         "javascript/rowTypes",
         "javascript/versionDetails",
+        "sharedJavascript/systemConfigs",
       ], function (
         arrows,
         gameBoard,
         gameUtils,
         markers,
         rowTypes,
-        versionDetails
+        versionDetails,
+        systemConfigs
       ) {
         var blueHighlight = "rgb(170, 170, 255)";
         var yellowHighlight = "rgb(255, 255, 68)";
 
         versionDetails.setVersion(versionDetails.version_onePager);
 
-        gameUtils.setSystemConfigs({
+        systemConfigs.setSystemConfigs({
           demoBoard: true,
         });
 
@@ -70,27 +72,43 @@
           rowTypes.RowTypes.Start
         );
         console.log("adding markers");
-        gameBoard.addMarker(startRowIndex, 3, markers.markerTypes.Star);
+        gameBoard.addMarkerToBoard(startRowIndex, 3, markers.markerTypes.Star);
 
         var firstHeartRowIndex = 4;
-        gameBoard.addMarker(firstHeartRowIndex, 1, markers.markerTypes.Heart);
-        gameBoard.addMarker(firstHeartRowIndex, 5, markers.markerTypes.Heart);
+        gameBoard.addMarkerToBoard(
+          firstHeartRowIndex,
+          1,
+          markers.markerTypes.Heart
+        );
+        gameBoard.addMarkerToBoard(
+          firstHeartRowIndex,
+          5,
+          markers.markerTypes.Heart
+        );
 
         var skullRowIndex = 6;
-        gameBoard.addMarker(skullRowIndex, 2, markers.markerTypes.Skull);
-        gameBoard.addMarker(skullRowIndex, 4, markers.markerTypes.Skull);
-        gameBoard.addMarker(skullRowIndex, 6, markers.markerTypes.Skull);
+        gameBoard.addMarkerToBoard(skullRowIndex, 2, markers.markerTypes.Skull);
+        gameBoard.addMarkerToBoard(skullRowIndex, 4, markers.markerTypes.Skull);
+        gameBoard.addMarkerToBoard(skullRowIndex, 6, markers.markerTypes.Skull);
 
         var secondHeartRowIndex = 8;
-        gameBoard.addMarker(secondHeartRowIndex, 3, markers.markerTypes.Heart);
-        gameBoard.addMarker(secondHeartRowIndex, 7, markers.markerTypes.Heart);
+        gameBoard.addMarkerToBoard(
+          secondHeartRowIndex,
+          3,
+          markers.markerTypes.Heart
+        );
+        gameBoard.addMarkerToBoard(
+          secondHeartRowIndex,
+          7,
+          markers.markerTypes.Heart
+        );
 
         var endRowIndex = gameUtils.getIndexForFirstRowType(
           orderedRowTypes,
           rowTypes.RowTypes.End
         );
-        gameBoard.addMarker(endRowIndex, 1, markers.markerTypes.Star);
-        gameBoard.addMarker(endRowIndex, 7, markers.markerTypes.Star);
+        gameBoard.addMarkerToBoard(endRowIndex, 1, markers.markerTypes.Star);
+        gameBoard.addMarkerToBoard(endRowIndex, 7, markers.markerTypes.Star);
 
         gameBoard.placeConveyorTileOnBoard(2, 2);
         gameBoard.placeConveyorTileOnBoard(5, 1);

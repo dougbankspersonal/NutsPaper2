@@ -10,6 +10,7 @@ define([
   "javascript/gameUtils",
   "javascript/markers",
   "javascript/rowTypes",
+  "sharedJavascript/genericUtils",
   "dojo/domReady!",
 ], function (
   dom,
@@ -22,7 +23,8 @@ define([
   debugLog,
   gameUtils,
   markers,
-  rowTypes
+  rowTypes,
+  genericUtils
 ) {
   var rowZUIndex = 0;
 
@@ -91,10 +93,12 @@ define([
     classArray: true,
     // Configs for elements in the row.
     elementConfigs: true,
+    // Row has a dark background.
+    darkBackground: true,
   };
 
   function sanityCheckRowConfigs(rowConfigs) {
-    gameUtils.sanityCheckTable(rowConfigs, validRowConfigKeys);
+    genericUtils.sanityCheckTable(rowConfigs, validRowConfigKeys);
   }
 
   var validElementConfigKeys = {
@@ -108,10 +112,16 @@ define([
     entityIndex: true,
     // Should we hide the top of the belt (used for top row, we don't want belt above dispensers)
     hideBeltTop: true,
+    // Classes to apply to the element.
+    classArray: true,
+    // Function call to render non-standard element.
+    tweakElement: true,
+    // Used to not render bottom of belt that normally runs through elements.
+    hideBeltBottom: true,
   };
 
   function sanityCheckElementConfigs(elementConfigs) {
-    gameUtils.sanityCheckTable(elementConfigs, validElementConfigKeys);
+    genericUtils.sanityCheckTable(elementConfigs, validElementConfigKeys);
   }
 
   // Add a row to the current strip.
@@ -185,10 +195,13 @@ define([
   }
 
   // columnIndex is 0-based.
-  function addNthElement(parentNode, columnIndex, opt_classArray) {
-    var classArray = gameUtils.extendOptClassArray(opt_classArray, "element");
+  function addNthElement(parentNode, columnIndex, classArray) {
+    var extendedClassArray = gameUtils.extendOptClassArray(
+      classArray,
+      "element"
+    );
     var elementId = gameUtils.getElementId(columnIndex);
-    var element = gameUtils.addDiv(parentNode, classArray, elementId);
+    var element = gameUtils.addDiv(parentNode, extendedClassArray, elementId);
 
     applyStandardElementStyling(element);
     gameUtils.addStandardBorder(element);
@@ -705,7 +718,7 @@ define([
   }
 
   // columnnIndex is 0-based, ignoring the sidebar.
-  function addMarker(
+  function addMarkerToBoard(
     rowIndex,
     columnIndex,
     markerType,
@@ -926,7 +939,7 @@ define([
     // Can be used to make a board in sections or a complete board.
     addGameBoard: addGameBoard,
 
-    addMarker: addMarker,
+    addMarkerToBoard: addMarkerToBoard,
     addBox: addBox,
     placeConveyorTileOnBoard: placeConveyorTileOnBoard,
     highlightPath: highlightPath,

@@ -4,8 +4,9 @@ define([
   "javascript/beltUtils",
   "javascript/debugLog",
   "javascript/gameUtils",
+  "sharedJavascript/systemConfigs",
   "dojo/domReady!",
-], function (dom, domStyle, beltUtils, debugLog, gameUtils) {
+], function (dom, domStyle, beltUtils, debugLog, gameUtils, systemConfigs) {
   function getCurvePoints() {
     var curvePoints = [];
 
@@ -103,7 +104,8 @@ define([
       opt_classArray,
       "conveyor_tile"
     );
-    if (gameUtils.getSystemConfigs().isDemoBoard) {
+    var sc = systemConfigs.getSystemConfigs();
+    if (sc.isDemoBoard) {
       classArray.push("demoBoard");
     }
     var conveyorTile = gameUtils.addDiv(parentNode, classArray, conveyorTileId);

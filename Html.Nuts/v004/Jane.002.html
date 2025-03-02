@@ -41,13 +41,15 @@
         "javascript/arrows",
         "javascript/rowTypes",
         "javascript/versionDetails",
+        "sharedJavascript/systemConfigs",
       ], function (
         gameBoard,
         gameUtils,
         markers,
         arrows,
         rowTypes,
-        versionDetails
+        versionDetails,
+        systemConfigs
       ) {
         var undoTokenColor = "#aaaadd";
         var runTokenColor = "#aaddaa";
@@ -57,7 +59,7 @@
         var blueAlphaHighlight = "rgba(170, 170, 255, 0.3)";
         var translucentYellowHighlight = "rgba(255, 255, 68, 0.2)";
 
-        gameUtils.setSystemConfigs({ demoBoard: true });
+        systemConfigs.setSystemConfigs({ demoBoard: true, smallCards: true });
 
         var orderedRowTypes = versionDetails.getOrderedRowTypes();
         var totalNumColumns = versionDetails.getTotalNumColumns();
@@ -71,22 +73,54 @@
           orderedRowTypes,
           rowTypes.RowTypes.Dispenser
         );
-        gameBoard.addMarker(dispenserRowIndex, 0, gameUtils.nutTypeAlmond);
-        gameBoard.addMarker(dispenserRowIndex, 1, gameUtils.nutTypeCashew);
-        gameBoard.addMarker(dispenserRowIndex, 2, gameUtils.nutTypePeanut);
-        gameBoard.addMarker(dispenserRowIndex, 3, gameUtils.nutTypePistachio);
-        gameBoard.addMarker(dispenserRowIndex, 5, gameUtils.nutTypeCashew);
-        gameBoard.addMarker(dispenserRowIndex, 6, gameUtils.nutTypePeanut);
+        gameBoard.addMarkerToBoard(
+          dispenserRowIndex,
+          0,
+          gameUtils.nutTypeAlmond
+        );
+        gameBoard.addMarkerToBoard(
+          dispenserRowIndex,
+          1,
+          gameUtils.nutTypeCashew
+        );
+        gameBoard.addMarkerToBoard(
+          dispenserRowIndex,
+          2,
+          gameUtils.nutTypePeanut
+        );
+        gameBoard.addMarkerToBoard(
+          dispenserRowIndex,
+          3,
+          gameUtils.nutTypePistachio
+        );
+        gameBoard.addMarkerToBoard(
+          dispenserRowIndex,
+          5,
+          gameUtils.nutTypeCashew
+        );
+        gameBoard.addMarkerToBoard(
+          dispenserRowIndex,
+          6,
+          gameUtils.nutTypePeanut
+        );
 
-        gameBoard.addMarker(dispenserRowIndex, 4, gameUtils.nutTypePistachio);
-        gameBoard.addMarker(dispenserRowIndex, 7, gameUtils.nutTypeAlmond);
+        gameBoard.addMarkerToBoard(
+          dispenserRowIndex,
+          4,
+          gameUtils.nutTypePistachio
+        );
+        gameBoard.addMarkerToBoard(
+          dispenserRowIndex,
+          7,
+          gameUtils.nutTypeAlmond
+        );
 
         // Squirrel.
         var firstSquirrelRowIndex = gameUtils.getIndexForFirstRowType(
           orderedRowTypes,
           rowTypes.RowTypes.Squirrel
         );
-        gameBoard.addMarker(
+        gameBoard.addMarkerToBoard(
           firstSquirrelRowIndex,
           4,
           markers.markerTypes.Squirrel
@@ -97,8 +131,16 @@
           orderedRowTypes,
           rowTypes.RowTypes.Salter
         );
-        gameBoard.addMarker(salterRowIndex, 1, markers.markerTypes.Salter);
-        gameBoard.addMarker(salterRowIndex, 6, markers.markerTypes.Salter);
+        gameBoard.addMarkerToBoard(
+          salterRowIndex,
+          1,
+          markers.markerTypes.Salter
+        );
+        gameBoard.addMarkerToBoard(
+          salterRowIndex,
+          6,
+          markers.markerTypes.Salter
+        );
 
         // add Boxes.
         var boxRowIndex = gameUtils.getIndexForFirstRowType(

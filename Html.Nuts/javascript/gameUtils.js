@@ -1,20 +1,22 @@
 define([
   "dojo/dom",
-  "javascript/debugLog",
-  "javascript/rowTypes",
-  "javascript/versionDetails",
   "dojo/dom-construct",
   "dojo/dom-style",
   "dojo/query",
+  "javascript/debugLog",
+  "javascript/rowTypes",
+  "javascript/versionDetails",
+  "sharedJavascript/systemConfigs",
   "dojo/domReady!",
 ], function (
   dom,
+  domConstruct,
+  domStyle,
+  query,
   debugLog,
   rowTypes,
   versionDetails,
-  domConstruct,
-  domStyle,
-  query
+  systemConfigs
 ) {
   var pixelsPerInch = 300;
   var pageNumber = 0;
@@ -88,7 +90,6 @@ define([
   var nutTypeCashew = "Cashew";
   var nutTypePeanut = "Peanut";
   var nutTypePistachio = "Pistachio";
-  var systemConfigs = {};
 
   var nutTypes = [
     nutTypeAlmond,
@@ -236,10 +237,11 @@ define([
   }
 
   var getPageHeight = function () {
-    if (systemConfigs.landscape) {
+    var sc = systemConfigs.getSystemConfigs();
+    if (sc.landscape) {
       return printedPageLandscapeHeight;
     }
-    if (systemConfigs.demoBoard) {
+    if (sc.demoBoard) {
       var orderedRowTypes = versionDetails.getOrderedRowTypes();
       var numRows = orderedRowTypes.length;
       var lastRowType = orderedRowTypes[numRows - 1];
@@ -261,17 +263,18 @@ define([
   };
 
   function addPageOfItems(parent, opt_classArray) {
+    var sc = systemConfigs.getSystemConfigs();
     console.assert(parent, "parent is null");
     var classArray = extendOptClassArray(opt_classArray, "pageOfItems");
     var pageId = "pageOfItems_".concat(pageNumber.toString());
     pageNumber++;
 
-    if (systemConfigs.demoBoard) {
+    if (sc.demoBoard) {
       classArray.push("demoBoard");
     }
 
     var pageOfItems = addDiv(parent, classArray, pageId);
-    if (systemConfigs.ttsCards || systemConfigs.ttsDie) {
+    if (sc.ttsCards || sc.ttsDie) {
       domStyle.set(pageOfItems, {
         display: "inline-block",
       });
@@ -283,10 +286,10 @@ define([
       "pageOfItemsContents"
     );
 
-    var width = getPageWidth(systemConfigs);
-    var height = getPageHeight(systemConfigs);
+    var width = getPageWidth(sc);
+    var height = getPageHeight(sc);
 
-    if (systemConfigs.ttsCards || systemConfigs.ttsDie) {
+    if (sc.ttsCards || sc.ttsDie) {
       domStyle.set(pageOfItemsContents, {
         position: "relative",
         top: "0px",
@@ -313,9 +316,10 @@ define([
   }
 
   function addRow(parent, opt_classArray, rowIndex) {
+    var sc = systemConfigs.getSystemConfigs();
     console.assert(parent, "parent is null");
     var classArray = extendOptClassArray(opt_classArray, "row");
-    if (systemConfigs.demoBoard) {
+    if (sc.demoBoard) {
       classArray.push("demoBoard");
     }
     var rowId = getRowId(rowIndex);
@@ -324,9 +328,10 @@ define([
   }
 
   function addCard(parent, opt_classArray, opt_id) {
+    var sc = systemConfigs.getSystemConfigs();
     console.assert(parent, "parent is null");
     var classArray = extendOptClassArray(opt_classArray, "card");
-    if (systemConfigs.demoBoard) {
+    if (sc.demoBoard) {
       classArray.push("demoBoard");
     }
     var cardId;
@@ -337,7 +342,7 @@ define([
       cardNumber++;
     }
     var node = addDiv(parent, classArray, cardId);
-    if (systemConfigs.ttsCards) {
+    if (sc.ttsCards) {
       domStyle.set(node, {
         "margin-bottom": "0px",
         "margin-right": "0px",
@@ -421,51 +426,6 @@ define([
   var beltSegmentOffset = rowTypes.standardRowHeight / beltSegmentsPerRow;
   var beltSegmentHeight = beltSegmentOffset + 2;
   var beltSegmentWidth = 40;
-
-  // Finit set of allowed values.
-  // FIXME(dbanks) not well designed. Refactor.
-  //
-  // * demoBoard: we are rendering a board for an example of rules or something, with highlights and arrows
-  //     and tiles on it.
-  // * ttsDie: rendering die faces for tts.
-  // * ttsCards: rendering cards for tts.
-  // * skipBacks: no card backs.
-  // * smallCards: rendering smaller than playing card sized cards.
-  // That's it.
-
-  function sanityCheckTable(t, validTableKeys) {
-    console.assert(t, "t is null");
-    for (var key in t) {
-      if (!validTableKeys[key]) {
-        console.assert(false, "Invalid key: " + key);
-      }
-    }
-  }
-
-  var validSystemConfigKeys = {
-    ttsDie: true,
-    ttsCards: true,
-    demoBoard: true,
-    skipBacks: true,
-    smallCards: true,
-  };
-
-  function sanityCheckConfigs(configs) {
-    sanityCheckTable(configs, validSystemConfigKeys);
-  }
-
-  function setSystemConfigs(c) {
-    sanityCheckConfigs(c);
-    systemConfigs = c;
-    // tts -> should avoid card backs.
-    if (systemConfigs.ttsCards) {
-      systemConfigs.skipBacks = true;
-    }
-  }
-
-  function getSystemConfigs() {
-    return systemConfigs;
-  }
 
   function getIndexForFirstRowType(orderedRowTypes, thisRowType) {
     for (var i = 0; i < orderedRowTypes.length; i++) {
@@ -557,8 +517,6 @@ define([
     addCard: addCard,
     blendHexColors: blendHexColors,
     getRandomInt: getRandomInt,
-    setSystemConfigs: setSystemConfigs,
-    getSystemConfigs: getSystemConfigs,
     getIndexForFirstRowType: getIndexForFirstRowType,
     getSlot: getSlot,
     extendOptClassArray: extendOptClassArray,
@@ -569,6 +527,5 @@ define([
     addStandardBorder: addStandardBorder,
     seededRandom: seededRandom,
     addQuasiRandomTilt: addQuasiRandomTilt,
-    sanityCheckTable: sanityCheckTable,
   };
 });

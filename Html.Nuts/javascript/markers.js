@@ -42,11 +42,16 @@ define([
   var markersPerPage = 42;
 
   function addMarker(parent, markerType, opt_classArray, opt_additionalConfig) {
-    if (opt_classArray !== null) {
-      console.assert(
-        Array.isArray(opt_classArray),
-        "opt_classArray must be an array"
-      );
+    if (opt_classArray) {
+      var isArray = Array.isArray(opt_classArray);
+      if (!isArray) {
+        console.log("opt_classArray == ", opt_classArray);
+        console.log("opt_classArray type: ", typeof opt_classArray);
+        console.assert(
+          Array.isArray(opt_classArray),
+          "opt_classArray must be an array"
+        );
+      }
     }
     var classArray = gameUtils.extendOptClassArray(opt_classArray, "marker");
     classArray.push(markerType);

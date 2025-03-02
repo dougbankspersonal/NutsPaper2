@@ -29,6 +29,10 @@
         packages: [
           { name: "dojo", location: "../../bower_components/dojo" },
           { name: "javascript", location: "javascript" },
+          {
+            name: "sharedJavascript",
+            location: "SharedWebBoardgame/javascript",
+          },
         ],
       };
     </script>
@@ -40,13 +44,14 @@
         "javascript/cards",
         "javascript/gameUtils",
         "javascript/truckCards",
-      ], function (cards, gameUtils, truckCards) {
+        "sharedJavascript/systemConfigs",
+      ], function (cards, gameUtils, truckCards, systemConfigs) {
         //-------------------------------------------------
         //
         // Config setup
         //
         //-------------------------------------------------
-        gameUtils.setSystemConfigs({
+        systemConfigs.setSystemConfigs({
           ttsCards: true,
           skipBacks: true,
         });

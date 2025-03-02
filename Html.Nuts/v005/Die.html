@@ -21,6 +21,10 @@
         packages: [
           { name: "dojo", location: "../../bower_components/dojo" },
           { name: "javascript", location: "javascript" },
+          {
+            name: "sharedJavascript",
+            location: "SharedWebBoardgame/javascript",
+          },
         ],
       };
     </script>
@@ -28,11 +32,12 @@
     <script src="../../../bower_components/dojo/dojo.js"></script>
 
     <script>
-      require(["javascript/die", "javascript/gameUtils"], function (
-        die,
-        gameUtils
-      ) {
-        gameUtils.setSystemConfigs({
+      require([
+        "javascript/die",
+        "javascript/gameUtils",
+        "sharedJavascript/systemConfigs",
+      ], function (die, gameUtils, systemConfigs) {
+        systemConfigs.setSystemConfigs({
           ttsDie: true,
         });
 
