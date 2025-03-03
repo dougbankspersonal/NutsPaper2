@@ -3,9 +3,11 @@ define([
   "dojo/dom-construct",
   "dojo/dom-style",
   "dojo/query",
+  "javascript/measurements",
   "javascript/rowTypes",
   "javascript/versionDetails",
   "sharedJavascript/debugLog",
+  "sharedJavascript/genericMeasurements",
   "sharedJavascript/systemConfigs",
   "dojo/domReady!",
 ], function (
@@ -16,16 +18,11 @@ define([
   rowTypes,
   versionDetails,
   debugLog,
+  genericMeasurements,
   systemConfigs
 ) {
-  var pixelsPerInch = 300;
   var pageNumber = 0;
   var cardNumber = 0;
-
-  var pageOfItemsContentsPaddingPx = 10;
-
-  var sidebarWidth = 360;
-  var standardBorderWidth = 2;
 
   // Slots, elements, tiles.
   var slotWidth = 180;
@@ -134,7 +131,7 @@ define([
 
   function addStandardBorder(node) {
     domStyle.set(node, {
-      border: standardBorderWidth + "px solid black",
+      border: genericMeasurements.standardBorderWidth + "px solid black",
     });
   }
 
@@ -212,9 +209,9 @@ define([
   function getPageWidth(configs) {
     if (configs.demoBoard) {
       var demoBoardWidth =
-        sidebarWidth +
+        measurements.sidebarWidth +
         versionDetails.getTotalNumColumns() * slotWidth +
-        2 * standardBorderWidth;
+        2 * genericMeasurements.standardBorderWidth;
       return demoBoardWidth;
     }
     if (configs.landscape) {
@@ -248,7 +245,7 @@ define([
       if (lastRowType == rowTypes.RowTypes.Boxes) {
         var numNonOrderRows = numRows - 1;
         return (
-          2 * standardBorderWidth +
+          2 * genericMeasurements.standardBorderWidth +
           numNonOrderRows * rowTypes.standardRowHeight +
           boxesRowMarginTop +
           cardBorderWidth +
@@ -299,7 +296,7 @@ define([
       });
     } else {
       domStyle.set(pageOfItemsContents, {
-        padding: pageOfItemsContentsPaddingPx + "px",
+        padding: genericMeasurements.pageOfItemsContentsPaddingPx + "px",
       });
     }
 
@@ -445,7 +442,6 @@ define([
   // This returned object becomes the defined value of this module
   return {
     slotWidth: slotWidth,
-    standardBorderWidth: standardBorderWidth,
     beltCenterOffsetInConveyorTile: beltCenterOffsetInConveyorTile,
     elementHeight: elementHeight,
     elementWidth: elementWidth,
@@ -499,7 +495,6 @@ define([
     beltZIndex: beltZIndex,
     conveyorTileOnBoardLeftMargin: conveyorTileOnBoardLeftMargin,
     conveyorTileOnBoardTopMargin: conveyorTileOnBoardTopMargin,
-    sidebarWidth: sidebarWidth,
     printedPagePortraitWidth: printedPagePortraitWidth,
     printedPagePortraitHeight: printedPagePortraitHeight,
     printedPageLandscapeWidth: printedPageLandscapeWidth,
@@ -507,7 +502,6 @@ define([
     dieWidth: dieWidth,
     dieHeight: dieHeight,
     pagePadding: pagePadding,
-    pixelsPerInch: pixelsPerInch,
     cardBorderWidth: cardBorderWidth,
 
     addDiv: addDiv,

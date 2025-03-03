@@ -4,11 +4,12 @@ define([
   "dojo/dom-style",
   "dojo/dom-class",
   "javascript/beltUtils",
-  "sharedJavascript/cards",
   "javascript/conveyorTiles",
   "javascript/gameUtils",
   "javascript/markers",
+  "javascript/measurements",
   "javascript/rowTypes",
+  "sharedJavascript/cards",
   "sharedJavascript/debugLog",
   "sharedJavascript/genericUtils",
   "dojo/domReady!",
@@ -18,11 +19,12 @@ define([
   domStyle,
   domClass,
   beltUtils,
-  cards,
   conveyorTiles,
   gameUtils,
   markers,
+  measurements,
   rowTypes,
+  cards,
   debugLog,
   genericUtils
 ) {
@@ -41,7 +43,7 @@ define([
   function addSidebarCellToRow(rowNode, rowIndex, rowType) {
     var sidebar = gameUtils.addDiv(rowNode, ["sidebar"], "sidebar");
     domStyle.set(sidebar, {
-      width: `${gameUtils.sidebarWidth}px`,
+      width: `${measurements.sidebarWidth}px`,
     });
 
     var sidebarInfo = rowTypes.getSidebarInfo(rowType);
