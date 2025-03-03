@@ -14,19 +14,19 @@
       // object *before* we load dojo.js; they're functionally identical,
       // it's just easier to read this approach with a larger configuration.
       var dojoConfig = {
-      	baseUrl: "..",
-      	async: true,
-      	// This code registers the correct location of the "demo"
-      	// package so we can load Dojo from the CDN whilst still
-      	// being able to load local modules
-      	packages: [
-      		{ name: "dojo", location: "../../bower_components/dojo" },
-      		{ name: "javascript", location: "javascript" }
-      		{
-                name: "sharedJavascript",
-                location: "SharedWebBoardgame/javascript",
-              },
-      	]
+        baseUrl: "..",
+        async: true,
+        // This code registers the correct location of the "demo"
+        // package so we can load Dojo from the CDN whilst still
+        // being able to load local modules
+        packages: [
+          { name: "dojo", location: "../../bower_components/dojo" },
+          { name: "javascript", location: "javascript" },
+          {
+            name: "sharedJavascript",
+            location: "SharedWebBoardgame/javascript",
+          },
+        ],
       };
     </script>
     <!-- load Dojo -->
