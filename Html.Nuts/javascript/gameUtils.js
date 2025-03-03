@@ -15,6 +15,7 @@ define([
   domConstruct,
   domStyle,
   query,
+  measurements,
   rowTypes,
   versionDetails,
   debugLog,
