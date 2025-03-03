@@ -2,11 +2,11 @@ define([
   "dojo/dom",
   "dojo/dom-style",
   "javascript/beltUtils",
-  "javascript/debugLog",
   "javascript/gameUtils",
+  "sharedJavascript/debugLog",
   "sharedJavascript/systemConfigs",
   "dojo/domReady!",
-], function (dom, domStyle, beltUtils, debugLog, gameUtils, systemConfigs) {
+], function (dom, domStyle, beltUtils, gameUtils, debugLog, systemConfigs) {
   function getCurvePoints() {
     var curvePoints = [];
 

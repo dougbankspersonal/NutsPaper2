@@ -3,7 +3,7 @@ define([
   "dojo/dom",
   "dojo/dom-style",
   "javascript/gameUtils",
-  "javascript/debugLog",
+  "sharedJavascript/debugLog",
   "sharedJavascript/systemConfigs",
   "dojo/domReady!",
 ], function (string, dom, domStyle, gameUtils, debugLog, systemConfigs) {

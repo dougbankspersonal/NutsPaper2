@@ -28,10 +28,11 @@
     <script src="../../../bower_components/dojo/dojo.js"></script>
 
     <script>
-      require(["javascript/die", "javascript/gameUtils"], function (
-        die,
-        gameUtils
-      ) {
+      require([
+        "javascript/die",
+        "sharedJavascript/systemConfigs",
+        "javascript/gameUtils",
+      ], function (die, systemConfigs, gameUtils) {
         systemConfigs.setSystemConfigs({
           ttsDie: true,
         });

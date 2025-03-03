@@ -4,12 +4,12 @@ define([
   "dojo/dom-style",
   "dojo/dom-class",
   "javascript/beltUtils",
-  "javascript/cards",
+  "sharedJavascript/cards",
   "javascript/conveyorTiles",
-  "javascript/debugLog",
   "javascript/gameUtils",
   "javascript/markers",
   "javascript/rowTypes",
+  "sharedJavascript/debugLog",
   "sharedJavascript/genericUtils",
   "dojo/domReady!",
 ], function (
@@ -20,10 +20,10 @@ define([
   beltUtils,
   cards,
   conveyorTiles,
-  debugLog,
   gameUtils,
   markers,
   rowTypes,
+  debugLog,
   genericUtils
 ) {
   var rowZUIndex = 0;

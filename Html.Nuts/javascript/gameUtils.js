@@ -3,9 +3,9 @@ define([
   "dojo/dom-construct",
   "dojo/dom-style",
   "dojo/query",
-  "javascript/debugLog",
   "javascript/rowTypes",
   "javascript/versionDetails",
+  "sharedJavascript/debugLog",
   "sharedJavascript/systemConfigs",
   "dojo/domReady!",
 ], function (
@@ -13,9 +13,9 @@ define([
   domConstruct,
   domStyle,
   query,
-  debugLog,
   rowTypes,
   versionDetails,
+  debugLog,
   systemConfigs
 ) {
   var pixelsPerInch = 300;

@@ -1,9 +1,9 @@
 define([
-  "javascript/debugLog",
   "javascript/gameUtils",
+  "sharedJavascript/debugLog",
   "dojo/dom-style",
   "dojo/domReady!",
-], function (debugLog, gameUtils, domStyle) {
+], function (gameUtils, debugLog, domStyle) {
   var numRows = 10;
   var numColumns = 10;
   var titleRowHeight = 80;

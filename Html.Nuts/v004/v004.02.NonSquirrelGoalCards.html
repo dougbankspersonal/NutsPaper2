@@ -36,10 +36,11 @@
 
     <script>
       require([
-        "javascript/cards",
+        "sharedJavascript/cards",
         "javascript/gameUtils",
         "javascript/goalCards",
-      ], function (cards, gameUtils, goalCards) {
+        "sharedJavascript/systemConfigs",
+      ], function (cards, gameUtils, goalCards, systemConfigs) {
         var goalCardConfigs = [
           {
             title: "Peanut Champion",

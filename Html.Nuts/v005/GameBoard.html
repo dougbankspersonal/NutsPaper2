@@ -40,11 +40,11 @@
 
     <script>
       require([
-        "javascript/debugLog",
         "javascript/gameBoard",
         "javascript/versionDetails",
         "javascript/gameUtils",
-      ], function (debugLog, gameBoard, versionDetails, gameUtils) {
+        "sharedJavascript/debugLog",
+      ], function (gameBoard, versionDetails, gameUtils, debugLog) {
         versionDetails.setVersion(versionDetails.version_005);
 
         var orderedRowTypes = versionDetails.getOrderedRowTypes();

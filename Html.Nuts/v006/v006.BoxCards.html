@@ -35,10 +35,11 @@
     <script src="../../../bower_components/dojo/dojo.js"></script>
 
     <script>
-      require(["javascript/cards", "javascript/gameUtils"], function (
-        cards,
-        gameUtils
-      ) {
+      require([
+        "sharedJavascript/cards",
+        "javascript/gameUtils",
+        "sharedJavascript/systemConfigs",
+      ], function (cards, gameUtils, systemConfigs) {
         var numBoxCardsEachType = 10;
         var nutTypes = gameUtils.nutTypes;
         var numNutTypes = nutTypes.length;

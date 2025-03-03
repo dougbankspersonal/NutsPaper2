@@ -40,11 +40,11 @@
     <script>
       require([
         "dojo/dom",
-        "javascript/cards",
-        "javascript/debugLog",
+        "sharedJavascript/cards",
         "javascript/gameUtils",
+        "sharedJavascript/debugLog",
         "dojo/dom-style",
-      ], function (dom, cards, debugLog, gameUtils, domStyle) {
+      ], function (dom, cards, gameUtils, debugLog, domStyle) {
         scoringTrack.makeScoringTrack(dom);
       });
     </script>
