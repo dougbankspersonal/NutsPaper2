@@ -1,13 +1,14 @@
 .dieFace {
-    background-color: rgb(255, 255, 255);
-    display:inline-block;
-    outline: 2px solid #000000;
-    position: relative;
-    overflow: hidden;
+  background-color: rgb(255, 255, 255);
+  outline: 2px solid #000000;
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .dieFace .dieImage {
-    position: absolute;
-    max-width: 100%;
-    height: auto;
+  position: absolute;
+  height: auto;
 }

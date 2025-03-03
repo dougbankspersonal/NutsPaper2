@@ -28,9 +28,12 @@ define([
   var huntImage = "../images/Dice/hunt.png";
   var scamperImage = "../images/Dice/scamper.png";
   var stopImage = "../images/Dice/stop.png";
+  var rollImage = "../images/Dice/roll.png";
 
   function createDieTemplate() {
     var bodyNode = dom.byId("body");
+
+    var scale = 0.9;
 
     var pageOfItems = gameUtils.addPageOfItems(bodyNode);
     for (var i = 0; i < 3; i++) {
@@ -40,29 +43,41 @@ define([
       addDieFace(pageOfItems, [
         {
           img: scamperImage,
-          top: "10%",
-          left: "10%",
-          "max-width": "80%",
+          transform: `scale(${scale})`,
+          "max-width": `${scale * 100}%`,
         },
       ]);
     }
-    for (var i = 0; i < 2; i++) {
+    for (var i = 0; i < 3; i++) {
       addDieFace(pageOfItems, [
         {
           img: stopImage,
+          "max-width": `100%`,
         },
       ]);
     }
 
-    var huntScale = 0.86;
-    for (var i = 0; i < 3; i++) {
-      addDieFace(pageOfItems, [
-        {
-          img: huntImage,
-          transform: `scale(${huntScale})`,
-        },
-      ]);
-    }
+    addDieFace(pageOfItems, [
+      {
+        img: huntImage,
+        transform: `scale(${scale})`,
+        "max-width": `${scale * 100}%`,
+      },
+    ]);
+    addDieFace(pageOfItems, [
+      {
+        img: huntImage,
+        transform: `scale(${scale}) translateY(15%)`,
+        "max-width": `${scale * 100}%`,
+        "z-index": 2,
+      },
+      {
+        img: rollImage,
+        transform: `scale(${scale}) translateY(-15%)`,
+        "max-width": `${scale * 100}%`,
+        "z-index": 1,
+      },
+    ]);
   }
   return {
     createDieTemplate: createDieTemplate,
