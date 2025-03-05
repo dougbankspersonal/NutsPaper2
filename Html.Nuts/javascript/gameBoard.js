@@ -12,6 +12,7 @@ define([
   "sharedJavascript/cards",
   "sharedJavascript/debugLog",
   "sharedJavascript/genericUtils",
+  "sharedJavascript/systemConfigs",
   "dojo/domReady!",
 ], function (
   dom,
@@ -26,12 +27,10 @@ define([
   rowTypes,
   cards,
   debugLog,
-  genericUtils
+  genericUtils,
+  systemConfigs
 ) {
   var rowZUIndex = 0;
-
-  // Set to true to generate sidebar strips.
-  var thisBoardHasSidebar = false;
 
   // A tile hits two slots.
   // Say first slot is row i, column j.
@@ -437,41 +436,6 @@ define([
     });
   }
 
-  // Start on given page.
-  // Add the sidebar, as much as will fit on page.
-  // Add more pages as needed to complete the sidebar.
-  function addPagesWithSidebar(
-    bodyNode,
-    startingPageNode,
-    orderedRowTypes,
-    totalNumColumns,
-    maxRowsPerPage
-  ) {
-    var pageNodes = [];
-    var currentPageNode = startingPageNode;
-
-    var currentPageNode = gameUtils.addPageOfItems(parentNode);
-    pageNodes.push(currentPageNode);
-    var rowsThisPage = 0;
-    var firstRowIndexThisPage = 0;
-
-    for (let rowIndex = 0; rowIndex < orderedRowTypes.length; rowIndex++) {
-      var rowType = orderedRowTypes[rowIndex];
-      // If we are out of space on current page make a new one.
-      if (rowsThisPage >= maxRowsPerPage) {
-        currentPageNode = gameUtils.addPageOfItems(bodyNode);
-
-        pageNodes.push(currentPageNode);
-        rowsThisPage = 0;
-        firstRowIndexThisPage = rowIndex;
-      }
-
-      addRowWithSingleSidebarCell(currentPageNode, rowIndex, rowType);
-      rowsThisPage++;
-    }
-    return pageNodes;
-  }
-
   // Adds one or more pages.
   // Each page holds at most numColumnsThisStrip columns.
   // Each page holds at most maxRowsPerPage rows.
@@ -602,12 +566,11 @@ define([
   }
 
   function addGameBoard(configs) {
+    var sc = systemConfigs.getSystemConfigs();
     // How many rows in this version of the game?
     var orderedRowTypes = configs.orderedRowTypes;
     // How many factory columns in this version of the game?
     var totalNumColumns = configs.totalNumColumns;
-
-    var pageless = configs.pageless;
 
     // How many factory rows and columns per page?
     var maxRowsPerPage;
@@ -628,19 +591,8 @@ define([
     var bodyNode = dom.byId("body");
 
     // Special case if we are doing all the columns in one go.
-    if (pageless || maxColumnsPerPage >= totalNumColumns) {
+    if (sc.demoBoard || maxColumnsPerPage >= totalNumColumns) {
       var pageNode;
-      if (thisBoardHasSidebar) {
-        var pageNodes = addPagesWithSidebar(
-          bodyNode,
-          orderedRowTypes,
-          totalNumColumns,
-          maxRowsPerPage
-        );
-        console.assert(pageNodes.length == 1);
-        pageNode = pageNodes[0];
-      }
-
       var retVal = addPagesWithNextNColumns(
         bodyNode,
         orderedRowTypes,
@@ -661,23 +613,13 @@ define([
         "Doug: addGameBoard: allPageNodes.length = " + allPageNodes.length
       );
       var pageNode = allPageNodes[0];
-      if (pageless) {
+
+      if (sc.demoBoard) {
         domStyle.set(pageNode, {
-          width: "unset",
-          height: "unset",
           padding: "0px",
         });
       }
     } else {
-      if (thisBoardHasSidebar) {
-        addPagesWithSidebar(
-          bodyNode,
-          orderedRowTypes,
-          totalNumColumns,
-          maxRowsPerPage
-        );
-      }
-
       var numColumnsAlreadyHandled = 0;
       while (numColumnsAlreadyHandled < totalNumColumns) {
         debugLog.debugLog(

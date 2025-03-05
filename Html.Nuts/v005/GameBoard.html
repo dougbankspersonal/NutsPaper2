@@ -6,7 +6,7 @@
       href="https://fonts.googleapis.com/css2?family=DynaPuff:wght@400..700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../SharedWebBoardGame/css/main.css" />
     <link rel="stylesheet" href="../css/game_board.css" />
     <link rel="stylesheet" href="../css/belt.css" />
     <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
@@ -44,8 +44,18 @@
         "javascript/versionDetails",
         "javascript/gameUtils",
         "sharedJavascript/debugLog",
-      ], function (gameBoard, versionDetails, gameUtils, debugLog) {
+        "sharedJavascript/systemConfigs",
+      ], function (
+        gameBoard,
+        versionDetails,
+        gameUtils,
+        debugLog,
+        systemConfigs
+      ) {
         versionDetails.setVersion(versionDetails.version_005);
+        systemConfigs.setSystemConfigs({
+          demoBoard: true,
+        });
 
         var orderedRowTypes = versionDetails.getOrderedRowTypes();
         var totalNumColumns = versionDetails.getTotalNumColumns();
@@ -56,7 +66,6 @@
         gameBoard.addGameBoard({
           orderedRowTypes: orderedRowTypes,
           totalNumColumns: totalNumColumns,
-          pageless: true,
         });
       });
     </script>

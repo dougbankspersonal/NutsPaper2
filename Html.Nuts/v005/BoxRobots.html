@@ -6,7 +6,7 @@
       href="https://fonts.googleapis.com/css2?family=DynaPuff:wght@400..700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../SharedWebBoardGame/css/main.css" />
     <link rel="stylesheet" href="../css/card.css" />
     <link rel="stylesheet" href="../css/image.css" />
     <link rel="stylesheet" href="../css/box_robot.css" />
@@ -47,7 +47,7 @@
         "dojo/dom-style",
       ], function (cards, gameUtils, systemConfigs, domStyle) {
         systemConfigs.setSystemConfigs({
-          ttsCards: false,
+          ttsCards: true,
           smallSquares: true,
         });
         var sc = systemConfigs.getSystemConfigs();
