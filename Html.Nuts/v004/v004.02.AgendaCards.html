@@ -175,21 +175,21 @@
           // Calculate the score for this distribution
           var score = scoreForDistribution(nutTypeDistribution);
 
-          var wrapper = gameUtils.addDiv(parentNode, ["wrapper"], "wrapper");
+          var wrapper = htmlUtils.addDiv(parentNode, ["wrapper"], "wrapper");
           for (var i = 0; i < numNutTypes; i++) {
             var nutType = nutTypes[i];
             var typeCount = nutTypeDistribution[nutType];
             for (var j = 0; j < typeCount; j++) {
-              var prop = gameUtils.addDiv(
+              var prop = htmlUtils.addDiv(
                 wrapper,
                 ["requirement"],
                 "requirement"
               );
-              gameUtils.addImage(prop, ["nut_type", nutType], "nut_type");
+              htmlUtils.addImage(prop, ["nut_type", nutType], "nut_type");
             }
           }
 
-          var scoreNode = gameUtils.addDiv(wrapper, ["score"], "score");
+          var scoreNode = htmlUtils.addDiv(wrapper, ["score"], "score");
           scoreNode.innerHTML = score.toString().concat(" points");
 
           return wrapper;

@@ -5,7 +5,7 @@ define([
   "dojo/domReady!",
 ], function (dom, domStyle, gameUtils) {
   function addDieFace(pageOfItems, opt_styleDescs) {
-    var dieFace = gameUtils.addDiv(pageOfItems, ["dieFace"], "dieFace");
+    var dieFace = htmlUtils.addDiv(pageOfItems, ["dieFace"], "dieFace");
     domStyle.set(dieFace, {
       height: gameUtils.dieHeight + "px",
       width: gameUtils.dieWidth + "px",
@@ -13,7 +13,7 @@ define([
 
     if (opt_styleDescs) {
       for (var styleDesc of opt_styleDescs) {
-        var image = gameUtils.addImage(
+        var image = htmlUtils.addImage(
           dieFace,
           ["dieImage"],
           "dieImage",
@@ -35,7 +35,7 @@ define([
 
     var scale = 0.9;
 
-    var pageOfItems = gameUtils.addPageOfItems(bodyNode);
+    var pageOfItems = htmlUtils.addPageOfItems(bodyNode);
     for (var i = 0; i < 3; i++) {
       addDieFace(pageOfItems);
     }

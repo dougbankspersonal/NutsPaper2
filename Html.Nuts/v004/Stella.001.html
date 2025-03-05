@@ -62,7 +62,7 @@
           totalNumColumns: totalNumColumns,
         });
 
-        var dispenserRowIndex = gameUtils.getIndexForFirstRowType(
+        var dispenserRowIndex = genericUtils.getIndexOfFirstInstanceInArray(
           orderedRowTypes,
           rowTypes.RowTypes.Dispenser
         );
@@ -107,7 +107,7 @@
           gameUtils.nutTypePistachio
         );
 
-        var boxRowIndex = gameUtils.getIndexForFirstRowType(
+        var boxRowIndex = genericUtils.getIndexOfFirstInstanceInArray(
           orderedRowTypes,
           rowTypes.RowTypes.Boxes
         );

@@ -24,19 +24,19 @@ define([
     );
     var config = goalCardConfigs[cardType];
     if (config.title) {
-      var node = gameUtils.addDiv(frontNode, ["title"], "title");
+      var node = htmlUtils.addDiv(frontNode, ["title"], "title");
       node.innerHTML = config.title;
     }
     if (config.goal) {
-      var node = gameUtils.addDiv(frontNode, ["goal"], "goal");
+      var node = htmlUtils.addDiv(frontNode, ["goal"], "goal");
       node.innerHTML = config.goal;
     }
     if (config.points) {
-      var node = gameUtils.addDiv(frontNode, ["points"], "points");
+      var node = htmlUtils.addDiv(frontNode, ["points"], "points");
       node.innerHTML = config.points;
     }
     if (config.reward) {
-      var node = gameUtils.addDiv(frontNode, ["reward"], "reward");
+      var node = htmlUtils.addDiv(frontNode, ["reward"], "reward");
       node.innerHTML = config.reward;
     }
   }

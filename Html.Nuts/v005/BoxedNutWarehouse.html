@@ -54,15 +54,15 @@
         var bodyNode = dom.byId("body");
 
         debugLog.debugLog("ScoringTrack", "Doug: in main");
-        var pageNode = gameUtils.addPageOfItems(bodyNode);
+        var pageNode = htmlUtils.addPageOfItems(bodyNode);
 
-        var outerFrameNode = gameUtils.addDiv(
+        var outerFrameNode = htmlUtils.addDiv(
           pageNode,
           ["outer_frame"],
           "clearBackground"
         );
 
-        var borderedSquareNode = gameUtils.addDiv(
+        var borderedSquareNode = htmlUtils.addDiv(
           outerFrameNode,
           ["bordered_square"],
           "mainDiv"
@@ -83,7 +83,7 @@
           width: "100%",
           height: titleRowHeight + "px",
         });
-        var titleTextNode = gameUtils.addDiv(
+        var titleTextNode = htmlUtils.addDiv(
           titleRowNode,
           ["title_text"],
           "titleText",
@@ -99,7 +99,7 @@
           width: "100%",
           height: warehouseRowHeight + "px",
         });
-        var warehouseTextNode = gameUtils.addDiv(
+        var warehouseTextNode = htmlUtils.addDiv(
           warehouseRowNode,
           ["warehouse_text"],
           "warehouseText",

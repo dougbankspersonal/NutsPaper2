@@ -14,7 +14,7 @@ define([
     var smallCardHeight = gameUtils.cardHeight;
     var pointsTop = smallCardHeight - pointsHeight;
 
-    var wrapper = gameUtils.addDiv(parentNode, ["wrapper"], "wrapper");
+    var wrapper = htmlUtils.addDiv(parentNode, ["wrapper"], "wrapper");
     domStyle.set(wrapper, {
       "padding-top": `${padding}px`,
       "padding-left": `${padding}px`,
@@ -27,12 +27,12 @@ define([
     for (var i = 0; i < nuts.length; i++) {
       var nut = nuts[i];
       var nutType = nut.type;
-      var prop = gameUtils.addDiv(wrapper, ["requirement"], "requirement");
-      gameUtils.addImage(prop, ["nutType", nutType], "nutType");
+      var prop = htmlUtils.addDiv(wrapper, ["requirement"], "requirement");
+      htmlUtils.addImage(prop, ["nutType", nutType], "nutType");
     }
 
     var points = shipmentCardConfig.points;
-    var scoreNode = gameUtils.addDiv(wrapper, ["points"], "points");
+    var scoreNode = htmlUtils.addDiv(wrapper, ["points"], "points");
     domStyle.set(scoreNode, {
       top: `${pointsTop}px`,
       "text-align": "center",

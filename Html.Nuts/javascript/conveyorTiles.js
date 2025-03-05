@@ -108,7 +108,7 @@ define([
     if (sc.isDemoBoard) {
       classArray.push("demoBoard");
     }
-    var conveyorTile = gameUtils.addDiv(parentNode, classArray, conveyorTileId);
+    var conveyorTile = htmlUtils.addDiv(parentNode, classArray, conveyorTileId);
     domStyle.set(conveyorTile, {
       width: `${gameUtils.conveyorTileWidth}px`,
       height: `${gameUtils.conveyorTileHeight}px`,
@@ -118,7 +118,7 @@ define([
   }
 
   function addStraightBelt(conveyorTile, isLeft) {
-    var belt = gameUtils.addDiv(
+    var belt = htmlUtils.addDiv(
       conveyorTile,
       ["belt", isLeft ? "left" : "right"],
       isLeft ? "leftBelt" : "rightBelt"
@@ -135,7 +135,7 @@ define([
   }
 
   function addRightToLeftBelt(conveyorTile) {
-    belt = gameUtils.addDiv(conveyorTile, ["belt", , "right"], "rightBelt");
+    belt = htmlUtils.addDiv(conveyorTile, ["belt", , "right"], "rightBelt");
     for (let index = 0; index < curvePoints.length; index++) {
       var curvePoint = curvePoints[index];
       beltUtils.addBeltSegment(
@@ -149,7 +149,7 @@ define([
   }
 
   function addLeftToRightBelt(conveyorTile) {
-    var belt = gameUtils.addDiv(conveyorTile, ["belt", "left"], "leftBelt");
+    var belt = htmlUtils.addDiv(conveyorTile, ["belt", "left"], "leftBelt");
     for (let index = 0; index < curvePoints.length; index++) {
       var curvePoint = curvePoints[index];
       beltUtils.addBeltSegment(
@@ -215,7 +215,7 @@ define([
     numConveyorTiles,
     opt_isSplitterJoiner
   ) {
-    var pageNode = gameUtils.addPageOfItems(bodyNode);
+    var pageNode = htmlUtils.addPageOfItems(bodyNode);
 
     for (let i = 0; i < numConveyorTiles; i++) {
       var tileId = "tileId" + i;

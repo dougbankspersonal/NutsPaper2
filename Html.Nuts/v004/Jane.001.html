@@ -76,7 +76,7 @@
         });
 
         // Add nut dispensers
-        var dispenserRowIndex = gameUtils.getIndexForFirstRowType(
+        var dispenserRowIndex = genericUtils.getIndexOfFirstInstanceInArray(
           orderedRowTypes,
           rowTypes.RowTypes.Dispenser
         );
@@ -122,7 +122,7 @@
         );
 
         // Squirrel.
-        var firstSquirrelRowIndex = gameUtils.getIndexForFirstRowType(
+        var firstSquirrelRowIndex = genericUtils.getIndexOfFirstInstanceInArray(
           orderedRowTypes,
           rowTypes.RowTypes.Squirrel
         );
@@ -133,7 +133,7 @@
         );
 
         // Add Salters.
-        var salterRowIndex = gameUtils.getIndexForFirstRowType(
+        var salterRowIndex = genericUtils.getIndexOfFirstInstanceInArray(
           orderedRowTypes,
           rowTypes.RowTypes.Salter
         );
@@ -149,7 +149,7 @@
         );
 
         // add Boxes.
-        var boxesRowIndex = gameUtils.getIndexForFirstRowType(
+        var boxesRowIndex = genericUtils.getIndexOfFirstInstanceInArray(
           orderedRowTypes,
           rowTypes.RowTypes.Boxes
         );

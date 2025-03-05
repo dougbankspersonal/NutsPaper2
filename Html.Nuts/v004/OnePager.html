@@ -67,7 +67,7 @@
           totalNumColumns: totalNumColumns,
         });
 
-        var startRowIndex = gameUtils.getIndexForFirstRowType(
+        var startRowIndex = genericUtils.getIndexOfFirstInstanceInArray(
           orderedRowTypes,
           rowTypes.RowTypes.Start
         );
@@ -103,7 +103,7 @@
           markers.markerTypes.Heart
         );
 
-        var endRowIndex = gameUtils.getIndexForFirstRowType(
+        var endRowIndex = genericUtils.getIndexOfFirstInstanceInArray(
           orderedRowTypes,
           rowTypes.RowTypes.End
         );

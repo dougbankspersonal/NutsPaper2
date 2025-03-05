@@ -40,20 +40,20 @@ define([
 
   // Add a sidebar cell to the row with labels & whatnot.
   function addSidebarCellToRow(rowNode, rowIndex, rowType) {
-    var sidebar = gameUtils.addDiv(rowNode, ["sidebar"], "sidebar");
+    var sidebar = htmlUtils.addDiv(rowNode, ["sidebar"], "sidebar");
     domStyle.set(sidebar, {
       width: `${measurements.sidebarWidth}px`,
     });
 
     var sidebarInfo = rowTypes.getSidebarInfo(rowType);
 
-    var wrapper = gameUtils.addDiv(sidebar, ["wrapper"], "wrapper");
-    gameUtils.addDiv(wrapper, ["title"], "title", sidebarInfo.title);
+    var wrapper = htmlUtils.addDiv(sidebar, ["wrapper"], "wrapper");
+    htmlUtils.addDiv(wrapper, ["title"], "title", sidebarInfo.title);
     if (sidebarInfo.subtitle) {
-      gameUtils.addDiv(wrapper, ["subtitle"], "subtitle", sidebarInfo.subtitle);
+      htmlUtils.addDiv(wrapper, ["subtitle"], "subtitle", sidebarInfo.subtitle);
     }
     if (sidebarInfo.instructions) {
-      gameUtils.addDiv(
+      htmlUtils.addDiv(
         wrapper,
         ["instructions"],
         "instructions",
@@ -69,7 +69,7 @@ define([
   function addRowWithSingleSidebarCell(parentNode, rowIndex, rowType) {
     var rowHeight = rowTypes.getRowHeight(rowType);
     var row = gameUtils.addRow(parentNode, [], rowIndex);
-    gameUtils.addStandardBorder(row);
+    htmlUtils.addStandardBorder(row);
 
     var finalZIndex = rowZUIndex;
     rowZUIndex--;
@@ -85,7 +85,7 @@ define([
   }
 
   function addContent(parentNode) {
-    var content = gameUtils.addDiv(parentNode, ["content"], "content");
+    var content = htmlUtils.addDiv(parentNode, ["content"], "content");
     return content;
   }
 
@@ -140,7 +140,7 @@ define([
     var classArray = rowConfigs.classArray ? rowConfigs.classArray : [];
 
     var row = gameUtils.addRow(parentNode, classArray, rowIndex);
-    gameUtils.addStandardBorder(row);
+    htmlUtils.addStandardBorder(row);
 
     var finalHeight = rowTypes.getRowHeight(rowType);
     var finalZIndex = rowZUIndex;
@@ -152,7 +152,7 @@ define([
     });
 
     if (darkBackground) {
-      gameUtils.addDiv(row, ["darkBackground"], "darkBackground");
+      htmlUtils.addDiv(row, ["darkBackground"], "darkBackground");
     }
 
     var content = addContent(row);
@@ -175,7 +175,7 @@ define([
     var hideBeltTop = elementConfigs.hideBeltTop ? true : false;
     var hideBeltBottom = elementConfigs.hideBeltBottom ? true : false;
 
-    var belt = gameUtils.addDiv(parentNode, ["belt"], "belt");
+    var belt = htmlUtils.addDiv(parentNode, ["belt"], "belt");
     domStyle.set(belt, {
       "z-index": `${gameUtils.beltZIndex}`,
     });
@@ -202,22 +202,22 @@ define([
       "element"
     );
     var elementId = gameUtils.getElementId(columnIndex);
-    var element = gameUtils.addDiv(parentNode, extendedClassArray, elementId);
+    var element = htmlUtils.addDiv(parentNode, extendedClassArray, elementId);
 
     applyStandardElementStyling(element);
-    gameUtils.addStandardBorder(element);
+    htmlUtils.addStandardBorder(element);
 
     return element;
   }
 
   function addEntityNameAndIndex(parentNode, entityName, entityIndex) {
-    var entityNameNode = gameUtils.addDiv(
+    var entityNameNode = htmlUtils.addDiv(
       parentNode,
       ["entityTitle"],
       "entityTitle",
       entityName
     );
-    var entityIndexNode = gameUtils.addDiv(
+    var entityIndexNode = htmlUtils.addDiv(
       parentNode,
       ["entityIndex"],
       "entityIndex",
@@ -229,7 +229,7 @@ define([
   function addStandardSlot(parentNode, rowIndex, columnIndex) {
     var slotId = gameUtils.getSlotId(rowIndex, columnIndex);
     var classArray = ["slot"];
-    var node = gameUtils.addDiv(parentNode, classArray, slotId);
+    var node = htmlUtils.addDiv(parentNode, classArray, slotId);
     domStyle.set(node, {
       width: `${gameUtils.slotWidth}px`,
     });
@@ -241,7 +241,7 @@ define([
     var elementId = gameUtils.getElementId(columnIndex);
     // Column index is zero based: when we render the number we want it to start at one.
     var columnNumber = columnIndex + 1;
-    var numberNode = gameUtils.addDiv(
+    var numberNode = htmlUtils.addDiv(
       standardSlot,
       ["number"],
       elementId,
@@ -455,7 +455,7 @@ define([
       maxColumnsPerPage,
       numColumnsAlreadyHandled
     );
-    var pageNode = gameUtils.addPageOfItems(bodyNode);
+    var pageNode = htmlUtils.addPageOfItems(bodyNode);
     allPageNodes.push(pageNode);
     var currentPageNode = pageNode;
 
@@ -465,7 +465,7 @@ define([
       var rowType = orderedRowTypes[i];
 
       if (rowsThisPage >= maxRowsPerPage) {
-        currentPageNode = gameUtils.addPageOfItems(bodyNode);
+        currentPageNode = htmlUtils.addPageOfItems(bodyNode);
         allPageNodes.push(currentPageNode);
         rowsThisPage = 0;
       }
@@ -797,13 +797,13 @@ define([
   }
 
   function addToken(parent, color, text) {
-    var node = gameUtils.addDiv(parent, ["token"], "token");
+    var node = htmlUtils.addDiv(parent, ["token"], "token");
     domStyle.set(node, {
       "background-color": color,
     });
-    gameUtils.addStandardBorder(node);
+    htmlUtils.addStandardBorder(node);
 
-    gameUtils.addDiv(node, ["text"], "text", text);
+    htmlUtils.addDiv(node, ["text"], "text", text);
 
     return node;
   }

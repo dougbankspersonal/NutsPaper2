@@ -16,7 +16,7 @@ define([
   var padding = 20;
 
   function addRow(parentNode) {
-    return gameUtils.addDiv(wrapper, ["row"], "row");
+    return htmlUtils.addDiv(wrapper, ["row"], "row");
   }
 
   function addCell(parentNode, isFilled) {
@@ -24,7 +24,7 @@ define([
     if (isFilled) {
       classes.push("filled");
     }
-    var cell = gameUtils.addDiv(parentNode, classes, "cell");
+    var cell = htmlUtils.addDiv(parentNode, classes, "cell");
     domStyle.set(cell, {
       width: `${cellWidthPx}px`,
       height: `${cellHeightPx}px`,
@@ -32,7 +32,7 @@ define([
   }
 
   function addTemplateDesc(parentNode, templateCardConfig) {
-    var wrapper = gameUtils.addDiv(parentNode, ["wrapper"], "wrapper");
+    var wrapper = htmlUtils.addDiv(parentNode, ["wrapper"], "wrapper");
     domStyle.set(wrapper, {
       "padding-top": `${padding}px`,
       "padding-left": `${padding}px`,
@@ -59,7 +59,7 @@ define([
     }
 
     var points = templateCardConfig.points;
-    var scoreNode = gameUtils.addDiv(wrapper, ["points"], "points");
+    var scoreNode = htmlUtils.addDiv(wrapper, ["points"], "points");
     domStyle.set(scoreNode, {
       top: `${pointsTop}px`,
       "text-align": "center",

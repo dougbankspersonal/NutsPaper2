@@ -16,7 +16,7 @@ define([
   function addArrow(rowIndex, columnIndex, arrowType) {
     var classArray = ["arrow"];
     var slot = gameUtils.getSlot(rowIndex, columnIndex);
-    var node = gameUtils.addDiv(slot, classArray, "arrow.".concat(arrowType));
+    var node = htmlUtils.addDiv(slot, classArray, "arrow.".concat(arrowType));
     domStyle.set(node, {
       "z-index": `${gameUtils.arrowZIndex}`,
       left: `${leftPx}px`,
@@ -25,7 +25,7 @@ define([
       height: `${gameUtils.arrowHeight}px`,
     });
 
-    gameUtils.addImage(node, ["image", arrowType], "image");
+    htmlUtils.addImage(node, ["image", arrowType], "image");
 
     return node;
   }

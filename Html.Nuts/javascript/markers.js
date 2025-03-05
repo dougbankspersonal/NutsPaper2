@@ -56,7 +56,7 @@ define([
     var classArray = gameUtils.extendOptClassArray(opt_classArray, "marker");
     classArray.push(markerType);
     var additionalConfig = opt_additionalConfig ? opt_additionalConfig : {};
-    var node = gameUtils.addDiv(
+    var node = htmlUtils.addDiv(
       parent,
       classArray,
       "marker.".concat(markerType)
@@ -75,12 +75,12 @@ define([
       "z-index": `${gameUtils.markerZIndex}`,
     });
 
-    gameUtils.addImage(node, ["image", markerType], "image");
+    htmlUtils.addImage(node, ["image", markerType], "image");
 
     var text = additionalConfig.text ? additionalConfig.text : null;
 
     if (text) {
-      gameUtils.addDiv(node, ["text"], "text", text);
+      htmlUtils.addDiv(node, ["text"], "text", text);
     }
 
     if (additionalConfig.color) {
@@ -99,7 +99,7 @@ define([
       var pageOfMarkers = null;
       for (var i = 0; i < numMarkers; i++) {
         if (i % markersPerPage == 0) {
-          pageOfMarkers = gameUtils.addPageOfItems(bodyNode);
+          pageOfMarkers = htmlUtils.addPageOfItems(bodyNode);
         }
         contentCallback(pageOfMarkers, i);
       }

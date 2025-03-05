@@ -1,10 +1,10 @@
 define([
-  "sharedJavascript/cards",
   "javascript/gameUtils",
-  "javascript/markers",
+  "sharedJavascript/cards",
+  "sharedJavascript/htmlUtils",
   "dojo/dom-style",
   "dojo/domReady!",
-], function (cards, gameUtils, markers, domStyle) {
+], function (gameUtils, cards, htmlUtils, domStyle) {
   //-------------------------------------------------
   //
   // Global vars
@@ -265,7 +265,7 @@ define([
     var cardWidth = gameUtils.cardWidth;
     var cardHeight = gameUtils.cardHeight;
 
-    var wrapper = gameUtils.addDiv(parentNode, ["wrapper"], "wrapper");
+    var wrapper = htmlUtils.addDiv(parentNode, ["wrapper"], "wrapper");
 
     var innerCardWidth = cardWidth - 2 * gameUtils.cardBorderWidth;
     var innerCardHeight = cardHeight - 2 * gameUtils.cardBorderWidth;
@@ -277,13 +277,13 @@ define([
     var truckScale = 0.8;
     var truckWidth = innerCardHeight * truckScale;
     var truckHeight = innerCardWidth * truckScale;
-    var truckNode = gameUtils.addImage(wrapper, ["truck"], "truck");
+    var truckNode = htmlUtils.addImage(wrapper, ["truck"], "truck");
     domStyle.set(truckNode, {
       width: truckWidth + "px",
       height: truckHeight + "px",
     });
 
-    var requirementsNode = gameUtils.addDiv(
+    var requirementsNode = htmlUtils.addDiv(
       truckNode,
       ["requirements"],
       "requirements"
@@ -297,12 +297,12 @@ define([
       var nutType = nutTypes[i];
       var typeCount = nutTypeDistribution[nutType];
       for (var j = 0; j < typeCount; j++) {
-        var requirement = gameUtils.addDiv(
+        var requirement = htmlUtils.addDiv(
           requirementsNode,
           ["requirement"],
           "requirement"
         );
-        var closedBoxNode = gameUtils.addImage(
+        var closedBoxNode = htmlUtils.addImage(
           requirement,
           ["closedBox"],
           "closedBox"
@@ -311,9 +311,9 @@ define([
           width: closedBoxSize + "px",
           height: closedBoxSize + "px",
         });
-        gameUtils.addQuasiRandomTilt(closedBoxNode, -boxTilt, boxTilt);
+        htmlUtils.addQuasiRandomTilt(closedBoxNode, -boxTilt, boxTilt);
 
-        var nutTypeNode = gameUtils.addImage(
+        var nutTypeNode = htmlUtils.addImage(
           closedBoxNode,
           ["nut_type", nutType],
           "nut_type"
@@ -325,7 +325,7 @@ define([
       }
     }
 
-    var scoreNode = gameUtils.addDiv(wrapper, ["score"], "score");
+    var scoreNode = htmlUtils.addDiv(wrapper, ["score"], "score");
     scoreNode.innerHTML = score.toString().concat(" points");
 
     return truckNode;

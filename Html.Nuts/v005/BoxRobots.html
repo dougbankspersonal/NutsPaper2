@@ -81,13 +81,13 @@
             var nutType = config[i];
             var quadrantId = "quadrant_" + i;
             var classArray = ["quadrant"];
-            var quadrant = gameUtils.addDiv(front, classArray, quadrantId);
+            var quadrant = htmlUtils.addDiv(front, classArray, quadrantId);
 
             var robotZIndex = i;
             var openBoxZIndex = config.length + i;
             var nutZIndex = config.length * 2 + i;
 
-            var robotArm = gameUtils.addImage(
+            var robotArm = htmlUtils.addImage(
               quadrant,
               ["robotArm"],
               "robotArm"
@@ -103,7 +103,7 @@
               height: robotSizePercent + "%",
             });
 
-            var openBoxNode = gameUtils.addImage(
+            var openBoxNode = htmlUtils.addImage(
               quadrant,
               ["openBox"],
               "openBox"
@@ -119,7 +119,7 @@
               height: openBoxSizePercent + "%",
             });
 
-            var nutImage = gameUtils.addImage(
+            var nutImage = htmlUtils.addImage(
               quadrant,
               ["nut_type", nutType],
               "nut_type"

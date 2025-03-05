@@ -20,7 +20,7 @@ define([
   var totalWidth = numColumns * (cellWidth + cellSideMargin * 2);
 
   function addMainDiv(parentNode) {
-    var mainDiv = gameUtils.addDiv(parentNode, ["main_div"], "mainDiv", "");
+    var mainDiv = htmlUtils.addDiv(parentNode, ["main_div"], "mainDiv", "");
     domStyle.set(mainDiv, {
       height: totalHeight + "px",
       width: totalWidth + "px",
@@ -37,7 +37,7 @@ define([
       height: titleRowHeight + "px",
     });
 
-    var titleText = gameUtils.addDiv(
+    var titleText = htmlUtils.addDiv(
       titleRow,
       ["title_text"],
       "titleText",
@@ -59,7 +59,7 @@ define([
       "justify-content": "center",
     });
     for (j = 0; j < numColumns; j++) {
-      var div = gameUtils.addDiv(
+      var div = htmlUtils.addDiv(
         row,
         ["scoring_cell"],
         "scoringCell",
@@ -83,7 +83,7 @@ define([
     var bodyNode = dom.byId("body");
 
     debugLog.debugLog("ScoringTrack", "Doug: in main");
-    var pageNode = gameUtils.addPageOfItems(bodyNode);
+    var pageNode = htmlUtils.addPageOfItems(bodyNode);
 
     var mainDiv = addMainDiv(pageNode);
 
