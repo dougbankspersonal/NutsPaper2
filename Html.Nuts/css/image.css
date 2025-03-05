@@ -81,11 +81,11 @@ div.pseudo_image.Truck {
   background-image: url("../images/Factory/FloorBrick.png");
 }
 
-.demoBoard .conveyor_tile {
+.demo_board .conveyor_tile {
   z-index: 20;
 }
 
-.demoBoard .conveyor_tile.ghost {
+.demo_board .conveyor_tile.ghost {
   opacity: 0.4;
 }
 

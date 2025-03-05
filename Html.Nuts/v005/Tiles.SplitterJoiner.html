@@ -33,8 +33,24 @@
     <script src="../../../bower_components/dojo/dojo.js"></script>
 
     <script>
-      var numSplitterJoinerTiles = 4;
-      require(["javascript/conveyorTiles"], function (conveyorTiles) {
+      require([
+        "sharedJavascript/debugLog",
+        "sharedJavascript/systemConfigs",
+        "javascript/conveyorTiles",
+        "javascript/measurements",
+      ], function (debugLog, systemConfigs, conveyorTiles, measurements) {
+        var numSplitterJoinerTiles = 8;
+        debugLog.debugLog(
+          "Refactor",
+          "Doug: systemConfigs = " + JSON.stringify(systemConfigs)
+        );
+        systemConfigs.setSystemConfigs(
+          systemConfigs.addTileSystemConfigs(
+            measurements.conveyorTileGap,
+            measurements.conveyorColumnsPerPage
+          )
+        );
+
         conveyorTiles.createConveyorTiles(numSplitterJoinerTiles, true);
       });
     </script>

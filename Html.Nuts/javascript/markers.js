@@ -1,10 +1,12 @@
 define([
-  "dojo/dom",
   "javascript/gameUtils",
   "javascript/measurements",
+  "sharedJavascript/genericUtils",
+  "sharedJavascript/htmlUtils",
+  "dojo/dom",
   "dojo/dom-style",
   "dojo/domReady!",
-], function (dom, gameUtils, measurements, domStyle) {
+], function (gameUtils, measurements, genericUtils, htmlUtils, dom, domStyle) {
   var markerTypes = {
     Almond: gameUtils.nutTypeAlmond,
     Cashew: gameUtils.nutTypeCashew,
@@ -73,7 +75,7 @@ define([
     domStyle.set(node, {
       width: `${width}px`,
       height: `${height}px`,
-      "z-index": `${gameUtils.markerZIndex}`,
+      "z-index": `${measurements.markerZIndex}`,
     });
 
     htmlUtils.addImage(node, ["image", markerType], "image");

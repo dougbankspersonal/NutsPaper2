@@ -44,6 +44,7 @@
         "javascript/gameUtils",
         "javascript/measurements",
         "sharedJavascript/cards",
+        "sharedJavascript/debugLog",
         "sharedJavascript/htmlUtils",
         "sharedJavascript/systemConfigs",
         "dojo/dom-style",
@@ -51,47 +52,59 @@
         gameUtils,
         measurements,
         cards,
+        debugLog,
         htmlUtils,
         systemConfigs,
         domStyle
       ) {
-        systemConfigs.setSystemConfigs({
-          ttsCards: false,
-          altCardWidth: measurements.smallCardWidth,
-          // Width again, not height: box robots are square and as wide as
-          // small cards.
-          altCardHeight: measurements.smallCardWidth,
-          altCardBackFontSize: measurements.smallCardBackFontSize,
-        });
+        var inputSC = systemConfigs.addTTSCardSystemConfigs(
+          measurements.smallCardWidth,
+          measurements.smallCardWidth, // Not a typo, these are square.
+          measurements.smallCardBackFontSize
+        );
+        systemConfigs.setSystemConfigs(inputSC);
         var sc = systemConfigs.getSystemConfigs();
 
         var boxRobotCardConfigs = [
-          ["Almond", "Cashew", "Peanut", "Pistachio"],
-          ["Almond", "Cashew", "Pistachio", "Peanut"],
-          ["Almond", "Peanut", "Cashew", "Pistachio"],
-          ["Almond", "Peanut", "Pistachio", "Cashew"],
-          ["Almond", "Pistachio", "Cashew", "Peanut"],
-          ["Almond", "Pistachio", "Peanut", "Cashew"],
-          ["Almond", "Cashew", "Peanut", "Pistachio"],
-          ["Almond", "Peanut", "Cashew", "Pistachio"],
+          {
+            orderOfNuts: ["Almond", "Cashew", "Peanut", "Pistachio"],
+          },
+          {
+            orderOfNuts: ["Almond", "Cashew", "Pistachio", "Peanut"],
+          },
+          {
+            orderOfNuts: ["Almond", "Peanut", "Cashew", "Pistachio"],
+          },
+          {
+            orderOfNuts: ["Almond", "Peanut", "Pistachio", "Cashew"],
+          },
+          {
+            orderOfNuts: ["Almond", "Pistachio", "Cashew", "Peanut"],
+          },
+          {
+            orderOfNuts: ["Almond", "Pistachio", "Peanut", "Cashew"],
+          },
+          {
+            orderOfNuts: ["Almond", "Cashew", "Peanut", "Pistachio"],
+          },
+          {
+            orderOfNuts: ["Almond", "Peanut", "Cashew", "Pistachio"],
+          },
         ];
 
-        if (sc.ttsCards) {
-          // Need a min of 12.
-          // FIXME(dbanks); refactor.
-          while (boxRobotCardConfigs.length < 12) {
-            boxRobotCardConfigs.push(boxRobotCardConfigs[0]);
-          }
-        }
-
         function addBoxRobotCard(parent, index) {
-          var config = boxRobotCardConfigs[index];
+          debugLog.debugLog(
+            "BoxRobotCards",
+            "Doug: addBoxRobotCard index = " + index
+          );
+          var config = cards.getCardConfigFromIndex(boxRobotCardConfigs, index);
+
           var classArray = ["box_robot"];
           var cardId = "boxRobot_" + index;
           var front = cards.addCardFront(parent, classArray, cardId);
 
-          for (var i = 0; i < config.length; i++) {
-            var nutType = config[i];
+          for (var i = 0; i < config.orderOfNuts.length; i++) {
+            var nutType = config.orderOfNuts[i];
             var quadrantId = "quadrant_" + i;
             var classArray = ["quadrant"];
             var quadrant = htmlUtils.addDiv(front, classArray, quadrantId);
@@ -150,12 +163,12 @@
           }
         }
 
-        cards.addCards(
-          "Box Robot",
-          "#f0d0d0",
-          boxRobotCardConfigs.length,
-          addBoxRobotCard
+        var numCards = cards.getNumCardsFromConfigs(boxRobotCardConfigs);
+        debugLog.debugLog(
+          "BoxRobotCards",
+          "Doug: BoxRobotCards main numCards = " + numCards
         );
+        cards.addCards("Box Robot", "#f0d0d0", numCards, addBoxRobotCard);
       });
     </script>
   </body>

@@ -43,18 +43,18 @@
         "javascript/gameBoard",
         "javascript/gameUtils",
         "javascript/markers",
-        "javascript/measurements",
         "javascript/rowTypes",
         "javascript/versionDetails",
+        "sharedJavascript/genericUtils",
         "sharedJavascript/systemConfigs",
       ], function (
         arrows,
         gameBoard,
         gameUtils,
         markers,
-        measurements,
         rowTypes,
         versionDetails,
+        genericUtils,
         systemConfigs
       ) {
         var undoTokenColor = "#aaaadd";
@@ -65,12 +65,9 @@
         var blueAlphaHighlight = "rgba(170, 170, 255, 0.3)";
         var translucentYellowHighlight = "rgba(255, 255, 68, 0.2)";
 
-        systemConfigs.setSystemConfigs({
-          demoBoard: true,
-          altCardHeight: measurements.smallCardHeight,
-          altCardWidth: measurements.smallCardWidth,
-          altCardBackFontSize: measurements.smallCardBackFontSize,
-        });
+        systemConfigs.setSystemConfigs(
+          gameUtils.generateDemoBoardSystemConfigs()
+        );
 
         var orderedRowTypes = versionDetails.getOrderedRowTypes();
         var totalNumColumns = versionDetails.getTotalNumColumns();

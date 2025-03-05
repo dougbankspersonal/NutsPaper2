@@ -18,8 +18,6 @@ define([
   htmlUtils,
   systemConfigs
 ) {
-  var boxesRowMarginTop = 5;
-
   var nutTypeAlmond = "Almond";
   var nutTypeCashew = "Cashew";
   var nutTypePeanut = "Peanut";
@@ -82,25 +80,28 @@ define([
     var sc = systemConfigs.getSystemConfigs();
     console.assert(parent, "parent is null");
     var classArray = genericUtils.growOptStringArray(opt_classArray, "row");
-    if (sc.demoBoard) {
-      classArray.push("demoBoard");
+    if (sc.pageless) {
+      classArray.push("demo_board");
     }
     var rowId = getRowId(rowIndex);
     var row = htmlUtils.addDiv(parent, classArray, rowId);
     return row;
   }
 
-  var cardSlotOutlineHeight = 4;
-
-  var beltZIndex = 2;
-  var elementZIndex = beltZIndex + 1;
-  var markerZIndex = elementZIndex + 1;
-  var conveyorTileZIndex = markerZIndex + 1;
-  var arrowZIndex = conveyorTileZIndex + 1;
-
   function getSlot(rowIndex, columnIndex) {
     var slotId = getSlotId(rowIndex, columnIndex);
     return dom.byId(slotId);
+  }
+
+  function generateDemoBoardSystemConfigs() {
+    var c = {
+      altCardHeight: measurements.smallCardHeight,
+      altCardWidth: measurements.smallCardWidth,
+      altCardBackFontSize: measurements.smallCardBackFontSize,
+      pageless: true,
+      extraClassForPageOfItemsContents: "demo_board",
+    };
+    return c;
   }
 
   // This returned object becomes the defined value of this module
@@ -124,13 +125,6 @@ define([
     roastedTypeImages: roastedTypeImages,
 
     wildImage: wildImage,
-    boxesRowMarginTop: boxesRowMarginTop,
-    cardSlotOutlineHeight: cardSlotOutlineHeight,
-    elementZIndex: elementZIndex,
-    markerZIndex: markerZIndex,
-    arrowZIndex: arrowZIndex,
-    conveyorTileZIndex: conveyorTileZIndex,
-    beltZIndex: beltZIndex,
 
     addRow: addRow,
     getSlot: getSlot,
@@ -139,5 +133,6 @@ define([
     getElementId: getElementId,
     getElementFromRow: getElementFromRow,
     addStandardBorder: addStandardBorder,
+    generateDemoBoardSystemConfigs: generateDemoBoardSystemConfigs,
   };
 });

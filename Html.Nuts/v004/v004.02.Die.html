@@ -33,9 +33,7 @@
         "sharedJavascript/systemConfigs",
         "javascript/gameUtils",
       ], function (die, systemConfigs, gameUtils) {
-        systemConfigs.setSystemConfigs({
-          ttsDie: true,
-        });
+        systemConfigs.setSystemConfigs(systemConfigs.addTTSDieSystemConfigs());
 
         die.createDieTemplate();
       });

@@ -46,75 +46,72 @@
 
     <script>
       require([
-        "javascript/gameUtils",
         "sharedJavascript/cards",
         "sharedJavascript/debugLog",
         "sharedJavascript/systemConfigs",
-      ], function (gameUtils, cards, debugLog, systemConfigs) {
-        var _systemConfigs = {
-          ttsCards: true,
-        };
-        debugLog.debugLog(
-          "Refactor",
-          "Doug: _systemConfigs = " + JSON.stringify(_systemConfigs)
-        );
-        systemConfigs.setSystemConfigs(_systemConfigs);
-
+        "javascript/gameUtils",
+      ], function (cards, debugLog, systemConfigs, gameUtils) {
+        systemConfigs.setSystemConfigs(systemConfigs.addTTSCardSystemConfigs());
+        /*
+         systemConfigs.setSystemConfigs(
+           systemConfigs.addCardSizingSystemConfigs()
+         );
+         */
         var bonusCardConfigs = [
           {
             rulesText: `
-						<div class="clause first">Add a cross tile to the factory.</div>
-						<div class=or>~or~</div>
-						<div class="clause">If your warehouse is empty, take any 2 different nuts from the supply.</div>
-					`,
+      	<div class="clause first">Add a cross tile to the factory.</div>
+      	<div class=or>~or~</div>
+      	<div class="clause">If your warehouse is empty, take any 2 different nuts from the supply.</div>
+      `,
             count: 4,
           },
           {
             rulesText: `
-						<div class="clause first">The Squirrel cannot move this turn.</div>
-						<div class=or>~or~</div>
-						<div class="clause">Ignore the warehouse size limit this turn.</div>
-					`,
+      	<div class="clause first">The Squirrel cannot move this turn.</div>
+      	<div class=or>~or~</div>
+      	<div class="clause">Ignore the warehouse size limit this turn.</div>
+      `,
             count: 4,
           },
           {
             rulesText: `
-						<div class="clause first">Remove any conveyor tile from the factory</div>
-						<div class=or>~or~</div>
-						<div class="clause">Add a Cashew from the supply to your warehouse.</div>
-					`,
+      	<div class="clause first">Remove any conveyor tile from the factory</div>
+      	<div class=or>~or~</div>
+      	<div class="clause">Add a Cashew from the supply to your warehouse.</div>
+      `,
             count: 4,
           },
           {
             rulesText: `
-						<div class="clause first">When using the "Add Tile" action, you may add a Splitter/Joiner.</div>
-						<div class=or>~or~</div>
-						<div class="clause">Add an Almond from the supply to your warehouse.</div>
-					`,
+      	<div class="clause first">When using the "Add Tile" action, you may add a Splitter/Joiner.</div>
+      	<div class=or>~or~</div>
+      	<div class="clause">Add an Almond from the supply to your warehouse.</div>
+      `,
             count: 4,
           },
           {
             rulesText: `
-						<div class="clause first">Turn any Box Robot one quarter turn to the right.</div>
-						<div class=or>~or~</div>
-						<div class="clause">Swap a Boxed Nut in your warehouse for a Boxed Nut of any other type in the supply.</div>
-					`,
+      	<div class="clause first">Turn any Box Robot one quarter turn to the right.</div>
+      	<div class=or>~or~</div>
+      	<div class="clause">Swap a Boxed Nut in your warehouse for a Boxed Nut of any other type in the supply.</div>
+      `,
             count: 4,
           },
           {
             rulesText: `
-						<div class="clause first">When using the "Slide Tile" action, you may slide the tile as far as you choose (even over other tiles on the row).</div>
-						<div class=or>~or~</div>
-						<div class="clause">Add a Peanut from the supply to your warehouse.</div>
-					`,
+      	<div class="clause first">When using the "Slide Tile" action, you may slide the tile as far as you choose (even over other tiles on the row).</div>
+      	<div class=or>~or~</div>
+      	<div class="clause">Add a Peanut from the supply to your warehouse.</div>
+      `,
             count: 4,
           },
           {
             rulesText: `
-						<div class="clause">Swap a Boxed Nut in your warehouse with one in another player's warehouse (this player must agree).</div>
-						<div class=or>~or~</div>
-						<div class="clause">Add a Pistachio from the supply to your warehouse.</div>
-					`,
+      	<div class="clause">Swap a Boxed Nut in your warehouse with one in another player's warehouse (this player must agree).</div>
+      	<div class=or>~or~</div>
+      	<div class="clause">Add a Pistachio from the supply to your warehouse.</div>
+      `,
             count: 4,
           },
         ];

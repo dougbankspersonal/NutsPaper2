@@ -1,11 +1,12 @@
 // Sizes of Nuts-specific entities.
 
-define([
-  "javascript/rowTypes",
-  "sharedJavascript/genericMeasurements",
-  "dojo/domReady!",
-], function (rowTypes, genericMeasurements) {
+define(["sharedJavascript/genericMeasurements", "dojo/domReady!"], function (
+  genericMeasurements
+) {
   var sidebarWidth = 360;
+
+  var standardRowHeight = 180;
+  var boxesRowHeight = standardRowHeight * 0.5;
 
   // Slots, elements, tiles.
   var slotWidth = 180;
@@ -26,9 +27,15 @@ define([
   // Where a is slotWidth, b is conveyorTileWidth, and c is conveyorTileOnBoardLeftMargin.
   // So...
   var conveyorTileWidth = 2 * (slotWidth - conveyorTileOnBoardLeftMargin);
-  var conveyorTileHeight =
-    rowTypes.standardRowHeight - 2 * conveyorTileOnBoardTopMargin;
+  var conveyorTileHeight = standardRowHeight - 2 * conveyorTileOnBoardTopMargin;
+  var conveyorTileGap = 4;
 
+  var conveyorColumnsPerPage =
+    genericMeasurements.getNumberThatFitAccountingForGap(
+      genericMeasurements.adjustedPageWidth,
+      conveyorTileWidth,
+      conveyorTileGap
+    );
   // So we have this:
   // +------a------+------a------+
   // +-c-+---------b---------+-c-+
@@ -46,7 +53,7 @@ define([
 
   var beltSegmentZIndex = 1000000;
   var beltSegmentsPerRow = 8;
-  var beltSegmentOffset = rowTypes.standardRowHeight / beltSegmentsPerRow;
+  var beltSegmentOffset = standardRowHeight / beltSegmentsPerRow;
   var beltSegmentHeight = beltSegmentOffset + 2;
   var beltSegmentWidth = 40;
 
@@ -60,11 +67,30 @@ define([
   var smallCardFitVertically = Math.floor(
     genericMeasurements.adjustedPageHeight / smallCardHeight
   );
-
   var smallCardsPerPage = smallCardFitHorizontally * smallCardFitVertically;
+
+  var smallSquareFitHorizontally = Math.floor(
+    genericMeasurements.adjustedPageWidth / smallCardWidth
+  );
+  var smallSquareFitVertically = Math.floor(
+    genericMeasurements.adjustedPageHeight / smallCardWidth
+  );
+  var smallSquaresPerPage =
+    smallSquareFitHorizontally * smallSquareFitVertically;
+
+  var boxesRowMarginTop = 5;
+
+  var beltZIndex = 2;
+  var elementZIndex = beltZIndex + 1;
+  var markerZIndex = elementZIndex + 1;
+  var conveyorTileZIndex = markerZIndex + 1;
+  var arrowZIndex = conveyorTileZIndex + 1;
 
   return {
     sidebarWidth: sidebarWidth,
+    standardRowHeight: standardRowHeight,
+    boxesRowHeight: boxesRowHeight,
+
     slotWidth: slotWidth,
     elementHeight: elementHeight,
     elementWidth: elementWidth,
@@ -78,6 +104,8 @@ define([
     conveyorTileWidth: conveyorTileWidth,
     conveyorTileHeight: conveyorTileHeight,
     conveyorTileBorder: conveyorTileBorder,
+    conveyorTileGap: conveyorTileGap,
+    conveyorColumnsPerPage: conveyorColumnsPerPage,
 
     conveyorTileInnerWidth: conveyorTileInnerWidth,
     beltCenterOffsetInConveyorTile: beltCenterOffsetInConveyorTile,
@@ -90,14 +118,27 @@ define([
 
     arrowWidth: elementWidth / 2,
     arrowHeight: elementHeight / 2,
-    elementTopAndBottomMargin: (rowTypes.standardRowHeight - elementHeight) / 2,
+    elementTopAndBottomMargin: (standardRowHeight - elementHeight) / 2,
     elementLeftAndRightMargin: (slotWidth - elementWidth) / 2,
 
     smallCardWidth: smallCardWidth,
     smallCardHeight: smallCardHeight,
     smallCardBackFontSize: smallCardBackFontSize,
+
     smallCardFitHorizontally: smallCardFitHorizontally,
     smallCardFitVertically: smallCardFitVertically,
     smallCardsPerPage: smallCardsPerPage,
+
+    smallSquareFitHorizontally: smallSquareFitHorizontally,
+    smallSquareFitVertically: smallSquareFitVertically,
+    smallSquaresPerPage: smallSquaresPerPage,
+
+    boxesRowMarginTop: boxesRowMarginTop,
+
+    elementZIndex: elementZIndex,
+    markerZIndex: markerZIndex,
+    arrowZIndex: arrowZIndex,
+    conveyorTileZIndex: conveyorTileZIndex,
+    beltZIndex: beltZIndex,
   };
 });

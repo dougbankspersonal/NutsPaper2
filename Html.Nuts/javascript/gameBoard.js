@@ -66,26 +66,6 @@ define([
     return sidebar;
   }
 
-  // Add a single row with one cell with sidebar info.
-  // Returns the row.
-  function addRowWithSingleSidebarCell(parentNode, rowIndex, rowType) {
-    var rowHeight = rowTypes.getRowHeight(rowType);
-    var row = gameUtils.addRow(parentNode, [], rowIndex);
-    htmlUtils.addStandardBorder(row);
-
-    var finalZIndex = rowZUIndex;
-    rowZUIndex--;
-
-    domStyle.set(row, {
-      height: `${rowHeight}px`,
-      "z-index": `${finalZIndex}`,
-    });
-
-    addSidebarCellToRow(row, rowIndex, rowType);
-
-    return row;
-  }
-
   function addContent(parentNode) {
     var content = htmlUtils.addDiv(parentNode, ["content"], "content");
     return content;
@@ -144,7 +124,7 @@ define([
     var row = gameUtils.addRow(parentNode, classArray, rowIndex);
     htmlUtils.addStandardBorder(row);
 
-    var finalHeight = rowTypes.getRowHeight(rowType);
+    var finalHeight = rowTypes.getFactoryRowHeight(rowType);
     var finalZIndex = rowZUIndex;
     rowZUIndex--;
 
@@ -166,7 +146,7 @@ define([
     domStyle.set(element, {
       width: `${measurements.elementWidth}px`,
       height: `${measurements.elementHeight}px`,
-      "z-index": `${gameUtils.elementZIndex}`,
+      "z-index": `${measurements.elementZIndex}`,
       "margin-top": `${measurements.elementTopAndBottomMargin}px`,
       "margin-left": `${measurements.elementLeftAndRightMargin}px`,
     });
@@ -179,7 +159,7 @@ define([
 
     var belt = htmlUtils.addDiv(parentNode, ["belt"], "belt");
     domStyle.set(belt, {
-      "z-index": `${gameUtils.beltZIndex}`,
+      "z-index": `${measurements.beltZIndex}`,
     });
 
     for (let i = 0; i < measurements.beltSegmentsPerRow; i++) {
@@ -429,11 +409,11 @@ define([
 
   function tweakBoxesRowCardSlot(node) {
     var cardSlotHeight =
-      rowTypes.standardRowHeight / 2 - 2 * gameUtils.boxesRowMarginTop;
+      measurements.standardRowHeight / 2 - 2 * measurements.boxesRowMarginTop;
     domStyle.set(node, {
       width: `${measurements.smallCardWidth}px`,
       height: `${cardSlotHeight}px`,
-      "margin-top": `${gameUtils.boxesRowMarginTop}px`,
+      "margin-top": `${measurements.boxesRowMarginTop}px`,
       display: "block",
     });
   }
@@ -593,7 +573,7 @@ define([
     var bodyNode = dom.byId("body");
 
     // Special case if we are doing all the columns in one go.
-    if (sc.demoBoard || maxColumnsPerPage >= totalNumColumns) {
+    if (sc.pageless || maxColumnsPerPage >= totalNumColumns) {
       var pageNode;
       var retVal = addPagesWithNextNColumns(
         bodyNode,
@@ -616,7 +596,7 @@ define([
       );
       var pageNode = allPageNodes[0];
 
-      if (sc.demoBoard) {
+      if (sc.pageless) {
         domStyle.set(pageNode, {
           padding: "0px",
         });
@@ -733,7 +713,7 @@ define([
     domStyle.set(conveyorTile, {
       "margin-left": `${measurements.conveyorTileOnBoardLeftMargin}px`,
       "margin-top": `${measurements.conveyorTileOnBoardTopMargin}px`,
-      "z-index": `${gameUtils.conveyorTileZIndex}`,
+      "z-index": `${measurements.conveyorTileZIndex}`,
     });
 
     storeConveyorTileId(rowIndex, columnIndex, conveyorTileId);

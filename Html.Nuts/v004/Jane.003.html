@@ -27,6 +27,10 @@
         packages: [
           { name: "dojo", location: "../../bower_components/dojo" },
           { name: "javascript", location: "javascript" },
+          {
+            name: "sharedJavascript",
+            location: "SharedWebBoardgame/javascript",
+          },
         ],
       };
     </script>
@@ -53,6 +57,10 @@
         versionDetails,
         systemConfigs
       ) {
+        systemConfigs.setSystemConfigs(
+          gameUtils.generateDemoBoardSystemConfigs()
+        );
+
         var undoTokenColor = "#aaaadd";
         var runTokenColor = "#aaddaa";
 
@@ -60,13 +68,6 @@
         var blueHighlight = "rgb(170, 170, 255)";
         var blueAlphaHighlight = "rgba(170, 170, 255, 0.3)";
         var translucentYellowHighlight = "rgba(255, 255, 68, 0.2)";
-
-        systemConfigs.setSystemConfigs({
-          demoBoard: true,
-          altCardHeight: measurements.smallCardHeight,
-          altCardWidth: measurements.smallCardWidth,
-          altCardBackFontSize: measurements.smallCardBackFontSize,
-        });
 
         var orderedRowTypes = versionDetails.getOrderedRowTypes();
         var totalNumColumns = versionDetails.getTotalNumColumns();

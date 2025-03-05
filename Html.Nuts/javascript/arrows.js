@@ -13,14 +13,14 @@ define([
   };
 
   var leftPx = measurements.slotWidth - measurements.arrowWidth / 2;
-  var topPx = rowTypes.standardRowHeight / 2 - measurements.arrowHeight / 2;
+  var topPx = measurements.standardRowHeight / 2 - measurements.arrowHeight / 2;
 
   function addArrow(rowIndex, columnIndex, arrowType) {
     var classArray = ["arrow"];
     var slot = gameUtils.getSlot(rowIndex, columnIndex);
     var node = htmlUtils.addDiv(slot, classArray, "arrow.".concat(arrowType));
     domStyle.set(node, {
-      "z-index": `${gameUtils.arrowZIndex}`,
+      "z-index": `${measurements.arrowZIndex}`,
       left: `${leftPx}px`,
       top: `${topPx}px`,
       width: `${measurements.arrowWidth}px`,

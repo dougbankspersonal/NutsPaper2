@@ -33,8 +33,23 @@
     <script src="../../../bower_components/dojo/dojo.js"></script>
 
     <script>
-      var numConveyorTiles = 48;
-      require(["javascript/conveyorTiles"], function (conveyorTiles) {
+      require([
+        "sharedJavascript/debugLog",
+        "sharedJavascript/systemConfigs",
+        "javascript/conveyorTiles",
+        "javascript/measurements",
+      ], function (debugLog, systemConfigs, conveyorTiles, measurements) {
+        var numConveyorTiles = 48;
+        debugLog.debugLog(
+          "Refactor",
+          "Doug: systemConfigs = " + JSON.stringify(systemConfigs)
+        );
+        systemConfigs.setSystemConfigs(
+          systemConfigs.addTileSystemConfigs(
+            measurements.conveyorTileGap,
+            measurements.conveyorColumnsPerPage
+          )
+        );
         conveyorTiles.createConveyorTiles(numConveyorTiles);
       });
     </script>

@@ -118,9 +118,6 @@ define([
       "conveyor_tile"
     );
     var sc = systemConfigs.getSystemConfigs();
-    if (sc.isDemoBoard) {
-      classArray.push("demoBoard");
-    }
     var conveyorTile = htmlUtils.addDiv(parentNode, classArray, conveyorTileId);
     domStyle.set(conveyorTile, {
       width: `${measurements.conveyorTileWidth}px`,
