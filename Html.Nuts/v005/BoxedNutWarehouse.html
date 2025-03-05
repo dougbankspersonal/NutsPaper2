@@ -39,12 +39,13 @@
 
     <script>
       require([
-        "dojo/dom",
-        "sharedJavascript/cards",
         "javascript/gameUtils",
+        "sharedJavascript/cards",
         "sharedJavascript/debugLog",
+        "sharedJavascript/htmlUtils",
+        "dojo/dom",
         "dojo/dom-style",
-      ], function (dom, cards, debugLog, gameUtils, domStyle) {
+      ], function (gameUtils, cards, debugLog, htmlUtils, dom, domStyle) {
         var titleRowHeight = 80;
         var warehouseRowHeight = 200;
         var totalHeight = titleRowHeight + warehouseRowHeight;

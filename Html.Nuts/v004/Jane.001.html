@@ -43,6 +43,7 @@
         "javascript/gameBoard",
         "javascript/gameUtils",
         "javascript/markers",
+        "javascript/measurements",
         "javascript/rowTypes",
         "javascript/versionDetails",
         "sharedJavascript/systemConfigs",
@@ -51,6 +52,7 @@
         gameBoard,
         gameUtils,
         markers,
+        measurements,
         rowTypes,
         versionDetails,
         systemConfigs
@@ -65,7 +67,9 @@
 
         systemConfigs.setSystemConfigs({
           demoBoard: true,
-          smallCards: true,
+          altCardHeight: measurements.smallCardHeight,
+          altCardWidth: measurements.smallCardWidth,
+          altCardBackFontSize: measurements.smallCardBackFontSize,
         });
 
         var orderedRowTypes = versionDetails.getOrderedRowTypes();

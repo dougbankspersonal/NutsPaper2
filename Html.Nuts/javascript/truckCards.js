@@ -1,10 +1,11 @@
 define([
   "javascript/gameUtils",
   "sharedJavascript/cards",
+  "sharedJavascript/genericMeasurements",
   "sharedJavascript/htmlUtils",
   "dojo/dom-style",
   "dojo/domReady!",
-], function (gameUtils, cards, htmlUtils, domStyle) {
+], function (gameUtils, cards, genericMeasurements, htmlUtils, domStyle) {
   //-------------------------------------------------
   //
   // Global vars
@@ -262,13 +263,12 @@ define([
     // Calculate the score for this distribution
     var score = scoreForDistribution(nutTypeDistribution);
 
-    var cardWidth = gameUtils.cardWidth;
-    var cardHeight = gameUtils.cardHeight;
-
     var wrapper = htmlUtils.addDiv(parentNode, ["wrapper"], "wrapper");
 
-    var innerCardWidth = cardWidth - 2 * gameUtils.cardBorderWidth;
-    var innerCardHeight = cardHeight - 2 * gameUtils.cardBorderWidth;
+    var innerCardWidth =
+      genericMeasurements.cardWidth - 2 * genericMeasurements.cardBorderWidth;
+    var innerCardHeight =
+      genericMeasurements.cardHeight - 2 * genericMeasurements.cardBorderWidth;
     domStyle.set(wrapper, {
       width: innerCardHeight + "px",
       height: innerCardWidth + "px",

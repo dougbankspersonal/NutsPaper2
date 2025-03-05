@@ -38,13 +38,10 @@
     <script src="../../../bower_components/dojo/dojo.js"></script>
 
     <script>
-      require([
-        "dojo/dom",
-        "sharedJavascript/cards",
-        "javascript/gameUtils",
-        "sharedJavascript/debugLog",
-        "dojo/dom-style",
-      ], function (dom, cards, gameUtils, debugLog, domStyle) {
+      require(["dojo/dom", "javascript/scoringTrack"], function (
+        dom,
+        scoringTrack
+      ) {
         scoringTrack.makeScoringTrack(dom);
       });
     </script>

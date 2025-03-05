@@ -1,14 +1,15 @@
 define([
   "dojo/dom",
   "dojo/dom-style",
-  "javascript/gameUtils",
+  "javascript/measurements",
+  "sharedJavascript/htmlUtils",
   "dojo/domReady!",
-], function (dom, domStyle, gameUtils) {
+], function (dom, domStyle, measurements, htmlUtils) {
   function addDieFace(pageOfItems, opt_styleDescs) {
     var dieFace = htmlUtils.addDiv(pageOfItems, ["dieFace"], "dieFace");
     domStyle.set(dieFace, {
-      height: gameUtils.dieHeight + "px",
-      width: gameUtils.dieWidth + "px",
+      height: measurements.dieHeight + "px",
+      width: measurements.dieWidth + "px",
     });
 
     if (opt_styleDescs) {

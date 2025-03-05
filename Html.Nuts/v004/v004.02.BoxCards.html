@@ -35,17 +35,19 @@
 
     <script>
       require([
+        "javascript/boxCards",
+        "javascript/measurements",
         "sharedJavascript/cards",
         "sharedJavascript/systemConfigs",
         "javascript/gameUtils",
-      ], function (cards, systemConfigs, gameUtils) {
+      ], function (boxCards, measurements, cards, systemConfigs, gameUtils) {
         var numBoxCardsEachType = 10;
         var nutTypes = gameUtils.nutTypes;
         var numNutTypes = nutTypes.length;
         var numBoxCards = numNutTypes * numBoxCardsEachType;
 
         function addBoxCard(parent, index) {
-          return cards.addNthBoxCardSingleNut(
+          return boxCards.addNthBoxCardSingleNut(
             parent,
             index,
             numBoxCardsEachType
@@ -53,7 +55,9 @@
         }
 
         systemConfigs.setSystemConfigs({
-          smallCards: true,
+          altCardHeight: measurements.smallCardHeight,
+          altCardWidth: measurements.smallCardWidth,
+          altCardBackFontSize: measurements.smallCardBackFontSize,
         });
         cards.addCards("Box", "#f0d0d0", numBoxCards, addBoxCard);
       });

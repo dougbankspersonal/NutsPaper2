@@ -1,7 +1,9 @@
-define(["javascript/gameUtils", "dojo/dom-style", "dojo/domReady!"], function (
-  gameUtils,
-  domStyle
-) {
+define([
+  "javascript/measurements",
+  "sharedJavascript/htmlUtils",
+  "dojo/dom-style",
+  "dojo/domReady!",
+], function (measurements, htmlUtils, domStyle) {
   function addBeltSegment(parentNode, xOffset, yOffset, opt_rads) {
     var beltSegment = htmlUtils.addDiv(
       parentNode,
@@ -11,16 +13,16 @@ define(["javascript/gameUtils", "dojo/dom-style", "dojo/domReady!"], function (
     var style = {
       left: `${xOffset}px`,
       top: `${yOffset}px`,
-      "z-index": gameUtils.beltSegmentZIndex,
-      height: `${gameUtils.beltSegmentHeight}px`,
-      width: `${gameUtils.beltSegmentWidth}px`,
+      "z-index": measurements.beltSegmentZIndex,
+      height: `${measurements.beltSegmentHeight}px`,
+      width: `${measurements.beltSegmentWidth}px`,
     };
     if (opt_rads != null) {
       style["transform"] = `translate(-50%, -50%	) rotate(${opt_rads}rad)`;
     }
 
     domStyle.set(beltSegment, style);
-    gameUtils.beltSegmentZIndex--;
+    measurements.beltSegmentZIndex--;
     return beltSegment;
   }
 

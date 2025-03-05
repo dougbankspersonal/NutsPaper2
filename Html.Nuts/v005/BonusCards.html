@@ -46,14 +46,19 @@
 
     <script>
       require([
-        "sharedJavascript/cards",
         "javascript/gameUtils",
+        "sharedJavascript/cards",
+        "sharedJavascript/debugLog",
         "sharedJavascript/systemConfigs",
-      ], function (cards, gameUtils, systemConfigs) {
-        systemConfigs.setSystemConfigs({
-          skipBacks: true,
-          ttsCards: false,
-        });
+      ], function (gameUtils, cards, debugLog, systemConfigs) {
+        var _systemConfigs = {
+          ttsCards: true,
+        };
+        debugLog.debugLog(
+          "Refactor",
+          "Doug: _systemConfigs = " + JSON.stringify(_systemConfigs)
+        );
+        systemConfigs.setSystemConfigs(_systemConfigs);
 
         var bonusCardConfigs = [
           {

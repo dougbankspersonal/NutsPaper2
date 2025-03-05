@@ -2,25 +2,36 @@ define([
   "dojo/dom",
   "dojo/dom-style",
   "javascript/beltUtils",
-  "javascript/gameUtils",
+  "javascript/measurements",
   "sharedJavascript/debugLog",
+  "sharedJavascript/genericUtils",
+  "sharedJavascript/htmlUtils",
   "sharedJavascript/systemConfigs",
   "dojo/domReady!",
-], function (dom, domStyle, beltUtils, gameUtils, debugLog, systemConfigs) {
+], function (
+  dom,
+  domStyle,
+  beltUtils,
+  measurements,
+  debugLog,
+  genericUtils,
+  htmlUtils,
+  systemConfigs
+) {
   function getCurvePoints() {
     var curvePoints = [];
 
-    var startX = gameUtils.beltCenterOffsetInConveyorTile;
+    var startX = measurements.beltCenterOffsetInConveyorTile;
     var endX =
-      gameUtils.conveyorTileInnerWidth -
-      gameUtils.beltCenterOffsetInConveyorTile;
+      measurements.conveyorTileInnerWidth -
+      measurements.beltCenterOffsetInConveyorTile;
 
     var startY = 0;
-    var endY = gameUtils.conveyorTileHeight;
+    var endY = measurements.conveyorTileHeight;
     var middleX = (startX + endX) / 2;
     var middleY = (startY + endY) / 2;
 
-    var offsetWhileTurning = gameUtils.beltSegmentHeight / 2;
+    var offsetWhileTurning = measurements.beltSegmentHeight / 2;
 
     var lastX = startX;
     var lastY = startY;
@@ -47,7 +58,9 @@ define([
     var distanceToMiddle = Math.sqrt(
       (lastX - middleX) ** 2 + (lastY - middleY) ** 2
     );
-    var numSegments = Math.ceil(distanceToMiddle / gameUtils.beltSegmentHeight);
+    var numSegments = Math.ceil(
+      distanceToMiddle / measurements.beltSegmentHeight
+    );
     var xDelta = (middleX - lastX) / numSegments;
     var yDelta = (middleY - lastY) / numSegments;
     for (let i = 0; i < numSegments; i++) {
@@ -64,7 +77,7 @@ define([
     for (let i = startIndex; i--; i >= 0) {
       var oldPoint = curvePoints[i];
       curvePoints.push({
-        xOffset: gameUtils.conveyorTileInnerWidth - oldPoint.xOffset,
+        xOffset: measurements.conveyorTileInnerWidth - oldPoint.xOffset,
         yOffset: endY - oldPoint.yOffset,
       });
     }
@@ -100,7 +113,7 @@ define([
     conveyorTileId,
     opt_classArray
   ) {
-    var classArray = gameUtils.extendOptClassArray(
+    var classArray = genericUtils.growOptStringArray(
       opt_classArray,
       "conveyor_tile"
     );
@@ -110,9 +123,9 @@ define([
     }
     var conveyorTile = htmlUtils.addDiv(parentNode, classArray, conveyorTileId);
     domStyle.set(conveyorTile, {
-      width: `${gameUtils.conveyorTileWidth}px`,
-      height: `${gameUtils.conveyorTileHeight}px`,
-      border: `${gameUtils.conveyorTileBorder}px solid #000000`,
+      width: `${measurements.conveyorTileWidth}px`,
+      height: `${measurements.conveyorTileHeight}px`,
+      border: `${measurements.conveyorTileBorder}px solid #000000`,
     });
     return conveyorTile;
   }
@@ -124,12 +137,12 @@ define([
       isLeft ? "leftBelt" : "rightBelt"
     );
     var xOffset = isLeft
-      ? gameUtils.beltCenterOffsetInConveyorTile
-      : gameUtils.conveyorTileInnerWidth -
-        gameUtils.beltCenterOffsetInConveyorTile;
-    for (let i = 0; i < gameUtils.beltSegmentsPerRow; i++) {
+      ? measurements.beltCenterOffsetInConveyorTile
+      : measurements.conveyorTileInnerWidth -
+        measurements.beltCenterOffsetInConveyorTile;
+    for (let i = 0; i < measurements.beltSegmentsPerRow; i++) {
       var yOffset =
-        gameUtils.beltSegmentOffset / 2 + i * gameUtils.beltSegmentOffset;
+        measurements.beltSegmentOffset / 2 + i * measurements.beltSegmentOffset;
       beltUtils.addBeltSegment(belt, xOffset, yOffset);
     }
   }
@@ -140,7 +153,7 @@ define([
       var curvePoint = curvePoints[index];
       beltUtils.addBeltSegment(
         belt,
-        gameUtils.conveyorTileInnerWidth - curvePoint.xOffset,
+        measurements.conveyorTileInnerWidth - curvePoint.xOffset,
         curvePoint.yOffset,
         -curvePoint.rads
       );

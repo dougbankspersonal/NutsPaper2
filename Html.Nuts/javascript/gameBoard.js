@@ -4,14 +4,15 @@ define([
   "dojo/dom-style",
   "dojo/dom-class",
   "javascript/beltUtils",
+  "javascript/boxCards",
   "javascript/conveyorTiles",
   "javascript/gameUtils",
   "javascript/markers",
   "javascript/measurements",
   "javascript/rowTypes",
-  "sharedJavascript/cards",
   "sharedJavascript/debugLog",
   "sharedJavascript/genericUtils",
+  "sharedJavascript/htmlUtils",
   "sharedJavascript/systemConfigs",
   "dojo/domReady!",
 ], function (
@@ -20,14 +21,15 @@ define([
   domStyle,
   domClass,
   beltUtils,
+  boxCards,
   conveyorTiles,
   gameUtils,
   markers,
   measurements,
   rowTypes,
-  cards,
   debugLog,
   genericUtils,
+  htmlUtils,
   systemConfigs
 ) {
   var rowZUIndex = 0;
@@ -162,11 +164,11 @@ define([
 
   function applyStandardElementStyling(element) {
     domStyle.set(element, {
-      width: `${gameUtils.elementWidth}px`,
-      height: `${gameUtils.elementHeight}px`,
+      width: `${measurements.elementWidth}px`,
+      height: `${measurements.elementHeight}px`,
       "z-index": `${gameUtils.elementZIndex}`,
-      "margin-top": `${gameUtils.elementTopAndBottomMargin}px`,
-      "margin-left": `${gameUtils.elementLeftAndRightMargin}px`,
+      "margin-top": `${measurements.elementTopAndBottomMargin}px`,
+      "margin-left": `${measurements.elementLeftAndRightMargin}px`,
     });
   }
 
@@ -180,16 +182,16 @@ define([
       "z-index": `${gameUtils.beltZIndex}`,
     });
 
-    for (let i = 0; i < gameUtils.beltSegmentsPerRow; i++) {
-      if (hideBeltTop && i < gameUtils.beltSegmentsPerRow / 2) {
+    for (let i = 0; i < measurements.beltSegmentsPerRow; i++) {
+      if (hideBeltTop && i < measurements.beltSegmentsPerRow / 2) {
         continue;
       }
-      if (hideBeltBottom && i >= gameUtils.beltSegmentsPerRow / 2 - 1) {
+      if (hideBeltBottom && i >= measurements.beltSegmentsPerRow / 2 - 1) {
         continue;
       }
       var yOffset =
-        gameUtils.beltSegmentOffset / 2 + i * gameUtils.beltSegmentOffset;
-      beltUtils.addBeltSegment(belt, gameUtils.slotWidth / 2, yOffset);
+        measurements.beltSegmentOffset / 2 + i * measurements.beltSegmentOffset;
+      beltUtils.addBeltSegment(belt, measurements.slotWidth / 2, yOffset);
     }
 
     return belt;
@@ -197,7 +199,7 @@ define([
 
   // columnIndex is 0-based.
   function addNthElement(parentNode, columnIndex, classArray) {
-    var extendedClassArray = gameUtils.extendOptClassArray(
+    var extendedClassArray = genericUtils.growOptStringArray(
       classArray,
       "element"
     );
@@ -231,7 +233,7 @@ define([
     var classArray = ["slot"];
     var node = htmlUtils.addDiv(parentNode, classArray, slotId);
     domStyle.set(node, {
-      width: `${gameUtils.slotWidth}px`,
+      width: `${measurements.slotWidth}px`,
     });
     return node;
   }
@@ -429,7 +431,7 @@ define([
     var cardSlotHeight =
       rowTypes.standardRowHeight / 2 - 2 * gameUtils.boxesRowMarginTop;
     domStyle.set(node, {
-      width: `${gameUtils.smallCardWidth}px`,
+      width: `${measurements.smallCardWidth}px`,
       height: `${cardSlotHeight}px`,
       "margin-top": `${gameUtils.boxesRowMarginTop}px`,
       display: "block",
@@ -729,8 +731,8 @@ define([
     );
 
     domStyle.set(conveyorTile, {
-      "margin-left": `${gameUtils.conveyorTileOnBoardLeftMargin}px`,
-      "margin-top": `${gameUtils.conveyorTileOnBoardTopMargin}px`,
+      "margin-left": `${measurements.conveyorTileOnBoardLeftMargin}px`,
+      "margin-top": `${measurements.conveyorTileOnBoardTopMargin}px`,
       "z-index": `${gameUtils.conveyorTileZIndex}`,
     });
 
@@ -870,7 +872,7 @@ define([
     var boxesRow = dom.byId(boxesRowId);
     var element = gameUtils.getElementFromRow(boxesRow, columnIndex);
     // add an oredr card to this element.
-    return cards.addBoxCardSingleNut(
+    return boxCards.addBoxCardSingleNut(
       element,
       nutType,
       columnIndex,

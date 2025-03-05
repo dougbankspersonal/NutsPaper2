@@ -41,14 +41,27 @@
 
     <script>
       require([
-        "sharedJavascript/cards",
         "javascript/gameUtils",
+        "javascript/measurements",
+        "sharedJavascript/cards",
+        "sharedJavascript/htmlUtils",
         "sharedJavascript/systemConfigs",
         "dojo/dom-style",
-      ], function (cards, gameUtils, systemConfigs, domStyle) {
+      ], function (
+        gameUtils,
+        measurements,
+        cards,
+        htmlUtils,
+        systemConfigs,
+        domStyle
+      ) {
         systemConfigs.setSystemConfigs({
-          ttsCards: true,
-          smallSquares: true,
+          ttsCards: false,
+          altCardWidth: measurements.smallCardWidth,
+          // Width again, not height: box robots are square and as wide as
+          // small cards.
+          altCardHeight: measurements.smallCardWidth,
+          altCardBackFontSize: measurements.smallCardBackFontSize,
         });
         var sc = systemConfigs.getSystemConfigs();
 

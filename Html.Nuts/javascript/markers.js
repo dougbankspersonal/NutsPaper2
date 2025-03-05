@@ -1,9 +1,10 @@
 define([
   "dojo/dom",
   "javascript/gameUtils",
+  "javascript/measurements",
   "dojo/dom-style",
   "dojo/domReady!",
-], function (dom, gameUtils, domStyle) {
+], function (dom, gameUtils, measurements, domStyle) {
   var markerTypes = {
     Almond: gameUtils.nutTypeAlmond,
     Cashew: gameUtils.nutTypeCashew,
@@ -53,7 +54,7 @@ define([
         );
       }
     }
-    var classArray = gameUtils.extendOptClassArray(opt_classArray, "marker");
+    var classArray = genericUtils.growOptStringArray(opt_classArray, "marker");
     classArray.push(markerType);
     var additionalConfig = opt_additionalConfig ? opt_additionalConfig : {};
     var node = htmlUtils.addDiv(
@@ -64,10 +65,10 @@ define([
 
     var height = additionalConfig.height
       ? additionalConfig.height
-      : gameUtils.elementHeight - shrinkage;
+      : measurements.elementHeight - shrinkage;
     var width = additionalConfig.width
       ? additionalConfig.width
-      : gameUtils.elementWidth - shrinkage;
+      : measurements.elementWidth - shrinkage;
 
     domStyle.set(node, {
       width: `${width}px`,

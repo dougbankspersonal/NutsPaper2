@@ -1,17 +1,19 @@
 define([
   "javascript/rowTypes",
   "javascript/gameUtils",
+  "javascript/measurements",
+  "sharedJavascript/htmlUtils",
   "dojo/dom-style",
   "dojo/domReady!",
-], function (rowTypes, gameUtils, domStyle) {
+], function (rowTypes, gameUtils, measurements, htmlUtils, domStyle) {
   var arrowTypes = {
     LeftArrow: "LeftArrow",
     RightArrow: "RightArrow",
     DoubleArrow: "DoubleArrow",
   };
 
-  var leftPx = gameUtils.slotWidth - gameUtils.arrowWidth / 2;
-  var topPx = rowTypes.standardRowHeight / 2 - gameUtils.arrowHeight / 2;
+  var leftPx = measurements.slotWidth - measurements.arrowWidth / 2;
+  var topPx = rowTypes.standardRowHeight / 2 - measurements.arrowHeight / 2;
 
   function addArrow(rowIndex, columnIndex, arrowType) {
     var classArray = ["arrow"];
@@ -21,8 +23,8 @@ define([
       "z-index": `${gameUtils.arrowZIndex}`,
       left: `${leftPx}px`,
       top: `${topPx}px`,
-      width: `${gameUtils.arrowWidth}px`,
-      height: `${gameUtils.arrowHeight}px`,
+      width: `${measurements.arrowWidth}px`,
+      height: `${measurements.arrowHeight}px`,
     });
 
     htmlUtils.addImage(node, ["image", arrowType], "image");
