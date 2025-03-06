@@ -1,7 +1,7 @@
 <html>
   <head>
     <link rel="stylesheet" href="../SharedWebBoardGame/css/main.css" />
-    <link rel="stylesheet" href="../css/die.css" />
+    <link rel="stylesheet" href="../SharedWebBoardGame/css/die.css" />
     <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
     <style type="text/css"></style>
   </head>
@@ -33,13 +33,13 @@
 
     <script>
       require([
-        "javascript/die",
+        "sharedJavascript/dieUtils",
         "javascript/gameUtils",
+        "javascript/squirrelDie",
         "sharedJavascript/systemConfigs",
-      ], function (die, gameUtils, systemConfigs) {
+      ], function (dieUtils, gameUtils, squirrelDie, systemConfigs) {
         systemConfigs.setSystemConfigs(systemConfigs.addTTSDieSystemConfigs());
-
-        die.createDieTemplate();
+        dieUtils.createDieTemplate(squirrelDie.addNthFace);
       });
     </script>
   </body>

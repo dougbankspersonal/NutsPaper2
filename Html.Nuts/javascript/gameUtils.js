@@ -18,18 +18,6 @@ define([
   htmlUtils,
   systemConfigs
 ) {
-  var nutTypeAlmond = "Almond";
-  var nutTypeCashew = "Cashew";
-  var nutTypePeanut = "Peanut";
-  var nutTypePistachio = "Pistachio";
-
-  var nutTypes = [
-    nutTypeAlmond,
-    nutTypeCashew,
-    nutTypePeanut,
-    nutTypePistachio,
-  ];
-
   var starImage = "images/Markers/Star.png";
   var salterImage = "images/Markers/Salter.png";
   var squirrelImage = "images/Markers/Squirrel.png";
@@ -95,23 +83,18 @@ define([
 
   function generateDemoBoardSystemConfigs() {
     var c = {
-      altCardHeight: measurements.smallCardHeight,
-      altCardWidth: measurements.smallCardWidth,
-      altCardBackFontSize: measurements.smallCardBackFontSize,
+      cardHeight: measurements.smallCardHeight,
+      cardWidth: measurements.smallCardWidth,
+      cardBackFontSize: measurements.smallCardBackFontSize,
       pageless: true,
       extraClassForPageOfItemsContents: "demo_board",
+      explicitPageWidth: measurements.totalBoardWidth,
     };
     return c;
   }
 
   // This returned object becomes the defined value of this module
   return {
-    nutTypeAlmond: nutTypeAlmond,
-    nutTypeCashew: nutTypeCashew,
-    nutTypePeanut: nutTypePeanut,
-    nutTypePistachio: nutTypePistachio,
-
-    nutTypes: nutTypes,
     starImage: starImage,
     salterImage: salterImage,
     squirrelImage: squirrelImage,

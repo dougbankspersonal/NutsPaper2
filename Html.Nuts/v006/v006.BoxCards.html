@@ -40,12 +40,11 @@
         "javascript/boxCards",
         "javascript/gameUtils",
         "javascript/measurements",
+        "javascript/nutTypes",
         "sharedJavascript/systemConfigs",
       ], function (cards, boxCards, gameUtils, measurements, systemConfigs) {
         var numBoxCardsEachType = 10;
-        var nutTypes = gameUtils.nutTypes;
-        var numNutTypes = nutTypes.length;
-        var numBoxCards = numNutTypes * numBoxCardsEachType;
+        var numBoxCards = nutTypes.numNutTypes * numBoxCardsEachType;
 
         function addBoxCard(parent, index) {
           return boxCards.addNthBoxCardSingleNut(

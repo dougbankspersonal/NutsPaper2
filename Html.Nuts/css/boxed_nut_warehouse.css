@@ -3,33 +3,29 @@
   width: fit-content;
   height: fit-content;
   background-color: rgb(200, 170, 0);
+  font-family: "DynaPuff", serif;
 }
 
 .bordered_square {
   margin: "10px";
-}
-
-.bordered_square .row {
-  position: relative;
-  display: flex;
-  align-items: center;
-  break-inside: avoid;
-  box-sizing: border-box;
-  width: fit-content;
-  overflow: hidden;
-  font-family: "DynaPuff", serif;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
   background-color: white;
 }
 
 .bordered_square .title_text {
+  padding: 10px;
   font-size: 40px;
   font-weight: bold;
 }
 
 .bordered_square .warehouse_text {
+  padding: 10px;
+  font-size: 24px;
+  color: #444444;
+}
+
+.bordered_square .warehouse_subtext {
+  padding: 10px;
   font-size: 18px;
   color: #666666;
+  font-style: italic;
 }

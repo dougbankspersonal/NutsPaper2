@@ -1,11 +1,11 @@
 define([
-  "javascript/gameUtils",
+  "javascript/nutTypes",
   "sharedJavascript/cards",
   "sharedJavascript/genericMeasurements",
   "sharedJavascript/htmlUtils",
   "dojo/dom-style",
   "dojo/domReady!",
-], function (gameUtils, cards, genericMeasurements, htmlUtils, domStyle) {
+], function (nutTypes, cards, genericMeasurements, htmlUtils, domStyle) {
   //-------------------------------------------------
   //
   // Global vars
@@ -121,8 +121,6 @@ define([
     },
   ];
   var numTruckCards = truckCardConfigs.length;
-  var nutTypes = gameUtils.nutTypes;
-  var numNutTypes = nutTypes.length;
 
   var closedBoxSize = 55;
   var nutTypeSize = closedBoxSize * 0.8;
@@ -144,8 +142,8 @@ define([
 
   function getTotalNutCount(distribution) {
     var total = 0;
-    for (var i = 0; i < numNutTypes; i++) {
-      var nutType = nutTypes[i];
+    for (var i = 0; i < nutTypes.numNutTypes; i++) {
+      var nutType = nutTypes.nutTypes[i];
       var countForNut = distribution[nutType] ? distribution[nutType] : 0;
       total += countForNut;
     }
@@ -154,8 +152,8 @@ define([
 
   function getLargestCountForAnyOneType(distribution) {
     var largestCount = 0;
-    for (var i = 0; i < numNutTypes; i++) {
-      var nutType = nutTypes[i];
+    for (var i = 0; i < nutTypes.numNutTypes; i++) {
+      var nutType = nutTypes.nutTypes[i];
       var countForNut = distribution[nutType] ? distribution[nutType] : 0;
       if (countForNut > largestCount) {
         largestCount = countForNut;
@@ -168,8 +166,8 @@ define([
     var totalCount = getTotalNutCount(distribution);
 
     var numContributors = 0;
-    for (var i = 0; i < numNutTypes; i++) {
-      var nutType = nutTypes[i];
+    for (var i = 0; i < nutTypes.numNutTypes; i++) {
+      var nutType = nutTypes.nutTypes[i];
       var countForNut = distribution[nutType] ? distribution[nutType] : 0;
       if (countForNut > 0) {
         numContributors++;
@@ -185,8 +183,8 @@ define([
     );
     var numBoxes = 0;
     var otherFactor = 1;
-    for (var i = 0; i < numNutTypes; i++) {
-      var nutType = nutTypes[i];
+    for (var i = 0; i < nutTypes.numNutTypes; i++) {
+      var nutType = nutTypes.nutTypes[i];
       var countForNut = distribution[nutType] ? distribution[nutType] : 0;
       numBoxes += countForNut;
       otherFactor = otherFactor * factorial(countForNut);
@@ -195,7 +193,7 @@ define([
       "Score",
       "likelihoodOfDistribution: numBoxes = " + numBoxes
     );
-    var denominator = numNutTypes ** numBoxes;
+    var denominator = nutTypes.numNutTypes ** numBoxes;
     debugLog.debugLog(
       "Score",
       "likelihoodOfDistribution: denominator = " + denominator
@@ -237,8 +235,8 @@ define([
 
   function triangleNumbersByTypeScore(distribution) {
     var score = 0;
-    for (var i = 0; i < numNutTypes; i++) {
-      var nutType = nutTypes[i];
+    for (var i = 0; i < nutTypes.numNutTypes; i++) {
+      var nutType = nutTypes.nutTypes[i];
       var countForNut = distribution[nutType] ? distribution[nutType] : 0;
       score += (countForNut * (countForNut + 1)) / 2;
     }
@@ -293,8 +291,8 @@ define([
       height: "90%",
     });
 
-    for (var i = 0; i < numNutTypes; i++) {
-      var nutType = nutTypes[i];
+    for (var i = 0; i < nutTypes.numNutTypes; i++) {
+      var nutType = nutTypes.nutTypes[i];
       var typeCount = nutTypeDistribution[nutType];
       for (var j = 0; j < typeCount; j++) {
         var requirement = htmlUtils.addDiv(

@@ -124,7 +124,7 @@ define([
     var row = gameUtils.addRow(parentNode, classArray, rowIndex);
     htmlUtils.addStandardBorder(row);
 
-    var finalHeight = rowTypes.getFactoryRowHeight(rowType);
+    var finalHeight = measurements.getFactoryRowHeight(rowType);
     var finalZIndex = rowZUIndex;
     rowZUIndex--;
 

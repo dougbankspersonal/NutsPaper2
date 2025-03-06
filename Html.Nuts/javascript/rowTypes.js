@@ -1,9 +1,4 @@
-define([
-  "sharedJavascript/genericMeasurements",
-  "sharedJavascript/systemConfigs",
-  "javascript/measurements",
-  "dojo/domReady!",
-], function (genericMeasurements, systemConfigs, measurements) {
+define(["dojo/domReady!"], function () {
   var Number = 1;
   var Dispenser = 2;
   var Conveyor = 3;
@@ -79,30 +74,11 @@ define([
     return null;
   }
 
-  function getFactoryRowHeight(rowType) {
-    var sc = systemConfigs.getSystemConfigs();
-    if (rowType == Boxes) {
-      if (sc.pageless) {
-        // card placed at some y offset in row, runs over bottom of board: show the whole card.
-        // Extra fudge factor seems necessasry to account for borders.
-        return (
-          measurements.smallCardHeight +
-          measurements.boxesRowMarginTop +
-          genericMeasurements.standardBorderWidth * 2
-        );
-      } else {
-        return measurements.boxesRowHeight;
-      }
-    }
-    return measurements.standardRowHeight;
-  }
-
   return {
     RowTypes: RowTypes,
 
     getRowTitle: getRowTitle,
     getRowEntityName: getRowEntityName,
     getSidebarInfo: getSidebarInfo,
-    getFactoryRowHeight: getFactoryRowHeight,
   };
 });

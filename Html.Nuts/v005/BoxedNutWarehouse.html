@@ -75,36 +75,24 @@
           border: "4px solid black",
         });
 
-        var titleRowNode = gameUtils.addRow(
-          borderedSquareNode,
-          ["title_row"],
-          0
-        );
-        domStyle.set(titleRowNode, {
-          width: "100%",
-          height: titleRowHeight + "px",
-        });
         var titleTextNode = htmlUtils.addDiv(
-          titleRowNode,
+          borderedSquareNode,
           ["title_text"],
           "titleText",
           "Warehouse"
         );
 
-        var warehouseRowNode = gameUtils.addRow(
-          borderedSquareNode,
-          ["warehouse_row"],
-          1
-        );
-        domStyle.set(warehouseRowNode, {
-          width: "100%",
-          height: warehouseRowHeight + "px",
-        });
         var warehouseTextNode = htmlUtils.addDiv(
-          warehouseRowNode,
+          borderedSquareNode,
           ["warehouse_text"],
           "warehouseText",
-          "Keep no more than 6 boxed nuts at the end of your turn."
+          "Capacity: 6 boxes"
+        );
+        var warehouseSubttextNode = htmlUtils.addDiv(
+          borderedSquareNode,
+          ["warehouse_subtext"],
+          "warehouseSubtext",
+          "Discard any excess at the end of your turn"
         );
       });
     </script>

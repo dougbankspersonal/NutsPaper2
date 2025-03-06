@@ -45,10 +45,7 @@
           "Doug: systemConfigs = " + JSON.stringify(systemConfigs)
         );
         systemConfigs.setSystemConfigs(
-          systemConfigs.addTileSystemConfigs(
-            measurements.conveyorTileGap,
-            measurements.conveyorColumnsPerPage
-          )
+          systemConfigs.addTileSystemConfigs(measurements.conveyorTileGap)
         );
         conveyorTiles.createConveyorTiles(numConveyorTiles);
       });

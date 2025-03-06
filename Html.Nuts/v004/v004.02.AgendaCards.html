@@ -39,6 +39,7 @@
         "sharedJavascript/cards",
         "sharedJavascript/systemConfigs",
         "javascript/gameUtils",
+        "javascript/nutTypes",
       ], function (cards, systemConfigs, gameUtils) {
         var agendaCardConfigs = [
           {
@@ -152,14 +153,12 @@
         ];
 
         var numAgendaCards = agendaCardConfigs.length * 2;
-        var nutTypes = gameUtils.nutTypes;
-        var numNutTypes = nutTypes.length;
 
         function scoreForDistribution(distribution, count) {
           // Sum triangle numbers for each nut type.
           var score = 0;
-          for (var i = 0; i < numNutTypes; i++) {
-            var nutType = nutTypes[i];
+          for (var i = 0; i < nutTypes.numNutTypes; i++) {
+            var nutType = nutTypes.nutTypes[i];
             if (distribution[nutType] && distribution[nutType] > 0) {
               score +=
                 (distribution[nutType] * (distribution[nutType] + 1)) / 2;
@@ -176,8 +175,8 @@
           var score = scoreForDistribution(nutTypeDistribution);
 
           var wrapper = htmlUtils.addDiv(parentNode, ["wrapper"], "wrapper");
-          for (var i = 0; i < numNutTypes; i++) {
-            var nutType = nutTypes[i];
+          for (var i = 0; i < nutTypes.numNutTypes; i++) {
+            var nutType = nutTypes.nutTypes[i];
             var typeCount = nutTypeDistribution[nutType];
             for (var j = 0; j < typeCount; j++) {
               var prop = htmlUtils.addDiv(

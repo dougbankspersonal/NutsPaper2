@@ -1,7 +1,7 @@
 <html>
   <head>
     <link rel="stylesheet" href="../SharedWebBoardGame/css/main.css" />
-    <link rel="stylesheet" href="../css/die.css" />
+    <link rel="stylesheet" href="../SharedWebBoardGame/css/die.css" />
     <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
     <style type="text/css"></style>
   </head>
@@ -21,6 +21,10 @@
         packages: [
           { name: "dojo", location: "../../bower_components/dojo" },
           { name: "javascript", location: "javascript" },
+          {
+            name: "sharedJavascript",
+            location: "SharedWebBoardgame/javascript",
+          },
         ],
       };
     </script>
@@ -29,13 +33,13 @@
 
     <script>
       require([
-        "javascript/die",
+        "sharedJavascript/dieUtils",
         "sharedJavascript/systemConfigs",
         "javascript/gameUtils",
-      ], function (die, systemConfigs, gameUtils) {
+        "javascript/squirrelDie",
+      ], function (dieUtils, systemConfigs, gameUtils, squirrelDie) {
         systemConfigs.setSystemConfigs(systemConfigs.addTTSDieSystemConfigs());
-
-        die.createDieTemplate();
+        dieUtils.createDieTemplate(squirrelDie.addNthFace);
       });
     </script>
   </body>

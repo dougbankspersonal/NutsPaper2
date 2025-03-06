@@ -1,7 +1,18 @@
 // Sizes of Nuts-specific entities.
 
-define(["sharedJavascript/genericMeasurements", "dojo/domReady!"], function (
-  genericMeasurements
+define([
+  "sharedJavascript/debugLog",
+  "sharedJavascript/genericMeasurements",
+  "sharedJavascript/systemConfigs",
+  "javascript/rowTypes",
+  "javascript/versionDetails",
+  "dojo/domReady!",
+], function (
+  debugLog,
+  genericMeasurements,
+  systemConfigs,
+  rowTypes,
+  versionDetails
 ) {
   var sidebarWidth = 360;
 
@@ -16,9 +27,6 @@ define(["sharedJavascript/genericMeasurements", "dojo/domReady!"], function (
 
   var conveyorTileOnBoardLeftMargin = 20;
   var conveyorTileOnBoardTopMargin = 10;
-
-  var dieWidth = 150;
-  var dieHeight = dieWidth;
 
   // For a tile, it lays across two side by side slots:
   //
@@ -36,6 +44,8 @@ define(["sharedJavascript/genericMeasurements", "dojo/domReady!"], function (
       conveyorTileWidth,
       conveyorTileGap
     );
+
+  var totalBoardWidth = versionDetails.getTotalNumColumns() * slotWidth;
   // So we have this:
   // +------a------+------a------+
   // +-c-+---------b---------+-c-+
@@ -86,6 +96,30 @@ define(["sharedJavascript/genericMeasurements", "dojo/domReady!"], function (
   var conveyorTileZIndex = markerZIndex + 1;
   var arrowZIndex = conveyorTileZIndex + 1;
 
+  function getFactoryRowHeight(rowType) {
+    var sc = systemConfigs.getSystemConfigs();
+    debugLog.debugLog(
+      "Layout",
+      "getFactoryRowHeight 001 sc = " + JSON.stringify(sc)
+    );
+    if (rowType == rowTypes.RowTypes.Boxes) {
+      debugLog.debugLog("Layout", "getFactoryRowHeight 002");
+      if (sc.pageless) {
+        debugLog.debugLog("Layout", "getFactoryRowHeight 003");
+        // card placed at some y offset in row, runs over bottom of board: show the whole card.
+        // Extra fudge factor seems necessasry to account for borders.
+        return (
+          smallCardHeight +
+          boxesRowMarginTop +
+          genericMeasurements.standardBorderWidth * 2
+        );
+      } else {
+        return boxesRowHeight;
+      }
+    }
+    return standardRowHeight;
+  }
+
   return {
     sidebarWidth: sidebarWidth,
     standardRowHeight: standardRowHeight,
@@ -97,9 +131,6 @@ define(["sharedJavascript/genericMeasurements", "dojo/domReady!"], function (
 
     conveyorTileOnBoardLeftMargin: conveyorTileOnBoardLeftMargin,
     conveyorTileOnBoardTopMargin: conveyorTileOnBoardTopMargin,
-
-    dieWidth: dieWidth,
-    dieHeight: dieHeight,
 
     conveyorTileWidth: conveyorTileWidth,
     conveyorTileHeight: conveyorTileHeight,
@@ -140,5 +171,8 @@ define(["sharedJavascript/genericMeasurements", "dojo/domReady!"], function (
     arrowZIndex: arrowZIndex,
     conveyorTileZIndex: conveyorTileZIndex,
     beltZIndex: beltZIndex,
+    totalBoardWidth: totalBoardWidth,
+
+    getFactoryRowHeight: getFactoryRowHeight,
   };
 });

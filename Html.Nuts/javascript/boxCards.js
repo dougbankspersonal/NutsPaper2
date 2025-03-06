@@ -1,5 +1,6 @@
 define([
   "javascript/gameUtils",
+  "javascript/nutTypes",
   "sharedJavascript/cards",
   "sharedJavascript/genericUtils",
   "sharedJavascript/htmlUtils",
@@ -38,8 +39,7 @@ define([
     opt_classArray
   ) {
     var nutTypeIndex = Math.floor(index / numBoxCardsEachType);
-    var nutTypes = gameUtils.nutTypes;
-    var nutType = nutTypes[nutTypeIndex];
+    var nutType = nutTypes.nutTypes[nutTypeIndex];
 
     return addBoxCardSingleNut(parent, nutType, index, opt_classArray);
   }
