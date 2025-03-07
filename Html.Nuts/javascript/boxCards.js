@@ -1,14 +1,15 @@
 define([
-  "javascript/gameUtils",
-  "javascript/nutTypes",
   "sharedJavascript/cards",
+  "sharedJavascript/debugLog",
   "sharedJavascript/genericUtils",
   "sharedJavascript/htmlUtils",
+  "javascript/nutTypes",
   "dojo/domReady!",
-], function (gameUtils, cards, genericUtils, htmlUtils) {
+], function (cards, debugLog, genericUtils, htmlUtils, nutTypes) {
   function addNutDesc(parent, nutType) {
+    debugLog.debugLog("Cards", "Doug: addNutDesc nutType = " + nutType);
     var wrapper = htmlUtils.addDiv(parent, ["wrapper"], "wrapper");
-    var nutPropsTopNode = htmlUtils.addDiv(wrapper, ["nutProps"], "nutProps");
+    var nutPropsTopNode = htmlUtils.addDiv(wrapper, ["nut_props"], "nutProps");
 
     var nutType;
     if (nutType == -1) {
@@ -17,14 +18,18 @@ define([
 
     var prop = htmlUtils.addDiv(
       nutPropsTopNode,
-      ["nutProp", "nut_type"],
-      "nut_type"
+      ["nut_prop", "nut_type"],
+      "nutType"
     );
-    htmlUtils.addImage(prop, ["nutType", nutType], "nut_type");
+    htmlUtils.addImage(prop, ["nut_type", nutType], "nutType");
     return wrapper;
   }
 
   function addBoxCardSingleNut(parent, nutType, index, opt_classArray) {
+    debugLog.debugLog(
+      "Cards",
+      "Doug: addBoxCardSingleNut nutType = " + nutType
+    );
     var classArray = genericUtils.growOptStringArray(opt_classArray, "box");
     var cardId = "box.".concat(index.toString());
     var node = cards.addCardFront(parent, classArray, cardId);

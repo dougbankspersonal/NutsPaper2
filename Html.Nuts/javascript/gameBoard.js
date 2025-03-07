@@ -848,6 +848,7 @@ define([
 
   // columnnIndex is 0-based, ignoring the sidebar.
   function addBox(nutType, rowIndex, columnIndex, opt_classArray) {
+    debugLog.debugLog("Cards", "Doug: addBox nutType = " + nutType);
     var boxesRowId = gameUtils.getRowId(rowIndex);
     var boxesRow = dom.byId(boxesRowId);
     var element = gameUtils.getElementFromRow(boxesRow, columnIndex);

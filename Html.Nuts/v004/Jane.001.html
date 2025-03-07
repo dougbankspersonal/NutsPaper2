@@ -2,12 +2,13 @@
   <head>
     <link rel="stylesheet" href="../css/arrow.css" />
     <link rel="stylesheet" href="../css/belt.css" />
-    <link rel="stylesheet" href="../css/card.css" />
     <link rel="stylesheet" href="../css/conveyor_tile.css" />
     <link rel="stylesheet" href="../css/game_board.css" />
     <link rel="stylesheet" href="../css/image.css" />
-    <link rel="stylesheet" href="../SharedWebBoardGame/css/main.css" />
     <link rel="stylesheet" href="../css/marker.css" />
+    <link rel="stylesheet" href="../css/nuts_card.css" />
+    <link rel="stylesheet" href="../SharedWebBoardGame/css/card.css" />
+    <link rel="stylesheet" href="../SharedWebBoardGame/css/main.css" />
     <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
     <style type="text/css"></style>
   </head>
@@ -43,6 +44,7 @@
         "javascript/gameBoard",
         "javascript/gameUtils",
         "javascript/markers",
+        "javascript/nutTypes",
         "javascript/rowTypes",
         "javascript/versionDetails",
         "sharedJavascript/genericUtils",
@@ -52,6 +54,7 @@
         gameBoard,
         gameUtils,
         markers,
+        nutTypes,
         rowTypes,
         versionDetails,
         genericUtils,
@@ -84,42 +87,42 @@
         gameBoard.addMarkerToBoard(
           dispenserRowIndex,
           0,
-          gameUtils.nutTypeAlmond
+          nutTypes.nutTypeAlmond
         );
         gameBoard.addMarkerToBoard(
           dispenserRowIndex,
           1,
-          gameUtils.nutTypeCashew
+          nutTypes.nutTypeCashew
         );
         gameBoard.addMarkerToBoard(
           dispenserRowIndex,
           2,
-          gameUtils.nutTypePeanut
+          nutTypes.nutTypePeanut
         );
         gameBoard.addMarkerToBoard(
           dispenserRowIndex,
           3,
-          gameUtils.nutTypePistachio
+          nutTypes.nutTypePistachio
         );
         gameBoard.addMarkerToBoard(
           dispenserRowIndex,
           4,
-          gameUtils.nutTypeAlmond
+          nutTypes.nutTypeAlmond
         );
         gameBoard.addMarkerToBoard(
           dispenserRowIndex,
           5,
-          gameUtils.nutTypeCashew
+          nutTypes.nutTypeCashew
         );
         gameBoard.addMarkerToBoard(
           dispenserRowIndex,
           6,
-          gameUtils.nutTypePeanut
+          nutTypes.nutTypePeanut
         );
         gameBoard.addMarkerToBoard(
           dispenserRowIndex,
           7,
-          gameUtils.nutTypePistachio
+          nutTypes.nutTypePistachio
         );
 
         // Squirrel.
@@ -155,14 +158,14 @@
           rowTypes.RowTypes.Boxes
         );
 
-        gameBoard.addBox(gameUtils.nutTypeCashew, boxesRowIndex, 0);
-        gameBoard.addBox(gameUtils.nutTypeAlmond, boxesRowIndex, 1);
-        gameBoard.addBox(gameUtils.nutTypeAlmond, boxesRowIndex, 2);
-        gameBoard.addBox(gameUtils.nutTypePeanut, boxesRowIndex, 3);
-        gameBoard.addBox(gameUtils.nutTypePistachio, boxesRowIndex, 4);
-        gameBoard.addBox(gameUtils.nutTypePistachio, boxesRowIndex, 5);
-        gameBoard.addBox(gameUtils.nutTypeAlmond, boxesRowIndex, 6);
-        gameBoard.addBox(gameUtils.nutTypePistachio, boxesRowIndex, 7);
+        gameBoard.addBox(nutTypes.nutTypeCashew, boxesRowIndex, 0);
+        gameBoard.addBox(nutTypes.nutTypeAlmond, boxesRowIndex, 1);
+        gameBoard.addBox(nutTypes.nutTypeAlmond, boxesRowIndex, 2);
+        gameBoard.addBox(nutTypes.nutTypePeanut, boxesRowIndex, 3);
+        gameBoard.addBox(nutTypes.nutTypePistachio, boxesRowIndex, 4);
+        gameBoard.addBox(nutTypes.nutTypePistachio, boxesRowIndex, 5);
+        gameBoard.addBox(nutTypes.nutTypeAlmond, boxesRowIndex, 6);
+        gameBoard.addBox(nutTypes.nutTypePistachio, boxesRowIndex, 7);
 
         // Add some tiles.
         // First arg is nth row (which should be conveyor row).

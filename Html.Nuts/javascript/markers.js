@@ -1,17 +1,17 @@
 define([
-  "javascript/gameUtils",
-  "javascript/measurements",
-  "sharedJavascript/genericUtils",
-  "sharedJavascript/htmlUtils",
   "dojo/dom",
   "dojo/dom-style",
+  "sharedJavascript/genericUtils",
+  "sharedJavascript/htmlUtils",
+  "javascript/nutTypes",
+  "javascript/measurements",
   "dojo/domReady!",
-], function (gameUtils, measurements, genericUtils, htmlUtils, dom, domStyle) {
+], function (dom, domStyle, genericUtils, htmlUtils, nutTypes, measurements) {
   var markerTypes = {
-    Almond: gameUtils.nutTypeAlmond,
-    Cashew: gameUtils.nutTypeCashew,
-    Peanut: gameUtils.nutTypePeanut,
-    Pistachio: gameUtils.nutTypePistachio,
+    Almond: nutTypes.nutTypeAlmond,
+    Cashew: nutTypes.nutTypeCashew,
+    Peanut: nutTypes.nutTypePeanut,
+    Pistachio: nutTypes.nutTypePistachio,
     Roaster: "Roaster",
     Salter: "Salter",
     ScoreCell: "ScoreCell",
