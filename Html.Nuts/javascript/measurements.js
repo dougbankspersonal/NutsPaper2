@@ -45,7 +45,9 @@ define([
       conveyorTileGap
     );
 
-  var totalBoardWidth = versionDetails.getTotalNumColumns() * slotWidth;
+  var totalBoardPadding = 50;
+  var totalBoardWidth =
+    versionDetails.getTotalNumColumns() * slotWidth + 2 * totalBoardPadding;
   // So we have this:
   // +------a------+------a------+
   // +-c-+---------b---------+-c-+
@@ -172,6 +174,7 @@ define([
     conveyorTileZIndex: conveyorTileZIndex,
     beltZIndex: beltZIndex,
     totalBoardWidth: totalBoardWidth,
+    totalBoardPadding: totalBoardPadding,
 
     getFactoryRowHeight: getFactoryRowHeight,
   };

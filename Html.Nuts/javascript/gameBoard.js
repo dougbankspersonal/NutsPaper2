@@ -32,7 +32,7 @@ define([
   htmlUtils,
   systemConfigs
 ) {
-  var rowZUIndex = 0;
+  var rowZUIndex = 20;
 
   // A tile hits two slots.
   // Say first slot is row i, column j.
@@ -574,15 +574,14 @@ define([
 
     // Special case if we are doing all the columns in one go.
     if (sc.pageless || maxColumnsPerPage >= totalNumColumns) {
-      var pageNode;
+      var pageOfItemsContentsNode;
       var retVal = addPagesWithNextNColumns(
         bodyNode,
         orderedRowTypes,
         maxRowsPerPage,
         totalNumColumns,
         totalNumColumns,
-        0,
-        pageNode
+        0
       );
       console.assert(retVal, "Doug: addGameBoard: retVal is null");
       console.assert(
@@ -594,10 +593,10 @@ define([
         allPageNodes.length == 1,
         "Doug: addGameBoard: allPageNodes.length = " + allPageNodes.length
       );
-      var pageNode = allPageNodes[0];
+      var pageOfItemsContentsNode = allPageNodes[0];
 
-      if (sc.pageless) {
-        domStyle.set(pageNode, {
+      if (!(sc.pageOfItemsContentsPaddingPx > 0) && sc.pageless) {
+        domStyle.set(pageOfItemsContentsNode, {
           padding: "0px",
         });
       }

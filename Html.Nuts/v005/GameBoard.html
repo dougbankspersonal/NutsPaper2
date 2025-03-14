@@ -53,9 +53,10 @@
         systemConfigs
       ) {
         versionDetails.setVersion(versionDetails.version_005);
-        systemConfigs.setSystemConfigs(
-          systemConfigs.addGameBoardSystemConfigs()
-        );
+        var sc = gameUtils.generateDemoBoardSystemConfigs();
+        //    var sc = systemConfigs.addGameBoardSystemConfigs();
+        debugLog.debugLog("Layout", "Doug: sc = " + JSON.stringify(sc));
+        systemConfigs.setSystemConfigs(sc);
 
         var orderedRowTypes = versionDetails.getOrderedRowTypes();
         var totalNumColumns = versionDetails.getTotalNumColumns();
@@ -66,8 +67,10 @@
         gameBoard.addGameBoard({
           orderedRowTypes: orderedRowTypes,
           totalNumColumns: totalNumColumns,
+          /*
           maxRowsPerPage: 4,
           maxColumnsPerPage: 4,
+          */
         });
       });
     </script>

@@ -87,8 +87,9 @@ define([
       cardWidth: measurements.smallCardWidth,
       cardBackFontSize: measurements.smallCardBackFontSize,
       pageless: true,
-      extraClassForPageOfItemsContents: "demo_board",
+      extraClassesForPageOfItemsContents: ["demo_board"],
       explicitPageWidth: measurements.totalBoardWidth,
+      pageOfItemsContentsPaddingPx: measurements.totalBoardPadding,
     };
     return c;
   }
