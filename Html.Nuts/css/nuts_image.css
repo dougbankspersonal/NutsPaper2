@@ -1,4 +1,4 @@
-/* NutProps */
+/* Nuts */
 div.pseudo_image.Almond {
   background-image: url("../images/NutProps/Almond.png");
 }
@@ -10,6 +10,20 @@ div.pseudo_image.Peanut {
 }
 div.pseudo_image.Pistachio {
   background-image: url("../images/NutProps/Pistachio.png");
+}
+
+/* Nut Icons */
+div.pseudo_image.Almond.icon {
+  background-image: url("../images/NutProps/AlmondIcon.png");
+}
+div.pseudo_image.Cashew.icon {
+  background-image: url("../images/NutProps/CashewIcon.png");
+}
+div.pseudo_image.Peanut.icon {
+  background-image: url("../images/NutProps/PeanutIcon.png");
+}
+div.pseudo_image.Pistachio.icon {
+  background-image: url("../images/NutProps/PistachioIcon.png");
 }
 
 /* Arrows */
@@ -32,9 +46,6 @@ div.pseudo_image.Heart {
 }
 div.pseudo_image.OpenBox {
   background-image: url("../images/Markers/OpenBox.png");
-}
-div.pseudo_image.RobotArm {
-  background-image: url("../images/Markers/RobotArm.png");
 }
 div.pseudo_image.Roaster {
   background-image: url("../images/Markers/Roaster.png");
@@ -59,30 +70,4 @@ div.pseudo_image.StartingPlayer {
 }
 div.pseudo_image.Truck {
   background-image: url("../images/Markers/Truck.png");
-}
-
-.conveyor_tile {
-  border-radius: 10px;
-  box-sizing: border-box;
-  display: inline-flex;
-  break-inside: avoid;
-  margin-left: 1px;
-  margin-top: 1px;
-  position: relative;
-  overflow: hidden;
-  background-image: url("../images/Factory/FloorBrick.png");
-}
-
-.demo_board .conveyor_tile {
-  z-index: 20;
-}
-
-.demo_board .conveyor_tile.ghost {
-  opacity: 0.4;
-}
-
-.conveyor_tile.ghost .belt {
-  width: 100%;
-  height: 100%;
-  opacity: 0.4;
 }

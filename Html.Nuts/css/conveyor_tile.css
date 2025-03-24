@@ -11,7 +11,8 @@
 }
 
 .demo_board .conveyor_tile {
-  z-index: 20;
+  margin-right: 10px;
+  margin-bottom: 10px;
 }
 
 .demo_board .conveyor_tile.ghost {

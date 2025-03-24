@@ -37,12 +37,6 @@ define([
 
   var wildImage = "images/Order/Order.Wild.png";
 
-  function addStandardBorder(node) {
-    domStyle.set(node, {
-      border: genericMeasurements.standardBorderWidth + "px solid black",
-    });
-  }
-
   function getSlotId(rowIndex, columnIndex) {
     var idPieces = ["slot", rowIndex.toString(), columnIndex.toString()];
     return idPieces.join("_");
@@ -83,7 +77,8 @@ define([
 
   function generateDemoBoardSystemConfigs() {
     var c = {
-      cardHeight: measurements.smallCardHeight,
+      // Not a typo, the cards are square.
+      cardHeight: measurements.smallCardWidth,
       cardWidth: measurements.smallCardWidth,
       cardBackFontSize: measurements.smallCardBackFontSize,
       pageless: true,
@@ -116,7 +111,6 @@ define([
     getRowId: getRowId,
     getElementId: getElementId,
     getElementFromRow: getElementFromRow,
-    addStandardBorder: addStandardBorder,
     generateDemoBoardSystemConfigs: generateDemoBoardSystemConfigs,
   };
 });

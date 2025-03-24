@@ -11,6 +11,7 @@ define(["dojo/domReady!"], function () {
   var Start = 10;
   var End = 11;
   var Path = 12;
+  var BoxRobots = 13;
 
   var RowTypes = {
     // Can be used to make a board in sections or a complete board.
@@ -26,10 +27,13 @@ define(["dojo/domReady!"], function () {
     Start: Start,
     End: End,
     Path: Path,
+    BoxRobots: BoxRobots,
   };
 
   function getRowTitle(rowType) {
     switch (rowType) {
+      case BoxRobots:
+        return "Box Robots";
       case Boxes:
         return "Boxes";
       case Conveyor:

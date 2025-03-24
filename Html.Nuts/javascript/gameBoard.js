@@ -3,34 +3,40 @@ define([
   "dojo/query",
   "dojo/dom-style",
   "dojo/dom-class",
-  "javascript/beltUtils",
-  "javascript/boxCards",
-  "javascript/conveyorTiles",
-  "javascript/gameUtils",
-  "javascript/markers",
-  "javascript/measurements",
-  "javascript/rowTypes",
   "sharedJavascript/debugLog",
+  "sharedJavascript/genericMeasurements",
   "sharedJavascript/genericUtils",
   "sharedJavascript/htmlUtils",
   "sharedJavascript/systemConfigs",
+  "javascript/beltUtils",
+  "javascript/boxCards",
+  "javascript/boxRobots",
+  "javascript/conveyorTiles",
+  "javascript/gameUtils",
+  "javascript/machines",
+  "javascript/markers",
+  "javascript/measurements",
+  "javascript/rowTypes",
   "dojo/domReady!",
 ], function (
   dom,
   query,
   domStyle,
   domClass,
-  beltUtils,
-  boxCards,
-  conveyorTiles,
-  gameUtils,
-  markers,
-  measurements,
-  rowTypes,
   debugLog,
+  genericMeasurements,
   genericUtils,
   htmlUtils,
-  systemConfigs
+  systemConfigs,
+  beltUtils,
+  boxCards,
+  boxRobots,
+  conveyorTiles,
+  gameUtils,
+  machines,
+  markers,
+  measurements,
+  rowTypes
 ) {
   var rowZUIndex = 20;
 
@@ -87,20 +93,17 @@ define([
   var validElementConfigKeys = {
     // Should we even add an element?
     skipElement: true,
-    // Normally elements are round.
-    isSquare: true,
+    // Elements are round or square.  Default to square.
+    isRound: true,
     // Is this circle nth space for a particular thing?
     // E.g. Nth squirrel space.
     entityName: true,
     entityIndex: true,
-    // Should we hide the top of the belt (used for top row, we don't want belt above dispensers)
-    hideBeltTop: true,
     // Classes to apply to the element.
     classArray: true,
     // Function call to render non-standard element.
     tweakElement: true,
-    // Used to not render bottom of belt that normally runs through elements.
-    hideBeltBottom: true,
+    beltConfigs: true,
   };
 
   function sanityCheckElementConfigs(elementConfigs) {
@@ -152,31 +155,6 @@ define([
     });
   }
 
-  function addStraightBelt(parentNode, elementConfigs) {
-    sanityCheckElementConfigs(elementConfigs);
-    var hideBeltTop = elementConfigs.hideBeltTop ? true : false;
-    var hideBeltBottom = elementConfigs.hideBeltBottom ? true : false;
-
-    var belt = htmlUtils.addDiv(parentNode, ["belt"], "belt");
-    domStyle.set(belt, {
-      "z-index": `${measurements.beltZIndex}`,
-    });
-
-    for (let i = 0; i < measurements.beltSegmentsPerRow; i++) {
-      if (hideBeltTop && i < measurements.beltSegmentsPerRow / 2) {
-        continue;
-      }
-      if (hideBeltBottom && i >= measurements.beltSegmentsPerRow / 2 - 1) {
-        continue;
-      }
-      var yOffset =
-        measurements.beltSegmentOffset / 2 + i * measurements.beltSegmentOffset;
-      beltUtils.addBeltSegment(belt, measurements.slotWidth / 2, yOffset);
-    }
-
-    return belt;
-  }
-
   // columnIndex is 0-based.
   function addNthElement(parentNode, columnIndex, classArray) {
     var extendedClassArray = genericUtils.growOptStringArray(
@@ -187,7 +165,7 @@ define([
     var element = htmlUtils.addDiv(parentNode, extendedClassArray, elementId);
 
     applyStandardElementStyling(element);
-    htmlUtils.addStandardBorder(element);
+    htmlUtils.addStandardOutline(element);
 
     return element;
   }
@@ -270,7 +248,7 @@ define([
 
     var classArray = elementConfigs.classArray;
     var tweakElement = elementConfigs.tweakElement;
-    var isSquare = elementConfigs.isSquare;
+    var isRound = elementConfigs.isRound;
     var skipElement = elementConfigs.skipElement;
     var entityName = elementConfigs.entityName;
     var entityIndex = elementConfigs.entityIndex;
@@ -284,13 +262,13 @@ define([
       if (tweakElement) {
         tweakElement(element);
       }
-      if (isSquare) {
+      if (isRound) {
         domStyle.set(element, {
-          "border-radius": "0px",
+          "border-radius": "50%",
         });
       }
     }
-    addStraightBelt(standardSlot, elementConfigs);
+    beltUtils.addStraightBelt(standardSlot, elementConfigs.beltConfigs);
 
     return standardSlot;
   }
@@ -475,7 +453,9 @@ define([
             {
               classArray: ["nutDispensers"],
               elementConfigs: {
-                hideBeltTop: true,
+                beltConfigs: {
+                  hideBeltTop: true,
+                },
               },
             }
           );
@@ -509,7 +489,10 @@ define([
             numColumnsAlreadyHandled,
             {
               elementConfigs: {
-                isSquare: rowType == rowTypes.RowTypes.BoxRobots,
+                isRound: rowType == rowTypes.RowTypes.Squirrel,
+                beltConfigs: {
+                  hideBeltBottom: rowType == rowTypes.RowTypes.BoxRobots,
+                },
               },
             }
           );
@@ -527,7 +510,9 @@ define([
               elementConfigs: {
                 classArray: ["cardSlot"],
                 tweakElement: tweakBoxesRowCardSlot,
-                hideBeltBottom: true,
+                beltConfigs: {
+                  hideBeltBottom: true,
+                },
               },
             }
           );
@@ -642,6 +627,13 @@ define([
     domStyle.set(marker, style);
   }
 
+  function fixupMachineStyling(machine) {
+    var style = {};
+    style["margin"] = "0px";
+    style["position"] = "absolute";
+    domStyle.set(machine, style);
+  }
+
   // columnnIndex is 0-based, ignoring the sidebar.
   function addMarkerToBoard(
     rowIndex,
@@ -652,8 +644,13 @@ define([
   ) {
     var rowId = gameUtils.getRowId(rowIndex);
     var rowNode = dom.byId(rowId);
+    debugLog.debugLog("Markers", "Doug: addMarkerToBoard rowNode = " + rowNode);
     // add a marker to this element.
     var elementNode = gameUtils.getElementFromRow(rowNode, columnIndex);
+    debugLog.debugLog(
+      "Markers",
+      "Doug: addMarkerToBoard elementNode = " + elementNode
+    );
     // add marker here.
     var marker = markers.addMarker(
       elementNode,
@@ -661,8 +658,33 @@ define([
       opt_classArray,
       opt_additionalConfig
     );
+    debugLog.debugLog("Markers", "Doug: addMarkerToBoard marker = " + marker);
     fixupMarkerStyling(marker);
     return marker;
+  }
+
+  // columnnIndex is 0-based, ignoring the sidebar.
+  function addMachineToBoard(rowIndex, columnIndex, machineType) {
+    var rowId = gameUtils.getRowId(rowIndex);
+    var rowNode = dom.byId(rowId);
+    debugLog.debugLog(
+      "Machines",
+      "Doug: addMachineToBoard rowNode = " + rowNode
+    );
+    // add a machine to this element.
+    var elementNode = gameUtils.getElementFromRow(rowNode, columnIndex);
+    debugLog.debugLog(
+      "Machines",
+      "Doug: addMachineToBoard elementNode = " + elementNode
+    );
+    // add machine here.
+    var machine = machines.addMachine(elementNode, machineType);
+    debugLog.debugLog(
+      "Machines",
+      "Doug: addMachineToBoard machine = " + machine
+    );
+    fixupMachineStyling(machine);
+    return machine;
   }
 
   function storeConveyorTileId(rowIndex, columnIndex, conveyorTileId) {
@@ -732,19 +754,28 @@ define([
     return [null, false];
   }
 
-  function highlightNode(node, color, opt_extra) {
-    var variable = opt_extra ? "30px" : "5px";
-    domStyle.set(node, {
-      "box-shadow": `0 0 ${variable} ${variable} ${color}`,
-      "background-color": color,
-    });
+  function highlightNode(node, color, opt_options) {
+    var options = opt_options ? opt_options : {};
+    var extra = options.extra ? options.extra : false;
+    var noShadow = options.noShadow ? options.noShadow : false;
+    var variable = extra ? "30px" : "5px";
+    if (noShadow) {
+      domStyle.set(node, {
+        "background-color": color,
+      });
+    } else {
+      domStyle.set(node, {
+        "box-shadow": `0 0 ${variable} ${variable} ${color}`,
+        "background-color": color,
+      });
+    }
   }
 
-  function highlightQueryResult(node, queryArg, color) {
+  function highlightQueryResult(node, queryArg, color, opt_options) {
     var nodes = query(queryArg, node);
     for (var i = 0; i < nodes.length; i++) {
       var element = nodes[i];
-      highlightNode(element, color);
+      highlightNode(element, color, opt_options);
     }
   }
 
@@ -757,9 +788,13 @@ define([
     var conveyorTile = getStoredConveyorTile(rowIndex, columnIndex);
     if (conveyorTile) {
       if (domClass.contains(conveyorTile, "ghost") && opt_translucentColor) {
-        highlightNode(conveyorTile, opt_translucentColor, true);
+        highlightNode(conveyorTile, opt_translucentColor, {
+          extra: true,
+        });
       } else {
-        highlightNode(conveyorTile, color, true);
+        highlightNode(conveyorTile, color, {
+          extra: true,
+        });
       }
     }
   }
@@ -771,8 +806,12 @@ define([
     }
     // highlight elements, markers, box cards in this slot.
     var elementId = gameUtils.getElementId(columnIndex);
-    highlightQueryResult(slot, "#" + elementId, color);
-    highlightQueryResult(slot, ".marker", color);
+    highlightQueryResult(slot, ".marker", color, {
+      noShadow: true,
+    });
+    highlightQueryResult(slot, ".box_robot", color, {
+      noShadow: true,
+    });
     highlightQueryResult(slot, ".box", color);
     return slot;
   }
@@ -851,7 +890,7 @@ define([
     var boxesRowId = gameUtils.getRowId(rowIndex);
     var boxesRow = dom.byId(boxesRowId);
     var element = gameUtils.getElementFromRow(boxesRow, columnIndex);
-    // add an oredr card to this element.
+    // add an order card to this element.
     return boxCards.addBoxCardSingleNut(
       element,
       nutType,
@@ -860,12 +899,71 @@ define([
     );
   }
 
+  function addBoxRobotNotMatching(
+    rowIndex,
+    columnIndex,
+    nutType,
+    opt_classArray
+  ) {
+    var boxesRowId = gameUtils.getRowId(rowIndex);
+    var boxesRow = dom.byId(boxesRowId);
+    var element = gameUtils.getElementFromRow(boxesRow, columnIndex);
+
+    // add an order card to this element.
+    var card = boxRobots.addBoxRobotCard(element, columnIndex, opt_classArray);
+
+    debugLog.debugLog(
+      "Markers",
+      "Doug: addBoxRobotNotMatching nutType = " + nutType
+    );
+    debugLog.debugLog(
+      "Markers",
+      "Doug: addBoxRobotNotMatching columnIndex = " + columnIndex
+    );
+    var numQuarterTurns = (columnIndex * columnIndex) % 4;
+    debugLog.debugLog(
+      "Markers",
+      "Doug: addBoxRobotNotMatching numQuarterTurns = " + numQuarterTurns
+    );
+
+    // Now spin until the top nut is notNutType.
+    var originalTopNutType = boxRobots.getTopNutType(columnIndex, 0);
+    debugLog.debugLog(
+      "Markers",
+      "Doug: addBoxRobotNotMatching originalTopNutType = " + originalTopNutType
+    );
+    var newTopNutType = boxRobots.getTopNutType(columnIndex, numQuarterTurns);
+    debugLog.debugLog(
+      "Markers",
+      "Doug: addBoxRobotNotMatching newTopNutType = " + newTopNutType
+    );
+
+    while (boxRobots.getTopNutType(columnIndex, numQuarterTurns) == nutType) {
+      numQuarterTurns++;
+      numQuarterTurns = numQuarterTurns % 4;
+    }
+    var finalTopNutType = boxRobots.getTopNutType(columnIndex, numQuarterTurns);
+    debugLog.debugLog(
+      "Markers",
+      "Doug: addBoxRobotNotMatching final numQuarterTurns = " + numQuarterTurns
+    );
+    debugLog.debugLog(
+      "Markers",
+      "Doug: addBoxRobotNotMatching finalTopNutType = " + finalTopNutType
+    );
+
+    boxRobots.setQuarterTurns(card, numQuarterTurns);
+
+    return card;
+  }
+
   // This returned object becomes the defined value of this module
   return {
     // Can be used to make a board in sections or a complete board.
     addGameBoard: addGameBoard,
 
     addMarkerToBoard: addMarkerToBoard,
+    addMachineToBoard: addMachineToBoard,
     addBox: addBox,
     placeConveyorTileOnBoard: placeConveyorTileOnBoard,
     highlightPath: highlightPath,
@@ -873,5 +971,6 @@ define([
     highlightConveyorTile: highlightConveyorTile,
     getSlotAndHighlightContents: getSlotAndHighlightContents,
     addToken: addToken,
+    addBoxRobotNotMatching: addBoxRobotNotMatching,
   };
 });

@@ -1,0 +1,164 @@
+define([
+  "dojo/dom-style",
+  "sharedJavascript/cards",
+  "sharedJavascript/debugLog",
+  "sharedJavascript/genericUtils",
+  "sharedJavascript/htmlUtils",
+  "javascript/nutTypes",
+  "dojo/domReady!",
+], function (domStyle, cards, debugLog, genericUtils, htmlUtils, nutTypes) {
+  var boxRobotCardConfigs = [
+    {
+      orderOfNuts: [
+        nutTypes.nutTypeAlmond,
+        nutTypes.nutTypeCashew,
+        nutTypes.nutTypePeanut,
+        nutTypes.nutTypePistachio,
+      ],
+    },
+    {
+      orderOfNuts: [
+        nutTypes.nutTypeAlmond,
+        nutTypes.nutTypeCashew,
+        nutTypes.nutTypePistachio,
+        nutTypes.nutTypePeanut,
+      ],
+    },
+    {
+      orderOfNuts: [
+        nutTypes.nutTypeAlmond,
+        nutTypes.nutTypePeanut,
+        nutTypes.nutTypeCashew,
+        nutTypes.nutTypePistachio,
+      ],
+    },
+    {
+      orderOfNuts: [
+        nutTypes.nutTypeAlmond,
+        nutTypes.nutTypePeanut,
+        nutTypes.nutTypePistachio,
+        nutTypes.nutTypeCashew,
+      ],
+    },
+    {
+      orderOfNuts: [
+        nutTypes.nutTypeAlmond,
+        nutTypes.nutTypePistachio,
+        nutTypes.nutTypeCashew,
+        nutTypes.nutTypePeanut,
+      ],
+    },
+    {
+      orderOfNuts: [
+        nutTypes.nutTypeAlmond,
+        nutTypes.nutTypePistachio,
+        nutTypes.nutTypePeanut,
+        nutTypes.nutTypeCashew,
+      ],
+    },
+    {
+      orderOfNuts: [
+        nutTypes.nutTypeAlmond,
+        nutTypes.nutTypeCashew,
+        nutTypes.nutTypePeanut,
+        nutTypes.nutTypePistachio,
+      ],
+    },
+    {
+      orderOfNuts: [
+        nutTypes.nutTypeAlmond,
+        nutTypes.nutTypePeanut,
+        nutTypes.nutTypeCashew,
+        nutTypes.nutTypePistachio,
+      ],
+    },
+  ];
+
+  function addBoxRobotCard(parent, index, opt_classArray) {
+    debugLog.debugLog(
+      "BoxRobotCards",
+      "Doug: addBoxRobotCard index = " + index
+    );
+    var config = cards.getCardConfigFromIndex(boxRobotCardConfigs, index);
+
+    var classArray = genericUtils.growOptStringArray(opt_classArray, [
+      "box_robot",
+      "board_tile",
+    ]);
+
+    var cardId = "boxRobot_" + index;
+    var front = cards.addCardFront(parent, classArray, cardId);
+
+    for (var i = 0; i < config.orderOfNuts.length; i++) {
+      var nutType = config.orderOfNuts[i];
+      var quadrantId = "quadrant_" + i;
+      var classArray = ["quadrant"];
+      var quadrant = htmlUtils.addDiv(front, classArray, quadrantId);
+
+      var openBoxZIndex = config.length + i;
+      var nutZIndex = config.length * 2 + i;
+
+      var openBoxNode = htmlUtils.addImage(quadrant, ["openBox"], "openBox");
+      var openBoxSizePercent = 40;
+      var openBoxTopPercent = (50 - openBoxSizePercent) / 2 - 5;
+      var openBoxLeftPercent = 50 - openBoxSizePercent / 2;
+      domStyle.set(openBoxNode, {
+        "z-index": openBoxZIndex,
+        top: openBoxTopPercent + "%",
+        left: openBoxLeftPercent + "%",
+        width: openBoxSizePercent + "%",
+        height: openBoxSizePercent + "%",
+      });
+
+      var nutImage = htmlUtils.addImage(
+        quadrant,
+        ["nut_type", nutType, "icon"],
+        "nut_type"
+      );
+      var nutSizePercent = 25;
+      var nutTopPercent = (50 - nutSizePercent) / 2 - 2.5;
+      var nutLeftPercent = 50 - nutSizePercent / 2;
+      domStyle.set(nutImage, {
+        "z-index": nutZIndex,
+        top: nutTopPercent + "%",
+        left: nutLeftPercent + "%",
+        width: nutSizePercent + "%",
+        height: nutSizePercent + "%",
+      });
+    }
+    return front;
+  }
+
+  function getNumCards() {
+    var numCards = cards.getNumCardsFromConfigs(boxRobotCardConfigs);
+    debugLog.debugLog(
+      "BoxRobotCards",
+      "Doug: BoxRobotCards main numCards = " + numCards
+    );
+    return numCards;
+  }
+
+  function getTopNutType(columnIndex, numQuarterTurns) {
+    var config = cards.getCardConfigFromIndex(boxRobotCardConfigs, columnIndex);
+    // Minus because of turn right/turn left arity issue,
+    var nutIndex = numQuarterTurns % config.orderOfNuts.length;
+    while (nutIndex < 0) {
+      nutIndex += config.orderOfNuts.length;
+    }
+    var nutType = config.orderOfNuts[nutIndex];
+    return nutType;
+  }
+
+  function setQuarterTurns(card, numQuarterTurns) {
+    var deg = -90 * numQuarterTurns;
+    domStyle.set(card, "transform", "rotate(" + deg + "deg)");
+  }
+
+  // This returned object becomes the defined value of this module
+  return {
+    addBoxRobotCard: addBoxRobotCard,
+    getNumCards: getNumCards,
+    getTopNutType: getTopNutType,
+    setQuarterTurns: setQuarterTurns,
+  };
+});

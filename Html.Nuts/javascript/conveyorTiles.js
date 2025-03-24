@@ -113,10 +113,10 @@ define([
     conveyorTileId,
     opt_classArray
   ) {
-    var classArray = genericUtils.growOptStringArray(
-      opt_classArray,
-      "conveyor_tile"
-    );
+    var classArray = genericUtils.growOptStringArray(opt_classArray, [
+      "conveyor_tile",
+      "board_tile",
+    ]);
     var sc = systemConfigs.getSystemConfigs();
     var conveyorTile = htmlUtils.addDiv(parentNode, classArray, conveyorTileId);
     domStyle.set(conveyorTile, {
@@ -127,47 +127,42 @@ define([
     return conveyorTile;
   }
 
-  function addStraightBelt(conveyorTile, isLeft) {
-    var belt = htmlUtils.addDiv(
-      conveyorTile,
-      ["belt", isLeft ? "left" : "right"],
-      isLeft ? "leftBelt" : "rightBelt"
-    );
-    var xOffset = isLeft
-      ? measurements.beltCenterOffsetInConveyorTile
-      : measurements.conveyorTileInnerWidth -
-        measurements.beltCenterOffsetInConveyorTile;
-    for (let i = 0; i < measurements.beltSegmentsPerRow; i++) {
-      var yOffset =
-        measurements.beltSegmentOffset / 2 + i * measurements.beltSegmentOffset;
-      beltUtils.addBeltSegment(belt, xOffset, yOffset);
-    }
-  }
-
   function addRightToLeftBelt(conveyorTile) {
     belt = htmlUtils.addDiv(conveyorTile, ["belt", , "right"], "rightBelt");
+    var zIndex = curvePoints.length + 1;
+    var configs = {
+      zIndex: zIndex,
+    };
     for (let index = 0; index < curvePoints.length; index++) {
       var curvePoint = curvePoints[index];
+      configs.rads = -curvePoint.rads;
       beltUtils.addBeltSegment(
         belt,
         measurements.conveyorTileInnerWidth - curvePoint.xOffset,
         curvePoint.yOffset,
-        -curvePoint.rads
+        configs
       );
+      configs.zIndex--;
     }
     return belt;
   }
 
   function addLeftToRightBelt(conveyorTile) {
     var belt = htmlUtils.addDiv(conveyorTile, ["belt", "left"], "leftBelt");
+    var zIndex = curvePoints.length + 1;
+    var configs = {
+      zIndex: zIndex,
+    };
     for (let index = 0; index < curvePoints.length; index++) {
       var curvePoint = curvePoints[index];
+      configs.rads = curvePoint.rads;
       beltUtils.addBeltSegment(
         belt,
         curvePoint.xOffset,
         curvePoint.yOffset,
-        curvePoint.rads
+        configs
       );
+      configs.zIndex--;
     }
     return belt;
   }
@@ -193,11 +188,19 @@ define([
       // Left to right belt.
       addLeftToRightBelt(conveyorTile);
       // Left to left belt.
-      addStraightBelt(conveyorTile, true);
+      var xOffset = measurements.beltCenterOffsetInConveyorTile;
+      beltUtils.addStraightBelt(conveyorTile, {
+        xOffset: xOffset,
+      });
     } else {
       // Right to left belt.
+      var xOffset =
+        measurements.conveyorTileInnerWidth -
+        measurements.beltCenterOffsetInConveyorTile;
       addRightToLeftBelt(conveyorTile);
-      addStraightBelt(conveyorTile, false);
+      beltUtils.addStraightBelt(conveyorTile, {
+        xOffset: xOffset,
+      });
     }
 
     return conveyorTile;

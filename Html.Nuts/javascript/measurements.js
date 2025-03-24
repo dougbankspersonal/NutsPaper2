@@ -63,11 +63,11 @@ define([
   var beltCenterOffsetInConveyorTile =
     slotWidth / 2 - conveyorTileOnBoardLeftMargin - conveyorTileBorder;
 
-  var beltSegmentZIndex = 1000000;
   var beltSegmentsPerRow = 8;
   var beltSegmentOffset = standardRowHeight / beltSegmentsPerRow;
   var beltSegmentHeight = beltSegmentOffset + 2;
   var beltSegmentWidth = 40;
+  var beltSegmentGlobalZIndex = 100000;
 
   var smallCardWidth = slotWidth - 20;
   var smallCardHeight = 1.4 * smallCardWidth;
@@ -97,6 +97,15 @@ define([
   var markerZIndex = elementZIndex + 1;
   var conveyorTileZIndex = markerZIndex + 1;
   var arrowZIndex = conveyorTileZIndex + 1;
+
+  var shrinkage = 3;
+
+  var iconCircleBorderSize = 8;
+  var iconSize = 200;
+  var iconCircleSize = iconSize - 2 * iconCircleBorderSize;
+  var iconInnerImageSize = 0.85 * iconSize;
+
+  var machineSize = elementWidth;
 
   function getFactoryRowHeight(rowType) {
     var sc = systemConfigs.getSystemConfigs();
@@ -143,11 +152,11 @@ define([
     conveyorTileInnerWidth: conveyorTileInnerWidth,
     beltCenterOffsetInConveyorTile: beltCenterOffsetInConveyorTile,
 
-    beltSegmentZIndex: beltSegmentZIndex,
     beltSegmentsPerRow: beltSegmentsPerRow,
     beltSegmentOffset: beltSegmentOffset,
     beltSegmentHeight: beltSegmentHeight,
     beltSegmentWidth: beltSegmentWidth,
+    beltSegmentGlobalZIndex: beltSegmentGlobalZIndex,
 
     arrowWidth: elementWidth / 2,
     arrowHeight: elementHeight / 2,
@@ -175,6 +184,15 @@ define([
     beltZIndex: beltZIndex,
     totalBoardWidth: totalBoardWidth,
     totalBoardPadding: totalBoardPadding,
+
+    shrinkage: shrinkage,
+
+    iconSize: iconSize,
+    iconCircleSize: iconCircleSize,
+    iconInnerImageSize: iconInnerImageSize,
+    iconCircleBorderSize: iconCircleBorderSize,
+
+    machineSize: machineSize,
 
     getFactoryRowHeight: getFactoryRowHeight,
   };

@@ -102,7 +102,7 @@
 }
 
 .element {
-  border-radius: 50%;
+  border-radius: 0px;
   box-sizing: border-box;
   break-inside: avoid;
   z-index: 10;

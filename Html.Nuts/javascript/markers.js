@@ -41,7 +41,6 @@ define([
     Star: "star.png",
   };
 
-  var shrinkage = 3;
   var markersPerPage = 42;
 
   function addMarker(parent, markerType, opt_classArray, opt_additionalConfig) {
@@ -56,7 +55,10 @@ define([
         );
       }
     }
-    var classArray = genericUtils.growOptStringArray(opt_classArray, "marker");
+    var classArray = genericUtils.growOptStringArray(opt_classArray, [
+      "marker",
+      "board_tile",
+    ]);
     classArray.push(markerType);
     var additionalConfig = opt_additionalConfig ? opt_additionalConfig : {};
     var node = htmlUtils.addDiv(
@@ -67,10 +69,10 @@ define([
 
     var height = additionalConfig.height
       ? additionalConfig.height
-      : measurements.elementHeight - shrinkage;
+      : measurements.elementHeight - measurements.shrinkage;
     var width = additionalConfig.width
       ? additionalConfig.width
-      : measurements.elementWidth - shrinkage;
+      : measurements.elementWidth - measurements.shrinkage;
 
     domStyle.set(node, {
       width: `${width}px`,

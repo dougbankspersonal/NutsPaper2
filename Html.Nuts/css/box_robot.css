@@ -1,5 +1,10 @@
 .box_robot {
   position: relative;
+  background-image: url("../images/Factory/CrossBar.png");
+  background-size: cover; /* or "contain" depending on the effect you want */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 50% 50%;
 }
 
 .box_robot .quadrant {
@@ -13,8 +18,8 @@
   position: absolute;
 }
 
-.box_robot .quadrant .robotArm {
-  transform: rotate(-45deg);
+.box_robot .quadrant .openBox {
+  transform: rotate(-7deg);
 }
 
 .box_robot #quadrant_0 {
