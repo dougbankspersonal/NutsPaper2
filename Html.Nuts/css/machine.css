@@ -1,34 +1,33 @@
-.machine_container {
+.machines_container {
   display: flex;
   gap: 20px;
   width: 100%;
   flex-wrap: wrap;
 }
 
-.machine {
+.machine_wrapper {
   position: relative;
   display: flex;
   justify-content: center; /* Centers horizontally */
   align-items: center; /* Centers vertically */
-  background-color: #ffddaa;
   border-radius: 10px;
   border: 4px solid black;
   overflow: hidden;
 }
 
-.machine .belt {
+.machine_wrapper .belt {
   z-index: 6;
   width: 40px;
+  position: absolute;
 }
 
-.machine img.machine_image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+.machine_wrapper .machine {
+  position: absolute;
   z-index: 8;
+  filter: drop-shadow(0 0 8px white);
 }
 
-.machine img.icon_image {
+.machine_wrapper .icon_image {
   position: absolute;
   left: 50%;
   top: 56%;

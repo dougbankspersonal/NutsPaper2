@@ -19,7 +19,6 @@ define([
   systemConfigs
 ) {
   var starImage = "images/Markers/Star.png";
-  var salterImage = "images/Markers/Salter.png";
   var squirrelImage = "images/Markers/Squirrel.png";
 
   var saltedTypes = ["Salted", "Unsalted"];
@@ -92,7 +91,6 @@ define([
   // This returned object becomes the defined value of this module
   return {
     starImage: starImage,
-    salterImage: salterImage,
     squirrelImage: squirrelImage,
 
     saltedTypes: saltedTypes,

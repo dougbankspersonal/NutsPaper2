@@ -1,132 +1,156 @@
 define([
-  "javascript/nutTypes",
+  "dojo/dom-style",
+  "dojo/dom-class",
   "sharedJavascript/cards",
+  "sharedJavascript/debugLog",
   "sharedJavascript/genericMeasurements",
   "sharedJavascript/htmlUtils",
-  "dojo/dom-style",
+  "javascript/iconTypes",
+  "javascript/miscTypes",
   "dojo/domReady!",
-], function (nutTypes, cards, genericMeasurements, htmlUtils, domStyle) {
+], function (
+  domStyle,
+  domClass,
+  cards,
+  debugLog,
+  genericMeasurements,
+  htmlUtils,
+  iconTypes,
+  miscTypes
+) {
   //-------------------------------------------------
   //
   // Global vars
   //
   //-------------------------------------------------
+  var requirementsHeight = 90;
+  var requirementsWidth = 110;
+  var requirementsTop = 31;
+  var requirementsLeft = 145;
+
+  function requirementSizeForNumNuts(numNuts) {
+    // Make a square, preferring to be wide.
+    var nutsPerRow = Math.ceil(Math.sqrt(numNuts));
+    var width = Math.floor(requirementsWidth / nutsPerRow);
+    var nutsPerColumn = Math.ceil(numNuts / nutsPerRow);
+    var height = Math.floor(requirementsHeight / nutsPerColumn);
+    return {
+      width: width,
+      height: height,
+    };
+  }
+
   var truckCardConfigs = [
     // Small trucks: Permanent, 3-4
     {
       distribution: {
-        Almond: 3,
+        [iconTypes.AlmondIcon]: 3,
       },
     },
     {
       distribution: {
-        Cashew: 3,
+        [iconTypes.CashewIcon]: 3,
       },
     },
     {
       distribution: {
-        Peanut: 3,
+        [iconTypes.PeanutIcon]: 3,
       },
     },
     {
       distribution: {
-        Pistachio: 3,
+        [iconTypes.PistachioIcon]: 3,
       },
     },
     {
       distribution: {
-        Almond: 1,
-        Cashew: 1,
-        Peanut: 1,
-        Pistachio: 1,
+        [iconTypes.AlmondIcon]: 1,
+        [iconTypes.CashewIcon]: 1,
+        [iconTypes.PeanutIcon]: 1,
+        [iconTypes.PistachioIcon]: 1,
       },
     },
 
     // Medium trucks: 5 items.
     {
       distribution: {
-        Almond: 1,
-        Peanut: 4,
+        [iconTypes.AlmondIcon]: 1,
+        [iconTypes.PeanutIcon]: 4,
       },
     },
     {
       distribution: {
-        Cashew: 1,
-        Pistachio: 4,
+        [iconTypes.CashewIcon]: 1,
+        [iconTypes.PistachioIcon]: 4,
       },
     },
     {
       distribution: {
-        Almond: 3,
-        Pistachio: 2,
+        [iconTypes.AlmondIcon]: 3,
+        [iconTypes.PistachioIcon]: 2,
       },
     },
     {
       distribution: {
-        Cashew: 3,
-        Peanut: 2,
+        [iconTypes.CashewIcon]: 3,
+        [iconTypes.PeanutIcon]: 2,
       },
     },
 
     // Big trucks: 7 items.
     {
       distribution: {
-        Almond: 2,
-        Pistachio: 5,
+        [iconTypes.AlmondIcon]: 2,
+        [iconTypes.PistachioIcon]: 5,
       },
     },
     {
       distribution: {
-        Cashew: 2,
-        Peanut: 5,
+        [iconTypes.CashewIcon]: 2,
+        [iconTypes.PeanutIcon]: 5,
       },
     },
     {
       distribution: {
-        Almond: 4,
-        Cashew: 3,
+        [iconTypes.AlmondIcon]: 4,
+        [iconTypes.CashewIcon]: 3,
       },
     },
     {
       distribution: {
-        Peanut: 4,
-        Pistachio: 3,
+        [iconTypes.PeanutIcon]: 4,
+        [iconTypes.PistachioIcon]: 3,
       },
     },
     {
       distribution: {
-        Almond: 5,
-        Peanut: 1,
-        Pistachio: 1,
+        [iconTypes.AlmondIcon]: 5,
+        [iconTypes.PeanutIcon]: 1,
+        [iconTypes.PistachioIcon]: 1,
       },
     },
     {
       distribution: {
-        Almond: 1,
-        Cashew: 1,
-        Pistachio: 5,
+        [iconTypes.AlmondIcon]: 1,
+        [iconTypes.CashewIcon]: 1,
+        [iconTypes.PistachioIcon]: 5,
       },
     },
     {
       distribution: {
-        Cashew: 6,
-        Pistachio: 1,
+        [iconTypes.CashewIcon]: 6,
+        [iconTypes.PistachioIcon]: 1,
       },
     },
     {
       distribution: {
-        Peanut: 6,
-        Almond: 1,
+        [iconTypes.PeanutIcon]: 6,
+        [iconTypes.AlmondIcon]: 1,
       },
     },
   ];
   var numTruckCards = truckCardConfigs.length;
-
-  var closedBoxSize = 55;
-  var nutTypeSize = closedBoxSize * 0.8;
-  var boxTilt = 10;
-
-  var permanentStarSize = 40;
+  var boxTilt = 30;
 
   //-------------------------------------------------
   //
@@ -140,25 +164,31 @@ define([
     return n * factorial(n - 1);
   }
 
+  function forEachNutIconType(callback) {
+    var numNutTypes = iconTypes.orderedNutIconTypes.length;
+    for (var i = 0; i < numNutTypes; i++) {
+      var iconType = iconTypes.orderedNutIconTypes[i];
+      callback(iconType);
+    }
+  }
+
   function getTotalNutCount(distribution) {
     var total = 0;
-    for (var i = 0; i < nutTypes.numNutTypes; i++) {
-      var nutType = nutTypes.nutTypes[i];
-      var countForNut = distribution[nutType] ? distribution[nutType] : 0;
+    forEachNutIconType(function (iconType) {
+      var countForNut = distribution[iconType] ? distribution[iconType] : 0;
       total += countForNut;
-    }
+    });
     return total;
   }
 
   function getLargestCountForAnyOneType(distribution) {
     var largestCount = 0;
-    for (var i = 0; i < nutTypes.numNutTypes; i++) {
-      var nutType = nutTypes.nutTypes[i];
-      var countForNut = distribution[nutType] ? distribution[nutType] : 0;
+    forEachNutIconType(function (iconType) {
+      var countForNut = distribution[iconType] ? distribution[iconType] : 0;
       if (countForNut > largestCount) {
         largestCount = countForNut;
       }
-    }
+    });
     return largestCount;
   }
 
@@ -166,13 +196,12 @@ define([
     var totalCount = getTotalNutCount(distribution);
 
     var numContributors = 0;
-    for (var i = 0; i < nutTypes.numNutTypes; i++) {
-      var nutType = nutTypes.nutTypes[i];
-      var countForNut = distribution[nutType] ? distribution[nutType] : 0;
+    forEachNutIconType(function (iconType) {
+      var countForNut = distribution[iconType] ? distribution[iconType] : 0;
       if (countForNut > 0) {
         numContributors++;
       }
-    }
+    });
     return totalCount / numContributors;
   }
 
@@ -183,17 +212,16 @@ define([
     );
     var numBoxes = 0;
     var otherFactor = 1;
-    for (var i = 0; i < nutTypes.numNutTypes; i++) {
-      var nutType = nutTypes.nutTypes[i];
-      var countForNut = distribution[nutType] ? distribution[nutType] : 0;
+    forEachNutIconType(function (iconType) {
+      var countForNut = distribution[iconType] ? distribution[iconType] : 0;
       numBoxes += countForNut;
       otherFactor = otherFactor * factorial(countForNut);
-    }
+    });
     debugLog.debugLog(
       "Score",
       "likelihoodOfDistribution: numBoxes = " + numBoxes
     );
-    var denominator = nutTypes.numNutTypes ** numBoxes;
+    var denominator = iconTypes.orderedNutIconTypes.length ** numBoxes;
     debugLog.debugLog(
       "Score",
       "likelihoodOfDistribution: denominator = " + denominator
@@ -214,7 +242,10 @@ define([
   var difficultyScale = 1.7;
   function getDifficultyMultiplier(distribution) {
     var totalNutCount = getTotalNutCount(distribution);
-    return totalNutCount ** difficultyScale;
+    debugLog.debugLog("Truck", "totalNutCount = " + totalNutCount);
+    var retVal = totalNutCount ** difficultyScale;
+    debugLog.debugLog("Truck", "retVal = " + retVal);
+    return retVal;
   }
 
   function getCompositionMultiplier(distribution) {
@@ -226,6 +257,24 @@ define([
 
   var finalScale = 10 / 19;
   function chatGptSuggestion(distribution) {
+    debugLog.debugLog(
+      "Truck",
+      "ckat GPT suggestion: distribution = " + distribution
+    );
+    debugLog.debugLog(
+      "Truck",
+      "chat GPT suggestion: finalScale = " + finalScale
+    );
+    debugLog.debugLog(
+      "Truck",
+      "chat GPT suggestion: getDifficultyMultiplier = " +
+        getDifficultyMultiplier(distribution)
+    );
+    debugLog.debugLog(
+      "Truck",
+      "chat GPT suggestion: getCompositionMultiplier = " +
+        getCompositionMultiplier(distribution)
+    );
     return Math.ceil(
       finalScale *
         getDifficultyMultiplier(distribution) *
@@ -235,11 +284,10 @@ define([
 
   function triangleNumbersByTypeScore(distribution) {
     var score = 0;
-    for (var i = 0; i < nutTypes.numNutTypes; i++) {
-      var nutType = nutTypes.nutTypes[i];
-      var countForNut = distribution[nutType] ? distribution[nutType] : 0;
+    forEachNutIconType(function (iconType) {
+      var countForNut = distribution[iconType] ? distribution[iconType] : 0;
       score += (countForNut * (countForNut + 1)) / 2;
-    }
+    });
     return score;
   }
 
@@ -254,12 +302,26 @@ define([
     return score;
   }
 
+  function addRequirement(parentNode, size) {
+    var requirement = htmlUtils.addDiv(
+      parentNode,
+      ["requirement"],
+      "requirement"
+    );
+
+    domStyle.set(requirement, {
+      width: size.width + "px",
+      height: size.height + "px",
+    });
+    return requirement;
+  }
+
   function addTruckDesc(parentNode, truckCardConfig) {
     // Collect n random nut types.
-    var nutTypeDistribution = truckCardConfig.distribution;
+    var distribution = truckCardConfig.distribution;
 
     // Calculate the score for this distribution
-    var score = scoreForDistribution(nutTypeDistribution);
+    var score = scoreForDistribution(distribution);
 
     var wrapper = htmlUtils.addDiv(parentNode, ["wrapper"], "wrapper");
 
@@ -272,56 +334,51 @@ define([
       height: innerCardWidth + "px",
     });
 
-    var truckScale = 0.8;
-    var truckWidth = innerCardHeight * truckScale;
-    var truckHeight = innerCardWidth * truckScale;
     var truckNode = htmlUtils.addImage(wrapper, ["truck"], "truck");
-    domStyle.set(truckNode, {
-      width: truckWidth + "px",
-      height: truckHeight + "px",
-    });
 
     var requirementsNode = htmlUtils.addDiv(
       truckNode,
       ["requirements"],
       "requirements"
     );
+
     domStyle.set(requirementsNode, {
-      width: "100%",
-      height: "90%",
+      width: requirementsWidth + "px",
+      height: requirementsHeight + "px",
+      top: requirementsTop + "px",
+      left: requirementsLeft + "px",
     });
 
-    for (var i = 0; i < nutTypes.numNutTypes; i++) {
-      var nutType = nutTypes.nutTypes[i];
-      var typeCount = nutTypeDistribution[nutType];
+    var totalNutCount = getTotalNutCount(distribution);
+    var size = requirementSizeForNumNuts(totalNutCount);
+
+    var nutsAdded = 0;
+    forEachNutIconType(function (iconType) {
+      var typeCount = distribution[iconType];
       for (var j = 0; j < typeCount; j++) {
-        var requirement = htmlUtils.addDiv(
-          requirementsNode,
-          ["requirement"],
-          "requirement"
-        );
+        // Dumb layout thing I am just hacking.
+        // If there's 7, do 2/3/2. not 3/3/1.
+        if (totalNutCount == 7 && nutsAdded == 2) {
+          // Add a mock empty requirement.
+          addRequirement(requirementsNode, size);
+        }
+
+        var requirement = addRequirement(requirementsNode, size);
         var closedBoxNode = htmlUtils.addImage(
           requirement,
-          ["closedBox"],
+          [miscTypes.ClosedBox],
           "closedBox"
         );
-        domStyle.set(closedBoxNode, {
-          width: closedBoxSize + "px",
-          height: closedBoxSize + "px",
-        });
         htmlUtils.addQuasiRandomTilt(closedBoxNode, -boxTilt, boxTilt);
 
-        var nutTypeNode = htmlUtils.addImage(
+        var nutTypeIconNode = htmlUtils.addImage(
           closedBoxNode,
-          ["nut_type", nutType],
+          ["nut_type_icon", iconType, "icon"],
           "nut_type"
         );
-        domStyle.set(nutTypeNode, {
-          width: nutTypeSize + "px",
-          height: nutTypeSize + "px",
-        });
+        nutsAdded++;
       }
-    }
+    });
 
     var scoreNode = htmlUtils.addDiv(wrapper, ["score"], "score");
     scoreNode.innerHTML = score.toString().concat(" points");
@@ -341,8 +398,14 @@ define([
     return node;
   }
 
+  function addCardBackWithClass(parent, title, color) {
+    var cardBack = cards.addCardBack(parent, title, color);
+    domClass.add(cardBack, "truck_card");
+  }
+
   return {
     addTruckCard: addTruckCard,
     numTruckCards: numTruckCards,
+    addCardBackWithClass: addCardBackWithClass,
   };
 });

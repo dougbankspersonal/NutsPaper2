@@ -1,73 +1,65 @@
 define([
   "dojo/dom",
   "dojo/dom-style",
+  "sharedJavascript/debugLog",
   "sharedJavascript/htmlUtils",
   "javascript/beltUtils",
+  "javascript/boardTiles",
   "javascript/measurements",
-  "javascript/nutTypes",
+  "javascript/machineTypes",
   "dojo/domReady!",
-], function (dom, domStyle, htmlUtils, beltUtils, measurements) {
-  var machineTypes = [
-    "Almond",
-    "Cashew",
-    "Peanut",
-    "Pistachio",
-    "Roaster",
-    "Salter",
-  ];
-
-  var machineTypeToHideBeltTop = {
-    Almond: true,
-    Cashew: true,
-    Peanut: true,
-    Pistachio: true,
-  };
-
-  var machineTypeToImageMap = {
-    Almond: "AlmondIcon.png",
-    Cashew: "CashewIcon.png",
-    Peanut: "PeanutIcon.png",
-    Pistachio: "PistachioIcon.png",
-    Roaster: "RoasterIcon.png",
-    Salter: "SalterIcon.png",
-  };
-
+], function (
+  dom,
+  domStyle,
+  debugLog,
+  htmlUtils,
+  beltUtils,
+  boardTiles,
+  measurements,
+  machineTypes
+) {
   function addMachine(parent, machineType) {
-    console.log("addMachine: machineType = ", machineType);
-    var machineNode = htmlUtils.addDiv(
+    console.assert(machineType, "addMachine: machineType is required");
+    var machineWrapperNode = htmlUtils.addDiv(
       parent,
-      ["machine", "board_tile"],
+      ["machine_wrapper", "board_tile"],
       machineType
     );
-    domStyle.set(machineNode, {
+    domStyle.set(machineWrapperNode, {
       width: measurements.elementWidth + "px",
       height: measurements.elementWidth + "px",
     });
+    boardTiles.twiddleBoardTile(machineWrapperNode);
 
     var machineImage = htmlUtils.addImage(
-      machineNode,
-      ["machine_image"],
-      "MachineImage",
-      "../images/NutProps/Machine.png"
+      machineWrapperNode,
+      ["Machine"],
+      "MachineImage"
     );
 
-    var imageName = machineTypeToImageMap[machineType];
+    var iconType = machineTypes.machineTypeToIconType[machineType];
+
+    debugLog.debugLog("Machines", "addMachine: machineType = " + machineType);
+    debugLog.debugLog("Machines", "addMachine: iconType = " + iconType);
+
     var iconImage = htmlUtils.addImage(
-      machineNode,
-      ["icon_image"],
-      "IconImage",
-      "../images/NutProps/" + imageName
+      machineWrapperNode,
+      ["icon_image", iconType],
+      "IconImage"
     );
+
+    var hideBeltTop = machineTypes.machineTypesWithNoBeltTop[machineType];
+    debugLog.debugLog("Belts", "addMachine: hideBeltTop = " + hideBeltTop);
 
     // add Belt.
     var beltConfigs = {
-      hideBeltTop: machineTypeToHideBeltTop[machineType],
+      hideBeltTop: hideBeltTop,
       useLocalZIndex: true,
       xOffset: measurements.elementWidth / 2,
     };
-    beltUtils.addStraightBelt(machineNode, beltConfigs);
+    beltUtils.addStraightBelt(machineWrapperNode, beltConfigs);
 
-    return machineNode;
+    return machineWrapperNode;
   }
 
   function addMachines() {
@@ -76,14 +68,12 @@ define([
 
     var machineContainer = htmlUtils.addDiv(
       pageOfItems,
-      ["machine_container"],
-      "machineContainer"
+      ["machines_container"],
+      "machinesContainer"
     );
 
-    console.log("addMachine: machineTypes = ", machineType);
-
-    for (var i = 0; i < machineTypes.length; i++) {
-      var machineType = machineTypes[i];
+    for (var i = 0; i < machineTypes.orderedMachineTypes.length; i++) {
+      var machineType = machineTypes.orderedMachineTypes[i];
       addMachine(machineContainer, machineType);
     }
     return bodyNode;

@@ -4,72 +4,84 @@ define([
   "sharedJavascript/debugLog",
   "sharedJavascript/genericUtils",
   "sharedJavascript/htmlUtils",
+  "javascript/boardTiles",
+  "javascript/iconTypes",
+  "javascript/miscTypes",
   "javascript/nutTypes",
   "dojo/domReady!",
-], function (domStyle, cards, debugLog, genericUtils, htmlUtils, nutTypes) {
+], function (
+  domStyle,
+  cards,
+  debugLog,
+  genericUtils,
+  htmlUtils,
+  boardTiles,
+  iconTypes,
+  miscTypes
+) {
   var boxRobotCardConfigs = [
     {
       orderOfNuts: [
-        nutTypes.nutTypeAlmond,
-        nutTypes.nutTypeCashew,
-        nutTypes.nutTypePeanut,
-        nutTypes.nutTypePistachio,
+        iconTypes.AlmondIcon,
+        iconTypes.CashewIcon,
+        iconTypes.PeanutIcon,
+        iconTypes.PistachioIcon,
       ],
     },
     {
       orderOfNuts: [
-        nutTypes.nutTypeAlmond,
-        nutTypes.nutTypeCashew,
-        nutTypes.nutTypePistachio,
-        nutTypes.nutTypePeanut,
+        iconTypes.AlmondIcon,
+        iconTypes.CashewIcon,
+        iconTypes.PistachioIcon,
+        iconTypes.PeanutIcon,
       ],
     },
     {
       orderOfNuts: [
-        nutTypes.nutTypeAlmond,
-        nutTypes.nutTypePeanut,
-        nutTypes.nutTypeCashew,
-        nutTypes.nutTypePistachio,
+        iconTypes.AlmondIcon,
+        iconTypes.PeanutIcon,
+        iconTypes.CashewIcon,
+        iconTypes.PistachioIcon,
       ],
     },
     {
       orderOfNuts: [
-        nutTypes.nutTypeAlmond,
-        nutTypes.nutTypePeanut,
-        nutTypes.nutTypePistachio,
-        nutTypes.nutTypeCashew,
+        iconTypes.AlmondIcon,
+        iconTypes.PeanutIcon,
+        iconTypes.PistachioIcon,
+        iconTypes.CashewIcon,
       ],
     },
     {
       orderOfNuts: [
-        nutTypes.nutTypeAlmond,
-        nutTypes.nutTypePistachio,
-        nutTypes.nutTypeCashew,
-        nutTypes.nutTypePeanut,
+        iconTypes.AlmondIcon,
+        iconTypes.PistachioIcon,
+        iconTypes.CashewIcon,
+        iconTypes.PeanutIcon,
       ],
     },
     {
       orderOfNuts: [
-        nutTypes.nutTypeAlmond,
-        nutTypes.nutTypePistachio,
-        nutTypes.nutTypePeanut,
-        nutTypes.nutTypeCashew,
+        iconTypes.AlmondIcon,
+        iconTypes.PistachioIcon,
+        iconTypes.PeanutIcon,
+        iconTypes.CashewIcon,
       ],
     },
     {
       orderOfNuts: [
-        nutTypes.nutTypeAlmond,
-        nutTypes.nutTypeCashew,
-        nutTypes.nutTypePeanut,
-        nutTypes.nutTypePistachio,
+        iconTypes.AlmondIcon,
+        iconTypes.CashewIcon,
+        iconTypes.PeanutIcon,
+        iconTypes.PistachioIcon,
       ],
     },
     {
       orderOfNuts: [
-        nutTypes.nutTypeAlmond,
-        nutTypes.nutTypePeanut,
-        nutTypes.nutTypeCashew,
-        nutTypes.nutTypePistachio,
+        iconTypes.AlmondIcon,
+        iconTypes.PeanutIcon,
+        iconTypes.CashewIcon,
+        iconTypes.PistachioIcon,
       ],
     },
   ];
@@ -89,11 +101,19 @@ define([
     var cardId = "boxRobot_" + index;
     var front = cards.addCardFront(parent, classArray, cardId);
 
+    boardTiles.twiddleBoardTile(front);
+
+    var crossBarNode = htmlUtils.addImage(
+      front,
+      [miscTypes.CrossBar],
+      miscTypes.CrossBar
+    );
+
     for (var i = 0; i < config.orderOfNuts.length; i++) {
-      var nutType = config.orderOfNuts[i];
+      var iconType = config.orderOfNuts[i];
       var quadrantId = "quadrant_" + i;
       var classArray = ["quadrant"];
-      var quadrant = htmlUtils.addDiv(front, classArray, quadrantId);
+      var quadrant = htmlUtils.addDiv(crossBarNode, classArray, quadrantId);
 
       var openBoxZIndex = config.length + i;
       var nutZIndex = config.length * 2 + i;
@@ -112,7 +132,7 @@ define([
 
       var nutImage = htmlUtils.addImage(
         quadrant,
-        ["nut_type", nutType, "icon"],
+        ["nut_type", iconType, "icon"],
         "nut_type"
       );
       var nutSizePercent = 25;

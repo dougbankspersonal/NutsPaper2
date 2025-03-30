@@ -1,0 +1,106 @@
+<html>
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DynaPuff:wght@400..700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../SharedWebBoardGame/css/main.css" />
+    <link rel="stylesheet" href="../SharedWebBoardGame/css/card.css" />
+    <link rel="stylesheet" href="../css/nuts_card.css" />
+    <link rel="stylesheet" href="../css/goal.css" />
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+    <style type="text/css"></style>
+  </head>
+
+  <body id="body">
+    <!-- configure Dojo -->
+    <script>
+      // Instead of using data-dojo-config, we're creating a dojoConfig
+      // object *before* we load dojo.js; they're functionally identical,
+      // it's just easier to read this approach with a larger configuration.
+      var dojoConfig = {
+        baseUrl: "..",
+        async: true,
+        // This code registers the correct location of the "demo"
+        // package so we can load Dojo from the CDN whilst still
+        // being able to load local modules
+        packages: [
+          { name: "dojo", location: "../../bower_components/dojo" },
+          { name: "javascript", location: "javascript" },
+        ],
+      };
+    </script>
+    <!-- load Dojo -->
+    <script src="../../../bower_components/dojo/dojo.js"></script>
+
+    <script>
+      require([
+        "sharedJavascript/cards",
+        "javascript/gameUtils",
+        "javascript/goalCards",
+        "sharedJavascript/systemConfigs",
+      ], function (cards, gameUtils, goalCards, systemConfigs) {
+        var goalCardConfigs = [
+          {
+            title: "Peanut Champion",
+            goal: "Collect 4 Peanuts",
+            points: "+3 points",
+            reward: "Immediately add 1 Worker to your Worker Pool",
+            count: 2,
+          },
+          {
+            title: "Almond Thought Leader",
+            goal: "Collect 4 Almonds",
+            points: "+3 points",
+            reward:
+              "At Final Scoring, you may move the bottom Score Token from one column into the topmost empty space of another column.",
+            count: 2,
+          },
+          {
+            title: "Cashew Innovator",
+            goal: "Collect 4 Cashews",
+            points: "+3 points",
+            reward:
+              "You may collect a 6th nut of any one Nut Type for +6 points.",
+            count: 2,
+          },
+          {
+            title: "Pistachio Monger",
+            goal: "Collect 4 Pistachios",
+            points: "+3 points",
+            reward: "You may ignore the penalty for one failed Bonus card.",
+            count: 2,
+          },
+          {
+            title: "Salty Mama",
+            goal: "Collect 4 Salt Tokens",
+            points:
+              "+3 points, and +1 point for each Salt Token at Final Scoring",
+            reward: "",
+            count: 2,
+          },
+          {
+            title: "Nut Lover",
+            goal: "Complete a Row",
+            points: "+3 points",
+            reward:
+              "For the rest of the game you spend 1 Worker to slide a tile one space to either side.",
+            count: 2,
+          },
+        ];
+
+        systemConfigs.setSystemConfigs({});
+        cards.addCards(
+          "Goal",
+          "#ffeedd",
+          goalCards.getCount(goalCardConfigs),
+          function (parent, index) {
+            goalCards.addGoalCard(parent, index, goalCardConfigs);
+          }
+        );
+      });
+    </script>
+  </body>
+</html>

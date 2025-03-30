@@ -6,7 +6,8 @@
   box-sizing: border-box;
   width: fit-content;
   overflow: hidden;
-  background-image: url("../images/Factory/FloorBrick.png");
+  background-image: url("../images/Factory/FloorImage.png");
+  background-size: auto; /* Prevent scaling */
 }
 
 .row.demo_board {
@@ -133,12 +134,13 @@
 
 .row .content .slot .number {
   break-inside: avoid;
-  font-size: 36px;
+  font-size: 64px;
   font-family: "DynaPuff", serif;
   display: inline-flex;
   justify-content: center;
   align-items: center;
   font-weight: bold;
+  text-shadow: 2px 2px 4px white, -2px -2px 4px white;
 }
 
 /* slot for card in a box  row*/

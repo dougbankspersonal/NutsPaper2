@@ -44,7 +44,7 @@ define([
     opt_classArray
   ) {
     var nutTypeIndex = Math.floor(index / numBoxCardsEachType);
-    var nutType = nutTypes.nutTypes[nutTypeIndex];
+    var nutType = nutTypes.s[nutTypeIndex];
 
     return addBoxCardSingleNut(parent, nutType, index, opt_classArray);
   }

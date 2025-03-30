@@ -1,0 +1,25 @@
+div.whole_floor {
+  display: flex;
+  flex-direction: column;
+}
+
+div.whole_floor div.floor_row {
+  height: 500px;
+  display: flex;
+  flex-direction: row;
+}
+
+div.whole_floor div.floor_row div.floor_cell {
+  height: 500px;
+  width: 500px;
+  background-image: url("../images/Factory/FloorImage.png");
+  margin: -2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+div.whole_floor div.floor_row div.floor_cell div.floor_image {
+  height: 512px;
+  width: 512px;
+}

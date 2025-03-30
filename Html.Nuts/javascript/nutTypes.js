@@ -1,22 +1,18 @@
 define(["dojo/domReady!"], function () {
-  var nutTypeAlmond = "Almond";
-  var nutTypeCashew = "Cashew";
-  var nutTypePeanut = "Peanut";
-  var nutTypePistachio = "Pistachio";
+  var Almond = "Almond";
+  var Cashew = "Cashew";
+  var Peanut = "Peanut";
+  var Pistachio = "Pistachio";
 
-  var nutTypes = [
-    nutTypeAlmond,
-    nutTypeCashew,
-    nutTypePeanut,
-    nutTypePistachio,
-  ];
+  var orderedNutTypes = [Almond, Cashew, Peanut, Pistachio];
+
   return {
-    nutTypeAlmond: nutTypeAlmond,
-    nutTypeCashew: nutTypeCashew,
-    nutTypePeanut: nutTypePeanut,
-    nutTypePistachio: nutTypePistachio,
+    Almond: Almond,
+    Cashew: Cashew,
+    Peanut: Peanut,
+    Pistachio: Pistachio,
 
-    nutTypes: nutTypes,
-    numNutTypes: nutTypes.length,
+    orderedNutTypes: orderedNutTypes,
+    numNutTypes: orderedNutTypes.length,
   };
 });

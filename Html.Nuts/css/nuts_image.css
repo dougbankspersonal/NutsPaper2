@@ -12,18 +12,24 @@ div.pseudo_image.Pistachio {
   background-image: url("../images/NutProps/Pistachio.png");
 }
 
-/* Nut Icons */
-div.pseudo_image.Almond.icon {
-  background-image: url("../images/NutProps/AlmondIcon.png");
+/* Icons */
+div.pseudo_image.AlmondIcon {
+  background-image: url("../images/Icons/AlmondIcon.png");
 }
-div.pseudo_image.Cashew.icon {
-  background-image: url("../images/NutProps/CashewIcon.png");
+div.pseudo_image.CashewIcon {
+  background-image: url("../images/Icons/CashewIcon.png");
 }
-div.pseudo_image.Peanut.icon {
-  background-image: url("../images/NutProps/PeanutIcon.png");
+div.pseudo_image.PeanutIcon {
+  background-image: url("../images/Icons/PeanutIcon.png");
 }
-div.pseudo_image.Pistachio.icon {
-  background-image: url("../images/NutProps/PistachioIcon.png");
+div.pseudo_image.PistachioIcon {
+  background-image: url("../images/Icons/PistachioIcon.png");
+}
+div.pseudo_image.RoasterIcon {
+  background-image: url("../images/Icons/RoasterIcon.png");
+}
+div.pseudo_image.SalterIcon {
+  background-image: url("../images/Icons/SalterIcon.png");
 }
 
 /* Arrows */
@@ -37,37 +43,33 @@ div.pseudo_image.RightArrow {
   background-image: url("../images/Arrows/RightArrow.png");
 }
 
+/* Machines */
+div.pseudo_image.Machine {
+  background-image: url("../images/Machines/Machine.png");
+}
+
 /* Markers */
-div.pseudo_image.ClosedBox {
-  background-image: url("../images/Markers/ClosedBox.png");
-}
-div.pseudo_image.Heart {
-  background-image: url("../images/Markers/Heart.png");
-}
-div.pseudo_image.OpenBox {
-  background-image: url("../images/Markers/OpenBox.png");
-}
-div.pseudo_image.Roaster {
-  background-image: url("../images/Markers/Roaster.png");
-}
-div.pseudo_image.Salter {
-  background-image: url("../images/Markers/Salter.png");
-}
-div.pseudo_image.ScoreCell {
-  background-image: url("../images/Markers/ScoreCell.png");
-}
-div.pseudo_image.Skull {
-  background-image: url("../images/Markers/Skull.png");
-}
 div.pseudo_image.Squirrel {
   background-image: url("../images/Markers/Squirrel.png");
+  filter: drop-shadow(0 0 8px white);
 }
-div.pseudo_image.Star {
-  background-image: url("../images/Markers/Star.png");
+
+/* Misc */
+div.pseudo_image.ClosedBox {
+  background-image: url("../images/Misc/ClosedBox.png");
 }
-div.pseudo_image.StartingPlayer {
-  background-image: url("../images/Markers/StartingPlayer.png");
+div.pseudo_image.OpenBox {
+  background-image: url("../images/Misc/OpenBox.png");
+}
+div.pseudo_image.CrossBar {
+  background-image: url("../images/Misc/CrossBar.png");
 }
 div.pseudo_image.Truck {
-  background-image: url("../images/Markers/Truck.png");
+  background-image: url("../images/Misc/Truck.png");
+}
+div.pseudo_image.Roaster {
+  background-image: url("../images/Misc/Roaster.png");
+}
+div.pseudo_image.Salter {
+  background-image: url("../images/Misc/Salter.png");
 }

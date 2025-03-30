@@ -1,0 +1,216 @@
+<html>
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DynaPuff:wght@400..700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../SharedWebBoardGame/css/main.css" />
+    <link rel="stylesheet" href="../SharedWebBoardGame/css/card.css" />
+    <link rel="stylesheet" href="../css/nuts_card.css" />
+    <link rel="stylesheet" href="../css/agenda.css" />
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+    <style type="text/css"></style>
+  </head>
+
+  <body id="body">
+    <!-- configure Dojo -->
+    <script>
+      // Instead of using data-dojo-config, we're creating a dojoConfig
+      // object *before* we load dojo.js; they're functionally identical,
+      // it's just easier to read this approach with a larger configuration.
+      var dojoConfig = {
+        baseUrl: "..",
+        async: true,
+        // This code registers the correct location of the "demo"
+        // package so we can load Dojo from the CDN whilst still
+        // being able to load local modules
+        packages: [
+          { name: "dojo", location: "../../bower_components/dojo" },
+          { name: "javascript", location: "javascript" },
+        ],
+      };
+    </script>
+    <!-- load Dojo -->
+    <script src="../../../bower_components/dojo/dojo.js"></script>
+
+    <script>
+      require([
+        "sharedJavascript/cards",
+        "sharedJavascript/systemConfigs",
+        "javascript/gameUtils",
+        "javascript/nutTypes",
+      ], function (cards, systemConfigs, gameUtils) {
+        var agendaCardConfigs = [
+          {
+            Almond: 2,
+            Cashew: 1,
+            Peanut: 1,
+            Pistachio: 0,
+          },
+          {
+            Almond: 2,
+            Cashew: 1,
+            Peanut: 0,
+            Pistachio: 1,
+          },
+          {
+            Almond: 2,
+            Cashew: 0,
+            Peanut: 1,
+            Pistachio: 1,
+          },
+          {
+            Almond: 0,
+            Cashew: 2,
+            Peanut: 1,
+            Pistachio: 1,
+          },
+          {
+            Almond: 1,
+            Cashew: 0,
+            Peanut: 1,
+            Pistachio: 2,
+          },
+          {
+            Almond: 1,
+            Cashew: 2,
+            Peanut: 1,
+            Pistachio: 0,
+          },
+          {
+            Almond: 1,
+            Cashew: 2,
+            Peanut: 0,
+            Pistachio: 1,
+          },
+          {
+            Almond: 1,
+            Cashew: 0,
+            Peanut: 2,
+            Pistachio: 1,
+          },
+          {
+            Almond: 0,
+            Cashew: 1,
+            Peanut: 2,
+            Pistachio: 1,
+          },
+          {
+            Almond: 1,
+            Cashew: 1,
+            Peanut: 2,
+            Pistachio: 0,
+          },
+          {
+            Almond: 1,
+            Cashew: 1,
+            Peanut: 0,
+            Pistachio: 2,
+          },
+          {
+            Almond: 0,
+            Cashew: 1,
+            Peanut: 1,
+            Pistachio: 2,
+          },
+          {
+            Almond: 2,
+            Cashew: 2,
+            Peanut: 0,
+            Pistachio: 0,
+          },
+          {
+            Almond: 2,
+            Cashew: 0,
+            Peanut: 2,
+            Pistachio: 0,
+          },
+          {
+            Almond: 2,
+            Cashew: 0,
+            Peanut: 0,
+            Pistachio: 2,
+          },
+          {
+            Almond: 0,
+            Cashew: 2,
+            Peanut: 2,
+            Pistachio: 0,
+          },
+          {
+            Almond: 0,
+            Cashew: 2,
+            Peanut: 0,
+            Pistachio: 2,
+          },
+          {
+            Almond: 0,
+            Cashew: 0,
+            Peanut: 2,
+            Pistachio: 2,
+          },
+        ];
+
+        var numAgendaCards = agendaCardConfigs.length * 2;
+
+        function scoreForDistribution(distribution, count) {
+          // Sum triangle numbers for each nut type.
+          var score = 0;
+          for (var i = 0; i < nutTypes.numNutTypes; i++) {
+            var nutType = nutTypes.nutTypes[i];
+            if (distribution[nutType] && distribution[nutType] > 0) {
+              score +=
+                (distribution[nutType] * (distribution[nutType] + 1)) / 2;
+            }
+          }
+          return score;
+        }
+
+        function addAgendaDesc(parentNode, agendaCardConfig) {
+          // Collect n random nut types.
+          var nutTypeDistribution = agendaCardConfig;
+
+          // Calculate the score for this distribution
+          var score = scoreForDistribution(nutTypeDistribution);
+
+          var wrapper = htmlUtils.addDiv(parentNode, ["wrapper"], "wrapper");
+          for (var i = 0; i < nutTypes.numNutTypes; i++) {
+            var nutType = nutTypes.nutTypes[i];
+            var typeCount = nutTypeDistribution[nutType];
+            for (var j = 0; j < typeCount; j++) {
+              var prop = htmlUtils.addDiv(
+                wrapper,
+                ["requirement"],
+                "requirement"
+              );
+              htmlUtils.addImage(prop, ["nut_type", nutType], "nut_type");
+            }
+          }
+
+          var scoreNode = htmlUtils.addDiv(wrapper, ["score"], "score");
+          scoreNode.innerHTML = score.toString().concat(" points");
+
+          return wrapper;
+        }
+
+        function addAgendaCard(parent, index) {
+          var adjustedIndex = Math.floor(index / 2);
+          var agendaCardConfig = agendaCardConfigs[adjustedIndex];
+          var idElements = ["agenda", index.toString()];
+          var id = idElements.join(".");
+          var classArray = [];
+          classArray.push("agenda");
+          var node = cards.addCardFront(parent, classArray, id);
+
+          addAgendaDesc(node, agendaCardConfig);
+          return node;
+        }
+
+        systemConfigs.setSystemConfigs({});
+        cards.addCards("Agenda", "#d0f0d0", numAgendaCards, addAgendaCard);
+      });
+    </script>
+  </body>
+</html>

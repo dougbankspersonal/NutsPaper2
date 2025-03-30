@@ -55,7 +55,8 @@
         "javascript/gameBoard",
         "javascript/gameUtils",
         "javascript/markers",
-        "javascript/nutTypes",
+        "javascript/markerTypes",
+        "javascript/machineTypes",
         "javascript/rowTypes",
         "javascript/versionDetails",
       ], function (
@@ -66,7 +67,8 @@
         gameBoard,
         gameUtils,
         markers,
-        nutTypes,
+        markerTypes,
+        machineTypes,
         rowTypes,
         versionDetails
       ) {
@@ -88,29 +90,10 @@
         });
 
         // Add nut dispensers
-        var dispenserNutTypes = [
-          nutTypes.nutTypeAlmond,
-          nutTypes.nutTypeCashew,
-          nutTypes.nutTypePeanut,
-          nutTypes.nutTypePistachio,
-        ];
-
-        var dispenserRowIndex = genericUtils.getIndexOfFirstInstanceInArray(
+        gameBoard.addNutDispensersAndBoxRobots(
           orderedRowTypes,
-          rowTypes.RowTypes.Dispenser
+          totalNumColumns
         );
-        var boxRobotRowIndex = genericUtils.getIndexOfFirstInstanceInArray(
-          orderedRowTypes,
-          rowTypes.RowTypes.BoxRobots
-        );
-
-        debugLog.debugLog("Markers", "Doug: boxRowIndex = " + boxRobotRowIndex);
-
-        for (var i = 0; i < totalNumColumns; i++) {
-          var nutType = dispenserNutTypes[i % dispenserNutTypes.length];
-          gameBoard.addMachineToBoard(dispenserRowIndex, i, nutType);
-          gameBoard.addBoxRobotNotMatching(boxRobotRowIndex, i, nutType);
-        }
 
         // Salters and Roasters
         // Add Salters.
@@ -121,12 +104,12 @@
         gameBoard.addMachineToBoard(
           salterRowIndex,
           1,
-          markers.markerTypes.Salter
+          machineTypes.SalterMachine
         );
         gameBoard.addMachineToBoard(
           salterRowIndex,
           6,
-          markers.markerTypes.Salter
+          machineTypes.SalterMachine
         );
 
         // Add Roasters.
@@ -137,12 +120,12 @@
         gameBoard.addMachineToBoard(
           roasterRowIndex,
           2,
-          markers.markerTypes.Roaster
+          machineTypes.RoasterMachine
         );
         gameBoard.addMachineToBoard(
           roasterRowIndex,
           5,
-          markers.markerTypes.Roaster
+          machineTypes.RoasterMachine
         );
 
         // Add Squirrel.
@@ -150,11 +133,7 @@
           orderedRowTypes,
           rowTypes.RowTypes.Squirrel
         );
-        gameBoard.addMarkerToBoard(
-          squirrelRowIndex,
-          4,
-          markers.markerTypes.Squirrel
-        );
+        gameBoard.addMarkerToBoard(squirrelRowIndex, 4, markerTypes.Squirrel);
 
         // Add conveyor tiles.
         gameBoard.placeConveyorTileOnBoard(2, 6);

@@ -1,10 +1,11 @@
 define([
-  "javascript/measurements",
+  "dojo/dom-style",
+  "sharedJavascript/debugLog",
   "sharedJavascript/genericUtils",
   "sharedJavascript/htmlUtils",
-  "dojo/dom-style",
+  "javascript/measurements",
   "dojo/domReady!",
-], function (measurements, genericUtils, htmlUtils, domStyle) {
+], function (domStyle, debugLog, genericUtils, htmlUtils, measurements) {
   function addBeltSegment(parentNode, xOffset, yOffset, opt_options) {
     var options = opt_options ? opt_options : {};
     var beltSegment = htmlUtils.addDiv(
@@ -75,6 +76,9 @@ define([
   function addStraightBelt(parentNode, opt_beltConfigs) {
     var beltConfigs = opt_beltConfigs ? opt_beltConfigs : {};
     sanityCheckBeltConfigs(beltConfigs);
+
+    debugLog.debugLog("Belts", "addStraightBelt: beltConfigs = ", beltConfigs);
+
     var hideBeltTop = beltConfigs.hideBeltTop ? true : false;
     var hideBeltBottom = beltConfigs.hideBeltBottom ? true : false;
     var xOffset = beltConfigs.xOffset

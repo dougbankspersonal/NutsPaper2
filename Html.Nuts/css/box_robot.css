@@ -1,9 +1,8 @@
 .box_robot {
   position: relative;
-  background-image: url("../images/Factory/CrossBar.png");
-  background-size: cover; /* or "contain" depending on the effect you want */
-  background-position: center;
-  background-repeat: no-repeat;
+}
+
+.box_robot .CrossBar {
   background-size: 50% 50%;
 }
 

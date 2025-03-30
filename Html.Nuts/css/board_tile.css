@@ -1,5 +1,11 @@
 .demo_board .board_tile {
   z-index: 20;
   box-shadow: 8px 8px 4px rgba(0, 0, 0, 0.3);
-  background-color: #ffddaa;
+}
+
+.board_tile {
+  background-image: url("../images/Factory/FloorImage.png");
+  background-position: center center; /* Center the image horizontally and vertically */
+  background-size: auto; /* Prevent scaling */
+  background-repeat: no-repeat; /* Ensure the image doesn't repeat */
 }

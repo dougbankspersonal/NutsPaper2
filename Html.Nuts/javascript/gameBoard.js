@@ -4,7 +4,6 @@ define([
   "dojo/dom-style",
   "dojo/dom-class",
   "sharedJavascript/debugLog",
-  "sharedJavascript/genericMeasurements",
   "sharedJavascript/genericUtils",
   "sharedJavascript/htmlUtils",
   "sharedJavascript/systemConfigs",
@@ -14,8 +13,10 @@ define([
   "javascript/conveyorTiles",
   "javascript/gameUtils",
   "javascript/machines",
+  "javascript/machineTypes",
   "javascript/markers",
   "javascript/measurements",
+  "javascript/nutTypes",
   "javascript/rowTypes",
   "dojo/domReady!",
 ], function (
@@ -24,7 +25,6 @@ define([
   domStyle,
   domClass,
   debugLog,
-  genericMeasurements,
   genericUtils,
   htmlUtils,
   systemConfigs,
@@ -34,8 +34,10 @@ define([
   conveyorTiles,
   gameUtils,
   machines,
+  machineTypes,
   markers,
   measurements,
+  nutTypes,
   rowTypes
 ) {
   var rowZUIndex = 20;
@@ -45,32 +47,6 @@ define([
   // Then the tile is stored in conveyorTileIdsByRowThenColumn[i][j]
   var conveyorTileIdsByRowThenColumn = {};
   var addedConveyorTileIndex = 0;
-
-  // Add a sidebar cell to the row with labels & whatnot.
-  function addSidebarCellToRow(rowNode, rowIndex, rowType) {
-    var sidebar = htmlUtils.addDiv(rowNode, ["sidebar"], "sidebar");
-    domStyle.set(sidebar, {
-      width: `${measurements.sidebarWidth}px`,
-    });
-
-    var sidebarInfo = rowTypes.getSidebarInfo(rowType);
-
-    var wrapper = htmlUtils.addDiv(sidebar, ["wrapper"], "wrapper");
-    htmlUtils.addDiv(wrapper, ["title"], "title", sidebarInfo.title);
-    if (sidebarInfo.subtitle) {
-      htmlUtils.addDiv(wrapper, ["subtitle"], "subtitle", sidebarInfo.subtitle);
-    }
-    if (sidebarInfo.instructions) {
-      htmlUtils.addDiv(
-        wrapper,
-        ["instructions"],
-        "instructions",
-        sidebarInfo.instructions
-      );
-    }
-
-    return sidebar;
-  }
 
   function addContent(parentNode) {
     var content = htmlUtils.addDiv(parentNode, ["content"], "content");
@@ -131,9 +107,12 @@ define([
     var finalZIndex = rowZUIndex;
     rowZUIndex--;
 
+    // Adjust background position for new row.
+    var backgroundPositionY = rowIndex * measurements.standardRowHeight;
     domStyle.set(row, {
       height: `${finalHeight}px`,
       "z-index": `${finalZIndex}`,
+      "background-position": `center -${backgroundPositionY}px`,
     });
 
     if (darkBackground) {
@@ -957,6 +936,26 @@ define([
     return card;
   }
 
+  function addNutDispensersAndBoxRobots(orderedRowTypes, totalNumColumns) {
+    // Add nut dispensers
+    var dispenserRowIndex = genericUtils.getIndexOfFirstInstanceInArray(
+      orderedRowTypes,
+      rowTypes.RowTypes.Dispenser
+    );
+    var boxRobotRowIndex = genericUtils.getIndexOfFirstInstanceInArray(
+      orderedRowTypes,
+      rowTypes.RowTypes.BoxRobots
+    );
+
+    var numNutMachineTypes = machineTypes.orderedNutMachineTypes.length;
+    for (var i = 0; i < totalNumColumns; i++) {
+      var machineType =
+        machineTypes.orderedNutMachineTypes[i % numNutMachineTypes];
+      addMachineToBoard(dispenserRowIndex, i, machineType);
+      addBoxRobotNotMatching(boxRobotRowIndex, i, machineType);
+    }
+  }
+
   // This returned object becomes the defined value of this module
   return {
     // Can be used to make a board in sections or a complete board.
@@ -972,5 +971,6 @@ define([
     getSlotAndHighlightContents: getSlotAndHighlightContents,
     addToken: addToken,
     addBoxRobotNotMatching: addBoxRobotNotMatching,
+    addNutDispensersAndBoxRobots: addNutDispensersAndBoxRobots,
   };
 });

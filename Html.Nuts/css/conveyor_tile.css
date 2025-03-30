@@ -7,7 +7,6 @@
   margin-top: 1px;
   position: relative;
   overflow: hidden;
-  background-image: url("../images/Factory/FloorBrick.png");
 }
 
 .demo_board .conveyor_tile {
