@@ -144,7 +144,6 @@ define([
     var element = htmlUtils.addDiv(parentNode, extendedClassArray, elementId);
 
     applyStandardElementStyling(element);
-    htmlUtils.addStandardOutline(element);
 
     return element;
   }

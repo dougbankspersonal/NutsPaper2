@@ -19,6 +19,7 @@
 
 .box_robot .quadrant .openBox {
   transform: rotate(-7deg);
+  filter: drop-shadow(0 0 8px black);
 }
 
 .box_robot #quadrant_0 {

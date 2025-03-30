@@ -4,18 +4,9 @@ define([
   "sharedJavascript/genericUtils",
   "sharedJavascript/htmlUtils",
   "javascript/beltUtils",
-  "javascript/boardTiles",
   "javascript/measurements",
   "dojo/domReady!",
-], function (
-  dom,
-  domStyle,
-  genericUtils,
-  htmlUtils,
-  beltUtils,
-  boardTiles,
-  measurements
-) {
+], function (dom, domStyle, genericUtils, htmlUtils, beltUtils, measurements) {
   var markersPerPage = 42;
 
   function addMarker(parent, markerType, opt_classArray, opt_additionalConfig) {
@@ -39,7 +30,6 @@ define([
       classArray,
       "marker.".concat(markerType)
     );
-    boardTiles.twiddleBoardTile(markerNode);
 
     var height = additionalConfig.height
       ? additionalConfig.height

@@ -4,7 +4,6 @@ define([
   "sharedJavascript/debugLog",
   "sharedJavascript/htmlUtils",
   "javascript/beltUtils",
-  "javascript/boardTiles",
   "javascript/measurements",
   "javascript/machineTypes",
   "dojo/domReady!",
@@ -14,7 +13,6 @@ define([
   debugLog,
   htmlUtils,
   beltUtils,
-  boardTiles,
   measurements,
   machineTypes
 ) {
@@ -29,7 +27,6 @@ define([
       width: measurements.elementWidth + "px",
       height: measurements.elementWidth + "px",
     });
-    boardTiles.twiddleBoardTile(machineWrapperNode);
 
     var machineImage = htmlUtils.addImage(
       machineWrapperNode,

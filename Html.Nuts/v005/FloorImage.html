@@ -14,6 +14,7 @@
     />
     <link rel="stylesheet" href="../SharedWebBoardGame/css/main.css" />
     <link rel="stylesheet" href="../css/floor_image.css" />
+    <link rel="stylesheet" href="../css/nuts_image.css" />
     <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
     <style type="text/css"></style>
   </head>
@@ -47,8 +48,60 @@
       require([
         "dojo/dom",
         "dojo/dom-style",
+        "sharedJavascript/genericUtils",
         "sharedJavascript/htmlUtils",
-      ], function (dom, domStyle, htmlUtils) {
+        "javascript/nutTypes",
+      ], function (dom, domStyle, genericUtils, htmlUtils, nutTypes) {
+        var seed = 459847;
+        var rf = genericUtils.createSeededGetZeroToOneRandomFunction(seed);
+
+        var debrisImageClasses = [
+          nutTypes.Almond,
+          nutTypes.Cashew,
+          nutTypes.Peanut,
+          nutTypes.Pistachio,
+          "Gear",
+          "Spring",
+        ];
+
+        var nonNut = {
+          Gear: true,
+          Spring: true,
+        };
+
+        function maybeAddDebris(parent) {
+          var numDebrisPieces = genericUtils.getRandomIntInRange(1, 4, rf);
+
+          for (var i = 0; i < numDebrisPieces; i++) {
+            var imageClass = genericUtils.getRandomArrayElement(
+              debrisImageClasses,
+              rf
+            );
+
+            var classes = ["debris", imageClass];
+
+            if (nonNut[imageClass]) {
+              classes.push("non_nut");
+            }
+
+            var debrisImage = htmlUtils.addImage(
+              parent,
+              classes,
+              "floorDebris" + i
+            );
+
+            var top = genericUtils.getRandomIntInRange(0, 100, rf);
+            var left = genericUtils.getRandomIntInRange(0, 100, rf);
+            var rotationInDeg = genericUtils.getRandomIntInRange(0, 360, rf);
+
+            domStyle.set(debrisImage, {
+              top: top + "%",
+              left: left + "%",
+              transform: "rotate(" + rotationInDeg + "deg)",
+            });
+          }
+        }
+
         var bodyNode = dom.byId("body");
         var wholeFloor = htmlUtils.addDiv(
           bodyNode,
@@ -66,12 +119,8 @@
           var row = htmlUtils.addDiv(wholeFloor, ["floor_row"], "floorRow" + i);
           for (j = 0; j < numCols; j++) {
             var cell = htmlUtils.addDiv(row, ["floor_cell"], "floorCell" + j);
-            var image = htmlUtils.addImage(cell, ["floor_image"], "floorImage");
 
-            var rotationDegrees = Math.floor(Math.random() * 4) * 90;
-            domStyle.set(cell, {
-              transform: "rotate(" + rotationDegrees + "deg)",
-            });
+            maybeAddDebris(cell);
           }
         }
       });

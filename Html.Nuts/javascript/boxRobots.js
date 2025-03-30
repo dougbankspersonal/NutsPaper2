@@ -4,7 +4,6 @@ define([
   "sharedJavascript/debugLog",
   "sharedJavascript/genericUtils",
   "sharedJavascript/htmlUtils",
-  "javascript/boardTiles",
   "javascript/iconTypes",
   "javascript/miscTypes",
   "javascript/nutTypes",
@@ -15,7 +14,6 @@ define([
   debugLog,
   genericUtils,
   htmlUtils,
-  boardTiles,
   iconTypes,
   miscTypes
 ) {
@@ -100,8 +98,6 @@ define([
 
     var cardId = "boxRobot_" + index;
     var front = cards.addCardFront(parent, classArray, cardId);
-
-    boardTiles.twiddleBoardTile(front);
 
     var crossBarNode = htmlUtils.addImage(
       front,

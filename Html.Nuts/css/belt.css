@@ -10,7 +10,7 @@
 .beltSegment {
   position: absolute;
   background-image: url("../images/Factory/BeltSegment.png");
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  filter: drop-shadow(0 0 8px black);
   background-size: cover; /* or "contain" depending on the effect you want */
   background-position: center;
   background-repeat: no-repeat;

@@ -5,7 +5,6 @@ define([
   "sharedJavascript/genericUtils",
   "sharedJavascript/htmlUtils",
   "javascript/beltUtils",
-  "javascript/boardTiles",
   "javascript/measurements",
   "dojo/domReady!",
 ], function (
@@ -15,7 +14,6 @@ define([
   genericUtils,
   htmlUtils,
   beltUtils,
-  boardTiles,
   measurements
 ) {
   function getCurvePoints() {
@@ -118,7 +116,6 @@ define([
       "board_tile",
     ]);
     var conveyorTile = htmlUtils.addDiv(parentNode, classArray, conveyorTileId);
-    boardTiles.twiddleBoardTile(conveyorTile);
     domStyle.set(conveyorTile, {
       width: `${measurements.conveyorTileWidth}px`,
       height: `${measurements.conveyorTileHeight}px`,

@@ -12,6 +12,14 @@ div.pseudo_image.Pistachio {
   background-image: url("../images/NutProps/Pistachio.png");
 }
 
+/* Floor trash */
+div.pseudo_image.Gear {
+  background-image: url("../images/Factory/Gear.png");
+}
+div.pseudo_image.Spring {
+  background-image: url("../images/Factory/Spring.png");
+}
+
 /* Icons */
 div.pseudo_image.AlmondIcon {
   background-image: url("../images/Icons/AlmondIcon.png");

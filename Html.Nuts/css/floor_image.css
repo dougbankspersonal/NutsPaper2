@@ -1,6 +1,7 @@
 div.whole_floor {
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 div.whole_floor div.floor_row {
@@ -13,13 +14,24 @@ div.whole_floor div.floor_row div.floor_cell {
   height: 500px;
   width: 500px;
   background-image: url("../images/Factory/FloorImage.png");
-  margin: -2px;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 
-div.whole_floor div.floor_row div.floor_cell div.floor_image {
-  height: 512px;
-  width: 512px;
+.debris {
+  position: absolute;
+  filter: brightness(50%) drop-shadow(0 0 8px black);
+  z-index: 2;
+  height: 40px;
+  width: 40px;
+  background-size: cover; /* or "contain" depending on the effect you want */
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.debris.non_nut {
+  height: 100px;
+  width: 100px;
 }
