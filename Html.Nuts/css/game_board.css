@@ -15,7 +15,6 @@
 }
 
 .row .sidebar {
-  font-family: "DynaPuff", serif;
   text-align: center;
   height: 100%;
   position: relative;
@@ -113,13 +112,11 @@
 .element .entityTitle {
   font-size: 24px;
   font-weight: bold;
-  font-family: "DynaPuff", serif;
 }
 
 .element .entityIndex {
   font-size: 36px;
   font-weight: bold;
-  font-family: "DynaPuff", serif;
 }
 
 .row .content .slot .element {
@@ -136,7 +133,6 @@
 .row .content .slot .number {
   break-inside: avoid;
   font-size: 64px;
-  font-family: "DynaPuff", serif;
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -173,7 +169,6 @@
 .elementsContainer .element .name {
   top: 30%;
   left: 10%;
-  font-family: "DynaPuff", serif;
   z-index: 3;
   background: radial-gradient(
     ellipse at center,

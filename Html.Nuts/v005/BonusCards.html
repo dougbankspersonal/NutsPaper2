@@ -6,16 +6,11 @@
       href="https://fonts.googleapis.com/css2?family=DynaPuff:wght@400..700&display=swap"
       rel="stylesheet"
     />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DynaPuff:wght@400..700&display=swap"
-      rel="stylesheet"
-    />
     <link rel="stylesheet" href="../SharedWebBoardGame/css/main.css" />
     <link rel="stylesheet" href="../SharedWebBoardGame/css/card.css" />
-    <link rel="stylesheet" href="../css/nuts_card.css" />
     <link rel="stylesheet" href="../css/bonus_card.css" />
+    <link rel="stylesheet" href="../css/nuts_card.css" />
+    <link rel="stylesheet" href="../css/nuts_main.css" />
     <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
     <style type="text/css"></style>
   </head>
@@ -52,11 +47,12 @@
         "sharedJavascript/systemConfigs",
         "javascript/gameUtils",
       ], function (cards, debugLog, systemConfigs, gameUtils) {
-        // systemConfigs.setSystemConfigs(systemConfigs.addTTSCardSystemConfigs());
+        /*
+        systemConfigs.setSystemConfigs(systemConfigs.addTTSCardSystemConfigs());
+*/
         systemConfigs.setSystemConfigs(
           systemConfigs.addCardSizingSystemConfigs()
         );
-
         var bonusCardConfigs = [
           {
             rulesText: `

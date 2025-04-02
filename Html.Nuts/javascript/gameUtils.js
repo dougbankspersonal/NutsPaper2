@@ -83,7 +83,6 @@ define([
       pageless: true,
       extraClassesForPageOfItemsContents: ["demo_board"],
       explicitPageWidth: measurements.totalBoardWidth,
-      pageOfItemsContentsPaddingPx: measurements.totalBoardPadding,
     };
     return c;
   }

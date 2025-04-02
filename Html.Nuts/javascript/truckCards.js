@@ -27,16 +27,22 @@ define([
   var requirementsWidth = 110;
   var requirementsTop = 31;
   var requirementsLeft = 145;
+  var requirementPuffMultiple = 1.0;
 
-  function requirementSizeForNumNuts(numNuts) {
-    // Make a square, preferring to be wide.
-    var nutsPerRow = Math.ceil(Math.sqrt(numNuts));
-    var width = Math.floor(requirementsWidth / nutsPerRow);
-    var nutsPerColumn = Math.ceil(numNuts / nutsPerRow);
-    var height = Math.floor(requirementsHeight / nutsPerColumn);
+  function requirementSizeForNutCount(totalNutCount) {
+    var layoutByRow = layoutByRowByNumNuts[totalNutCount];
+    var numRows = layoutByRow.length;
+    var maxNumColumns = 0;
+    for (var i = 0; i < numRows; i++) {
+      if (layoutByRow[i] > maxNumColumns) {
+        maxNumColumns = layoutByRow[i];
+      }
+    }
+
     return {
-      width: width,
-      height: height,
+      width:
+        requirementPuffMultiple * Math.ceil(requirementsWidth / maxNumColumns),
+      height: requirementPuffMultiple * Math.ceil(requirementsHeight / numRows),
     };
   }
 
@@ -151,6 +157,14 @@ define([
   ];
   var numTruckCards = truckCardConfigs.length;
   var boxTilt = 30;
+
+  var layoutByRowByNumNuts = {
+    // We only have 3, 4, 5, and 7 right now.
+    3: [2, 1],
+    4: [2, 2],
+    5: [3, 2],
+    7: [2, 3, 2],
+  };
 
   //-------------------------------------------------
   //
@@ -302,18 +316,49 @@ define([
     return score;
   }
 
-  function addRequirement(parentNode, size) {
-    var requirement = htmlUtils.addDiv(
+  function getNthIconType(distribution, n) {
+    var leftover = n;
+    for (const iconType in distribution) {
+      var countForNut = distribution[iconType];
+      if (leftover < countForNut) {
+        return iconType;
+      }
+      leftover -= countForNut;
+    }
+    // never get here.
+    console.assert(
+      false,
+      "getNthIconType: n = " + n + " not found in distribution"
+    );
+    return null;
+  }
+
+  function addRequirement(parentNode, iconType, requirementSize) {
+    var requirementNode = htmlUtils.addDiv(
       parentNode,
       ["requirement"],
       "requirement"
     );
 
-    domStyle.set(requirement, {
-      width: size.width + "px",
-      height: size.height + "px",
+    domStyle.set(requirementNode, {
+      width: requirementSize.width + "px",
+      height: requirementSize.height + "px",
     });
-    return requirement;
+
+    var closedBoxNode = htmlUtils.addImage(
+      requirementNode,
+      [miscTypes.ClosedBox],
+      "closedBox"
+    );
+
+    htmlUtils.addQuasiRandomTilt(closedBoxNode, -boxTilt, boxTilt);
+    htmlUtils.addImage(
+      closedBoxNode,
+      ["nut_type_icon", iconType, "icon"],
+      "nut_type"
+    );
+
+    return requirementNode;
   }
 
   function addTruckDesc(parentNode, truckCardConfig) {
@@ -350,35 +395,34 @@ define([
     });
 
     var totalNutCount = getTotalNutCount(distribution);
-    var size = requirementSizeForNumNuts(totalNutCount);
+
+    // Try to put the nuts in a grid pattern.
+    var layoutByRow = layoutByRowByNumNuts[totalNutCount];
+    console.assert(
+      layoutByRow,
+      "layoutByRow is null for totalNutCount = " + totalNutCount
+    );
+    var numRows = layoutByRow.length;
+
+    var requirementSize = requirementSizeForNutCount(totalNutCount);
 
     var nutsAdded = 0;
-    forEachNutIconType(function (iconType) {
-      var typeCount = distribution[iconType];
-      for (var j = 0; j < typeCount; j++) {
-        // Dumb layout thing I am just hacking.
-        // If there's 7, do 2/3/2. not 3/3/1.
-        if (totalNutCount == 7 && nutsAdded == 2) {
-          // Add a mock empty requirement.
-          addRequirement(requirementsNode, size);
-        }
-
-        var requirement = addRequirement(requirementsNode, size);
-        var closedBoxNode = htmlUtils.addImage(
-          requirement,
-          [miscTypes.ClosedBox],
-          "closedBox"
-        );
-        htmlUtils.addQuasiRandomTilt(closedBoxNode, -boxTilt, boxTilt);
-
-        var nutTypeIconNode = htmlUtils.addImage(
-          closedBoxNode,
-          ["nut_type_icon", iconType, "icon"],
-          "nut_type"
-        );
+    for (var i = 0; i < numRows; i++) {
+      var requirementsRowNode = htmlUtils.addDiv(
+        requirementsNode,
+        ["requirements_row"],
+        "requirementsRow" + i
+      );
+      domStyle.set(requirementsRowNode, {
+        height: 100 / numRows + "%",
+      });
+      var numNutsInRow = layoutByRow[i];
+      for (var j = 0; j < numNutsInRow; j++) {
+        var iconType = getNthIconType(distribution, nutsAdded);
+        addRequirement(requirementsRowNode, iconType, requirementSize);
         nutsAdded++;
       }
-    });
+    }
 
     var scoreNode = htmlUtils.addDiv(wrapper, ["score"], "score");
     scoreNode.innerHTML = score.toString().concat(" points");
