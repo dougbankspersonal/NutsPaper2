@@ -1,0 +1,21 @@
+.belt {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 1;
+}
+
+.beltSegment {
+  position: absolute;
+  background-image: url("../images/Factory/BeltSegment.png");
+  filter: drop-shadow(0 0 8px black);
+  background-size: cover; /* or "contain" depending on the effect you want */
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.belt .beltSegment {
+  transform: translate(-50%, -50%);
+}

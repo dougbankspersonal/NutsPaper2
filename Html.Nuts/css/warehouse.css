@@ -1,35 +1,37 @@
 .grid {
-    position: relative;
-    top: 50%;
-    transform: translateY(-50%);
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .row {
-    outline: 2px solid black;
-    display: inline-flex;
+  outline: 2px solid black;
+  display: inline-flex;
 }
 
 .row .cell {
-    border: 2px solid black;
-    box-sizing: border-box;
-    position: relative;
+  border: 2px solid black;
+  box-sizing: border-box;
+  position: relative;
 }
 
 .cell .nut_type {
-    position: relative;
-    top: 50%;
-    transform: translateY(-50%);
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .cell .star {
-    position: relative;
-    top: 50%;
-    transform: translateY(-50%);
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .cell .salt {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 4;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 4;
 }
+
+/*# sourceMappingURL=warehouse.css.map */

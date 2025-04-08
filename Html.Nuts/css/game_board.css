@@ -170,11 +170,7 @@
   top: 30%;
   left: 10%;
   z-index: 3;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(255, 255, 255, 1) 20%,
-    rgba(255, 255, 255, 0) 40%
-  );
+  background: radial-gradient(ellipse at center, rgb(255, 255, 255) 20%, rgba(255, 255, 255, 0) 40%);
   font-size: 24px;
   font-weight: bold;
   display: flex;
@@ -183,3 +179,5 @@
   margin-top: 50px;
   padding: 50px;
 }
+
+/*# sourceMappingURL=game_board.css.map */

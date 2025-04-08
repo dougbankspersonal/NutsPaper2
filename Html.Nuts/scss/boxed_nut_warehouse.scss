@@ -1,0 +1,30 @@
+.outer_frame {
+  padding: 20px;
+  width: fit-content;
+  height: fit-content;
+  background-color: rgb(200, 170, 0);
+}
+
+.bordered_square {
+  margin: "10px";
+  background-color: white;
+}
+
+.bordered_square .title_text {
+  padding: 10px;
+  font-size: 40px;
+  font-weight: bold;
+}
+
+.bordered_square .warehouse_text {
+  padding: 10px;
+  font-size: 24px;
+  color: #444444;
+}
+
+.bordered_square .warehouse_subtext {
+  padding: 10px;
+  font-size: 18px;
+  color: #666666;
+  font-style: italic;
+}

@@ -1,0 +1,43 @@
+.main_div {
+  border: 4px solid black;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(to right, #cbb292ff, #edd8beff, #cbb292ff);
+  padding: 10px;
+
+  .scoring_row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    break-inside: avoid;
+    box-sizing: border-box;
+    width: fit-content;
+    overflow: hidden;
+    font-weight: bold;
+
+    .scoring_cell {
+      flex-grow: 0;
+      flex-shrink: 0;
+      position: relative;
+
+      .nut_image {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+
+  .scoring_row.title_row {
+    font-size: 36px;
+    font-weight: bold;
+
+    .title_text {
+      text-align: center;
+      font-size: 40px;
+    }
+  }
+}

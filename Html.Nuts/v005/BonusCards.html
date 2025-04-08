@@ -47,12 +47,18 @@
         "sharedJavascript/systemConfigs",
         "javascript/gameUtils",
       ], function (cards, debugLog, systemConfigs, gameUtils) {
-        /*
-        systemConfigs.setSystemConfigs(systemConfigs.addTTSCardSystemConfigs());
-*/
-        systemConfigs.setSystemConfigs(
-          systemConfigs.addCardSizingSystemConfigs()
-        );
+        var useTSS = true;
+
+        if (useTSS) {
+          systemConfigs.setSystemConfigs(
+            systemConfigs.addTTSCardSystemConfigs()
+          );
+        } else {
+          systemConfigs.setSystemConfigs(
+            systemConfigs.addCardSizingSystemConfigs()
+          );
+        }
+
         var bonusCardConfigs = [
           {
             rulesText: `

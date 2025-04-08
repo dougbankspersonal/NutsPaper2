@@ -1,10 +1,11 @@
 define([
-  "javascript/gameUtils",
+  "dojo/dom-style",
   "sharedJavascript/debugLog",
   "sharedJavascript/htmlUtils",
-  "dojo/dom-style",
+  "javascript/gameUtils",
+  "javascript/nutTypes",
   "dojo/domReady!",
-], function (gameUtils, debugLog, htmlUtils, domStyle) {
+], function (domStyle, debugLog, htmlUtils, gameUtils, nutTypes) {
   var numRows = 10;
   var numColumns = 10;
   var titleRowHeight = 80;
@@ -25,14 +26,16 @@ define([
     domStyle.set(mainDiv, {
       height: totalHeight + "px",
       width: totalWidth + "px",
-      border: "4px solid black",
-      padding: "10px",
     });
     return mainDiv;
   }
 
   function addTitle(parentNode) {
-    var titleRow = gameUtils.addRow(parentNode, ["title_row"], 0);
+    var titleRow = gameUtils.addRow(
+      parentNode,
+      ["scoring_row", "title_row"],
+      0
+    );
     domStyle.set(titleRow, {
       width: "100%",
       height: titleRowHeight + "px",
@@ -52,34 +55,64 @@ define([
   }
 
   function addNthRow(parentNode, rowIndex) {
-    var row = gameUtils.addRow(parentNode, ["scoring_row"], rowIndex + 1);
-    domStyle.set(row, {
+    var nthRowNode = gameUtils.addRow(
+      parentNode,
+      ["scoring_row"],
+      "scoringRow" + rowIndex
+    );
+    debugLog.debugLog("ScoringTrack", "Doug: addNthRow rowIndex = " + rowIndex);
+    debugLog.debugLog(
+      "ScoringTrack",
+      "Doug: addNthRow nthRowNode = " + nthRowNode
+    );
+
+    domStyle.set(nthRowNode, {
       width: "100%",
       height: normalRowHeight + "px",
       "margin-top": normalRowMargin + "px",
       "justify-content": "center",
     });
     for (j = 0; j < numColumns; j++) {
-      var div = htmlUtils.addDiv(
-        row,
+      var cellIndex = rowIndex * 10 + j;
+
+      var scoringCellNode = htmlUtils.addDiv(
+        nthRowNode,
         ["scoring_cell"],
-        "scoringCell",
-        `${rowIndex * 10 + j}`
+        "scoringCell" + cellIndex,
+        `${cellIndex}`
       );
-      domStyle.set(div, {
+      domStyle.set(scoringCellNode, {
         width: cellInnerWidth + "px",
         height: cellInnerHeight + "px",
         "font-size": "20px",
         "text-align": "center",
         "line-height": cellInnerHeight + "px",
-        border: cellBorder + "px solid black",
         "margin-left": cellSideMargin + "px",
         "margin-right": cellSideMargin + "px",
       });
+      var nutTypeIndex = rowIndex % nutTypes.orderedNutTypes.length;
+      var nutType = nutTypes.orderedNutTypes[nutTypeIndex];
+      var image = htmlUtils.addImage(
+        scoringCellNode,
+        ["nut_image", nutType],
+        "nutImage" + cellIndex
+      );
     }
+
+    debugLog.debugLog(
+      "ScoringTrack",
+      "Doug: addNthRow returnung nthRowNode = " + nthRowNode
+    );
+    return nthRowNode;
   }
 
   function makeScoringTrack(dom) {
+    debugLog.debugLog("ScoringTrack", "Doug: makeScoringTrack");
+    console.log("Doug: makeScoringTrack not debugLog");
+    console.log(
+      "Doug: debugLog.debugFlags = " + JSON.stringify(debugLog.debugFlags)
+    );
+
     // Make the body node.
     var bodyNode = dom.byId("body");
 
@@ -90,7 +123,9 @@ define([
 
     addTitle(mainDiv);
 
+    debugLog.debugLog("ScoringTrack", "numRows = " + numRows);
     for (i = 0; i < numRows; i++) {
+      debugLog.debugLog("ScoringTrack", "Doug: in loop i = " + i);
       addNthRow(mainDiv, i);
     }
   }

@@ -1,0 +1,75 @@
+.card.front.truck_card {
+  padding: 0px;
+  position: relative;
+  display: inline-block;
+  min-height: 0px;
+  min-width: 0px;
+}
+
+.card.front.truck_card .wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.card.front.truck_card .wrapper .truck {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 90%;
+  width: 90%;
+}
+
+.card.front.truck_card .requirements {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.card.front.truck_card .requirements .requirements_row {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.card.front.truck_card .requirements .requirements_row .requirement {
+  flex-shrink: 0;
+}
+
+.card.back.truck_card .inset .title {
+  transform: rotate(90deg);
+}
+
+.truck .requirement .closedBox {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  filter: drop-shadow(0 0 8px black);
+}
+
+.truck .requirement .closedBox .icon {
+  width: 55%;
+  height: 55%;
+  top: 25%;
+  left: 20%;
+  position: absolute;
+}
+
+.card.front.truck_card .wrapper .score {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-style: italic;
+  font-weight: bold;
+  font-size: 24px;
+}
