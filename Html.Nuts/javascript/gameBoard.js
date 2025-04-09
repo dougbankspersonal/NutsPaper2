@@ -198,6 +198,19 @@ define([
     maxColumnsPerPage,
     numColumnsAlreadyHandled
   ) {
+    debugLog.debugLog(
+      "GameBoard",
+      "Doug: getNumColumnsThisStrip totalColumnCount = " + totalColumnCount
+    );
+    debugLog.debugLog(
+      "GameBoard",
+      "Doug: getNumColumnsThisStrip maxColumnsPerPage = " + maxColumnsPerPage
+    );
+    debugLog.debugLog(
+      "GameBoard",
+      "Doug: getNumColumnsThisStrip numColumnsAlreadyHandled = " +
+        numColumnsAlreadyHandled
+    );
     var numColumnsLeft = totalColumnCount - numColumnsAlreadyHandled;
     var retVal = Math.min(numColumnsLeft, maxColumnsPerPage);
     debugLog.debugLog(
@@ -388,7 +401,7 @@ define([
     numColumnsAlreadyHandled
   ) {
     var allPageNodes = [];
-    var numColumnsThisStrip = getNumColumnsThisPage(
+    var numColumnsThisPage = getNumColumnsThisPage(
       totalNumColumns,
       maxColumnsPerPage,
       numColumnsAlreadyHandled
@@ -414,7 +427,7 @@ define([
             currentPageNode,
             rowIndex,
             rowType,
-            numColumnsThisStrip,
+            numColumnsThisPage,
             numColumnsAlreadyHandled,
             {
               classArray: ["numbers"],
@@ -426,7 +439,7 @@ define([
             currentPageNode,
             rowIndex,
             rowType,
-            numColumnsThisStrip,
+            numColumnsThisPage,
             numColumnsAlreadyHandled,
             {
               classArray: ["nutDispensers"],
@@ -444,7 +457,7 @@ define([
             currentPageNode,
             rowIndex,
             rowType,
-            numColumnsThisStrip,
+            numColumnsThisPage,
             numColumnsAlreadyHandled,
             {
               classArray: ["conveyors"],
@@ -463,7 +476,7 @@ define([
             currentPageNode,
             rowIndex,
             rowType,
-            numColumnsThisStrip,
+            numColumnsThisPage,
             numColumnsAlreadyHandled,
             {
               elementConfigs: {
@@ -480,7 +493,7 @@ define([
             currentPageNode,
             rowIndex,
             rowType,
-            numColumnsThisStrip,
+            numColumnsThisPage,
             numColumnsAlreadyHandled,
             {
               classArray: ["boxes"],
@@ -502,99 +515,147 @@ define([
     debugLog.debugLog(
       "GameBoard",
       "Doug: addPagesWithNextNColumns: at the end numColumnsThisPage = " +
-        numColumnsThisStrip
+        numColumnsThisPage
     );
     return {
       allPageNodes: allPageNodes,
-      numColumnsThisStrip: numColumnsThisStrip,
+      numColumnsThisStrip: numColumnsThisPage,
     };
   }
 
-  function addGameBoard(configs) {
+  function addEntireGameBoardInOneDiv(bodyNode, orderedRowTypes, numColumns) {
+    debugLog.debugLog("GameBoard", "Doug: addEntireGameBoardInOneDiv");
     var sc = systemConfigs.getSystemConfigs();
-    // How many rows in this version of the game?
-    var orderedRowTypes = configs.orderedRowTypes;
-    // How many factory columns in this version of the game?
-    var totalNumColumns = configs.totalNumColumns;
 
-    // How many factory rows and columns per page?
-    var maxRowsPerPage;
-    if (configs.maxRowsPerPage) {
-      maxRowsPerPage = configs.maxRowsPerPage;
-    } else {
-      maxRowsPerPage = orderedRowTypes.length;
+    var pageOfItemsContentsNode;
+    var retVal = addPagesWithNextNColumns(
+      bodyNode,
+      orderedRowTypes,
+      orderedRowTypes.length,
+      numColumns,
+      numColumns,
+      0
+    );
+    console.assert(retVal, "Doug: addGameBoard: retVal is null");
+    console.assert(
+      retVal.allPageNodes,
+      "Doug: addGameBoard: retVal.allPageNodes is null"
+    );
+    var allPageNodes = retVal.allPageNodes;
+    console.assert(
+      allPageNodes.length == 1,
+      "Doug: addGameBoard: allPageNodes.length = " + allPageNodes.length
+    );
+    var pageOfItemsContentsNode = allPageNodes[0];
+
+    if (!(sc.pageOfItemsContentsPaddingPx > 0) && sc.demoBoard) {
+      domStyle.set(pageOfItemsContentsNode, {
+        padding: "0px",
+      });
     }
+  }
 
-    var maxColumnsPerPage;
-    if (configs.maxColumnsPerPage) {
-      maxColumnsPerPage = configs.maxColumnsPerPage;
-    } else {
-      maxColumnsPerPage = totalNumColumns;
-    }
-
-    // Make the body node.
-    var bodyNode = dom.byId("body");
-
-    // Special case if we are doing all the columns in one go.
-    if (sc.pageless || maxColumnsPerPage >= totalNumColumns) {
-      var pageOfItemsContentsNode;
+  function addGameBoardInPages(
+    bodyNode,
+    orderedRowTypes,
+    totalNumColumns,
+    maxRowsPerPage,
+    maxColumnsPerPage
+  ) {
+    debugLog.debugLog("GameBoard", "Doug: addGameBoardInPages");
+    var numColumnsAlreadyHandled = 0;
+    while (numColumnsAlreadyHandled < totalNumColumns) {
+      debugLog.debugLog(
+        "GameBoard",
+        "Doug: totalNumColumns = " + totalNumColumns
+      );
+      debugLog.debugLog(
+        "GameBoard",
+        "Doug: numColumnsAlreadyHandled = " + numColumnsAlreadyHandled
+      );
       var retVal = addPagesWithNextNColumns(
         bodyNode,
         orderedRowTypes,
         maxRowsPerPage,
         totalNumColumns,
-        totalNumColumns,
-        0
+        maxColumnsPerPage,
+        numColumnsAlreadyHandled
       );
       console.assert(retVal, "Doug: addGameBoard: retVal is null");
       console.assert(
-        retVal.allPageNodes,
-        "Doug: addGameBoard: retVal.allPageNodes is null"
+        retVal.numColumnsThisStrip,
+        "Doug: addGameBoard: retVal.numColumnsThisStrip is null"
       );
-      var allPageNodes = retVal.allPageNodes;
-      console.assert(
-        allPageNodes.length == 1,
-        "Doug: addGameBoard: allPageNodes.length = " + allPageNodes.length
+      var numColumns = retVal.numColumnsThisStrip;
+      debugLog.debugLog("GameBoard", "Doug: numColumns = " + numColumns);
+      numColumnsAlreadyHandled += numColumns;
+      debugLog.debugLog(
+        "GameBoard",
+        "Doug: final numColumnsAlreadyHandled = " + numColumnsAlreadyHandled
       );
-      var pageOfItemsContentsNode = allPageNodes[0];
+    }
+  }
 
-      if (!(sc.pageOfItemsContentsPaddingPx > 0) && sc.pageless) {
-        domStyle.set(pageOfItemsContentsNode, {
-          padding: "0px",
-        });
-      }
+  function addGameBoard(configs) {
+    var sc = systemConfigs.getSystemConfigs();
+
+    debugLog.debugLog(
+      "GameBoard",
+      "Doug: addGameBoard: sc = " + JSON.stringify(sc)
+    );
+
+    debugLog.debugLog(
+      "GameBoard",
+      "Doug: addGameBoard: configs = " + JSON.stringify(configs)
+    );
+
+    // How many rows in this version of the game?
+    var orderedRowTypes = configs.orderedRowTypes;
+    // How many factory columns in this version of the game?
+    var totalNumColumns = configs.totalNumColumns;
+    debugLog.debugLog(
+      "GameBoard",
+      "Doug: addGameBoard: totalNumColumns = " + totalNumColumns
+    );
+
+    // How many factory rows and columns per page?
+    var maxRowsPerPage;
+    if (sc.maxRowsPerPage) {
+      maxRowsPerPage = sc.maxRowsPerPage;
     } else {
-      var numColumnsAlreadyHandled = 0;
-      while (numColumnsAlreadyHandled < totalNumColumns) {
-        debugLog.debugLog(
-          "GameBoard",
-          "Doug: totalNumColumns = " + totalNumColumns
-        );
-        debugLog.debugLog(
-          "GameBoard",
-          "Doug: numColumnsAlreadyHandled = " + numColumnsAlreadyHandled
-        );
-        var retVal = addPagesWithNextNColumns(
-          bodyNode,
-          orderedRowTypes,
-          maxRowsPerPage,
-          totalNumColumns,
-          maxColumnsPerPage,
-          numColumnsAlreadyHandled
-        );
-        console.assert(retVal, "Doug: addGameBoard: retVal is null");
-        console.assert(
-          retVal.numColumnsThisStrip,
-          "Doug: addGameBoard: retVal.numColumnsThisStrip is null"
-        );
-        var numColumns = retVal.numColumnsThisStrip;
-        debugLog.debugLog("GameBoard", "Doug: numColumns = " + numColumns);
-        numColumnsAlreadyHandled += numColumns;
-        debugLog.debugLog(
-          "GameBoard",
-          "Doug: final numColumnsAlreadyHandled = " + numColumnsAlreadyHandled
-        );
-      }
+      maxRowsPerPage = orderedRowTypes.length;
+    }
+    debugLog.debugLog("GameBoard", "Doug: maxRowsPerPage = " + maxRowsPerPage);
+
+    var maxColumnsPerPage;
+    if (sc.maxColumnsPerPage) {
+      maxColumnsPerPage = sc.maxColumnsPerPage;
+    } else {
+      maxColumnsPerPage = totalNumColumns;
+    }
+    debugLog.debugLog(
+      "GameBoard",
+      "Doug: maxColumnsPerPage = " + maxColumnsPerPage
+    );
+
+    // Make the body node.
+    var bodyNode = dom.byId("body");
+
+    debugLog.debugLog(
+      "GameBoard",
+      "Doug: totalNumColumns = " + totalNumColumns
+    );
+    // Special case if we are doing all the columns in one go.
+    if (sc.demoBoard || maxColumnsPerPage >= totalNumColumns) {
+      addEntireGameBoardInOneDiv(bodyNode, orderedRowTypes, totalNumColumns);
+    } else {
+      addGameBoardInPages(
+        bodyNode,
+        orderedRowTypes,
+        totalNumColumns,
+        maxRowsPerPage,
+        maxColumnsPerPage
+      );
     }
   }
 

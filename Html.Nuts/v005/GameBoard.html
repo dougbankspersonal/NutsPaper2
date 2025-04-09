@@ -54,24 +54,26 @@
         systemConfigs
       ) {
         versionDetails.setVersion(versionDetails.version_005);
-        var sc = gameUtils.generateDemoBoardSystemConfigs();
-        //    var sc = systemConfigs.addGameBoardSystemConfigs();
-        debugLog.debugLog("Layout", "Doug: sc = " + JSON.stringify(sc));
-        systemConfigs.setSystemConfigs(sc);
+        var isDemoBoard = true;
+        if (isDemoBoard) {
+          systemConfigs.setSystemConfigs(gameUtils.addDemoBoardSystemConfigs());
+        } else {
+          systemConfigs.setSystemConfigs(gameUtils.addGameBoardSystemConfigs());
+        }
 
         var orderedRowTypes = versionDetails.getOrderedRowTypes();
         var totalNumColumns = versionDetails.getTotalNumColumns();
         debugLog.debugLog(
           "GameBoard",
-          "Doug: orderedRowTypes = " + orderedRowTypes
+          "Doug: orderedRowTypes = " + JSON.stringify(orderedRowTypes)
+        );
+        debugLog.debugLog(
+          "GameBoard",
+          "Doug: totalNumColumns = " + JSON.stringify(totalNumColumns)
         );
         gameBoard.addGameBoard({
           orderedRowTypes: orderedRowTypes,
           totalNumColumns: totalNumColumns,
-          /*
-          maxRowsPerPage: 4,
-          maxColumnsPerPage: 4,
-          */
         });
       });
     </script>

@@ -61,9 +61,6 @@ define([
     var sc = systemConfigs.getSystemConfigs();
     console.assert(parent, "parent is null");
     var classArray = genericUtils.growOptStringArray(opt_classArray, "row");
-    if (sc.pageless) {
-      classArray.push("demo_board");
-    }
     var rowId = getRowId(rowIndex);
     var row = htmlUtils.addDiv(parent, classArray, rowId);
     return row;
@@ -74,17 +71,24 @@ define([
     return dom.byId(slotId);
   }
 
-  function generateDemoBoardSystemConfigs() {
-    var c = {
-      // Not a typo, the cards are square.
-      cardHeight: measurements.smallCardWidth,
-      cardWidth: measurements.smallCardWidth,
-      cardBackFontSize: measurements.smallCardBackFontSize,
-      pageless: true,
-      extraClassesForPageOfItemsContents: ["demo_board"],
-      explicitPageWidth: measurements.totalBoardWidth,
-    };
-    return c;
+  function addDemoBoardSystemConfigs(opt_scInput) {
+    var sc = opt_scInput ? opt_scInput : {};
+    sc.cardHeight = measurements.smallCardWidth;
+    sc.cardWidth = measurements.smallCardWidth;
+    sc.cardBackFontSize = measurements.smallCardBackFontSize;
+    sc.pageless = true;
+    sc.demoBoard = true;
+    sc.explicitPageWidth = measurements.totalBoardWidth;
+    return sc;
+  }
+
+  function addGameBoardSystemConfigs(opt_scInput) {
+    var sc = opt_scInput ? opt_scInput : {};
+    sc.gridGap = 0;
+    sc.isCards = false;
+    sc.maxRowsPerPage = 4;
+    sc.maxColumnsPerPage = 4;
+    return sc;
   }
 
   // This returned object becomes the defined value of this module
@@ -108,6 +112,7 @@ define([
     getRowId: getRowId,
     getElementId: getElementId,
     getElementFromRow: getElementFromRow,
-    generateDemoBoardSystemConfigs: generateDemoBoardSystemConfigs,
+    addDemoBoardSystemConfigs: addDemoBoardSystemConfigs,
+    addGameBoardSystemConfigs: addGameBoardSystemConfigs,
   };
 });

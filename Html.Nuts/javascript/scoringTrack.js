@@ -75,28 +75,39 @@ define([
     for (j = 0; j < numColumns; j++) {
       var cellIndex = rowIndex * 10 + j;
 
-      var scoringCellNode = htmlUtils.addDiv(
+      var nutTypeIndex = cellIndex % nutTypes.orderedNutTypes.length;
+      var nutType = nutTypes.orderedNutTypes[nutTypeIndex];
+
+      var cellContainerNode = htmlUtils.addDiv(
         nthRowNode,
-        ["scoring_cell"],
-        "scoringCell" + cellIndex,
-        `${cellIndex}`
+        ["cell_container"],
+        "cellContainer" + cellIndex
       );
-      domStyle.set(scoringCellNode, {
+      domStyle.set(cellContainerNode, {
         width: cellInnerWidth + "px",
         height: cellInnerHeight + "px",
-        "font-size": "20px",
-        "text-align": "center",
-        "line-height": cellInnerHeight + "px",
         "margin-left": cellSideMargin + "px",
         "margin-right": cellSideMargin + "px",
       });
-      var nutTypeIndex = rowIndex % nutTypes.orderedNutTypes.length;
-      var nutType = nutTypes.orderedNutTypes[nutTypeIndex];
-      var image = htmlUtils.addImage(
-        scoringCellNode,
-        ["nut_image", nutType],
-        "nutImage" + cellIndex
+
+      var cellImageNode = htmlUtils.addImage(
+        cellContainerNode,
+        ["cell_image", nutType],
+        "cellImage" + cellIndex
       );
+      htmlUtils.addQuasiRandomTilt(cellImageNode, -20, 20);
+
+      var cellTextNode = htmlUtils.addDiv(
+        cellContainerNode,
+        ["cell_text"],
+        "cellText" + cellIndex,
+        cellIndex.toString()
+      );
+      domStyle.set(cellTextNode, {
+        "font-size": "20px",
+        "text-align": "center",
+        "line-height": cellInnerHeight + "px",
+      });
     }
 
     debugLog.debugLog(
