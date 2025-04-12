@@ -55,11 +55,9 @@
         "javascript/boxHolders",
         "javascript/gameBoard",
         "javascript/gameUtils",
-        "javascript/machines",
-        "javascript/machineTypes",
         "javascript/markers",
         "javascript/markerTypes",
-        "javascript/nutTypes",
+        "javascript/machineTypes",
         "javascript/rowTypes",
         "javascript/versionDetails",
       ], function (
@@ -69,11 +67,9 @@
         boxHolders,
         gameBoard,
         gameUtils,
-        machines,
-        machineTypes,
         markers,
         markerTypes,
-        nutTypes,
+        machineTypes,
         rowTypes,
         versionDetails
       ) {
@@ -86,16 +82,23 @@
         var totalNumColumns = versionDetails.getTotalNumColumns();
         debugLog.debugLog(
           "GameBoard",
-          "Doug: orderedRowTypes = " + orderedRowTypes
+          "Doug: orderedRowTypes = " + JSON.stringify(orderedRowTypes)
+        );
+        debugLog.debugLog(
+          "GameBoard",
+          "Doug: totalNumColumns = " + JSON.stringify(totalNumColumns)
         );
         gameBoard.addGameBoard({
           orderedRowTypes: orderedRowTypes,
           totalNumColumns: totalNumColumns,
         });
 
+        // Add nut dispensers
+        var quarterLeftTurns = [3, 2, 0, 0, 3, 1, 1, 2];
         gameBoard.addNutDispensersAndBoxHolders(
           orderedRowTypes,
-          totalNumColumns
+          totalNumColumns,
+          quarterLeftTurns
         );
 
         // Salters and Roasters
@@ -111,7 +114,7 @@
         );
         gameBoard.addMachineToBoard(
           salterRowIndex,
-          6,
+          5,
           machineTypes.SalterMachine
         );
 
@@ -122,12 +125,12 @@
         );
         gameBoard.addMachineToBoard(
           roasterRowIndex,
-          2,
+          3,
           machineTypes.RoasterMachine
         );
         gameBoard.addMachineToBoard(
           roasterRowIndex,
-          5,
+          6,
           machineTypes.RoasterMachine
         );
 
@@ -136,7 +139,30 @@
           orderedRowTypes,
           rowTypes.RowTypes.Squirrel
         );
-        gameBoard.addMarkerToBoard(squirrelRowIndex, 4, markerTypes.Squirrel);
+        gameBoard.addMarkerToBoard(squirrelRowIndex, 2, markerTypes.Squirrel);
+
+        // Add conveyor tiles.
+        // gameBoard.placeConveyorTileOnBoard(2, 6);
+        gameBoard.placeConveyorTileOnBoard(2, 1);
+        gameBoard.placeConveyorTileOnBoard(5, 6);
+        gameBoard.placeConveyorTileOnBoard(7, 4, ["ghost"]);
+        gameBoard.placeConveyorTileOnBoard(7, 3);
+        // gameBoard.placeConveyorTileOnBoard(9, 1);
+        //  gameBoard.placeConveyorTileOnBoard(9, 5, onveyorTileTypes.Cross, ["ghost"]);
+        gameBoard.placeConveyorTileOnBoard(10, 0);
+
+        gameBoard.highlightConveyorTile(7, 3, gameUtils.blueHighlightColor);
+        /*
+        gameBoard.placeConveyorTileOnBoard(5, 1);
+        gameBoard.DEPRECATED_highlightPath(2, gameUtils.yellowHighlightColor);
+        */
+        gameBoard.DEPRECATED_highlightPath(3, gameUtils.yellowHighlightColor);
+        gameBoard.DEPRECATED_highlightPath(4, gameUtils.yellowHighlightColor);
+        gameBoard.DEPRECATED_highlightPath(5, gameUtils.yellowHighlightColor);
+
+        gameBoard.DEPRECATED_highlightPath(7, gameUtils.yellowHighlightColor);
+
+        gameBoard.highlightBoxHolder(6, gameUtils.greenHighlightColor);
       });
     </script>
   </body>

@@ -55,11 +55,9 @@
         "javascript/boxHolders",
         "javascript/gameBoard",
         "javascript/gameUtils",
-        "javascript/machines",
-        "javascript/machineTypes",
         "javascript/markers",
         "javascript/markerTypes",
-        "javascript/nutTypes",
+        "javascript/machineTypes",
         "javascript/rowTypes",
         "javascript/versionDetails",
       ], function (
@@ -69,11 +67,9 @@
         boxHolders,
         gameBoard,
         gameUtils,
-        machines,
-        machineTypes,
         markers,
         markerTypes,
-        nutTypes,
+        machineTypes,
         rowTypes,
         versionDetails
       ) {
@@ -86,13 +82,18 @@
         var totalNumColumns = versionDetails.getTotalNumColumns();
         debugLog.debugLog(
           "GameBoard",
-          "Doug: orderedRowTypes = " + orderedRowTypes
+          "Doug: orderedRowTypes = " + JSON.stringify(orderedRowTypes)
+        );
+        debugLog.debugLog(
+          "GameBoard",
+          "Doug: totalNumColumns = " + JSON.stringify(totalNumColumns)
         );
         gameBoard.addGameBoard({
           orderedRowTypes: orderedRowTypes,
           totalNumColumns: totalNumColumns,
         });
 
+        // Add nut dispensers
         gameBoard.addNutDispensersAndBoxHolders(
           orderedRowTypes,
           totalNumColumns
@@ -137,6 +138,19 @@
           rowTypes.RowTypes.Squirrel
         );
         gameBoard.addMarkerToBoard(squirrelRowIndex, 4, markerTypes.Squirrel);
+
+        // Add conveyor tiles.
+        gameBoard.placeConveyorTileOnBoard(2, 6);
+        gameBoard.placeConveyorTileOnBoard(5, 1);
+        gameBoard.placeConveyorTileOnBoard(7, 4);
+        gameBoard.placeConveyorTileOnBoard(9, 5);
+        gameBoard.placeConveyorTileOnBoard(9, 1);
+        gameBoard.placeConveyorTileOnBoard(10, 0);
+
+        gameBoard.DEPRECATED_highlightPath(1, gameUtils.yellowHighlightColor);
+        gameBoard.DEPRECATED_highlightPath(4, gameUtils.yellowHighlightColor);
+        gameBoard.DEPRECATED_highlightPath(6, gameUtils.yellowHighlightColor);
+        gameBoard.DEPRECATED_highlightPath(7, gameUtils.yellowHighlightColor);
       });
     </script>
   </body>

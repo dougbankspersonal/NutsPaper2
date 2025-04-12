@@ -13,15 +13,16 @@
   margin-right: 10px;
   margin-bottom: 10px;
 }
-
 .demo_board .conveyor_tile.ghost {
-  opacity: 0.4;
+  opacity: 0.6;
 }
-
-.conveyor_tile.ghost .belt {
+.demo_board .conveyor_tile.ghost .belt {
   width: 100%;
   height: 100%;
   opacity: 0.4;
+}
+.demo_board .conveyor_tile.joiner {
+  transform: rotate(180deg);
 }
 
 /*# sourceMappingURL=conveyor_tile.css.map */

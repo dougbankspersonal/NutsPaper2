@@ -145,7 +145,11 @@ define([
   }
 
   function addLeftToRightBelt(conveyorTile) {
-    var belt = htmlUtils.addDiv(conveyorTile, ["belt", "left"], "leftBelt");
+    var belt = htmlUtils.addDiv(
+      conveyorTile,
+      ["belt", "left"],
+      "leftToRightBelt"
+    );
     var zIndex = curvePoints.length + 1;
     var configs = {
       zIndex: zIndex,
@@ -164,16 +168,12 @@ define([
     return belt;
   }
 
-  function addSplitterJoinerTile(
+  function addConveyorTile(
     parentNode,
     conveyorTileId,
-    arity,
+    conveyorTileType,
     opt_classArray
   ) {
-    debugLog.debugLog(
-      "ConveyorTiles",
-      "Doug: addSplitterJoinerTile arity == " + arity
-    );
     var conveyorTile = addEmptyConveyorTileElement(
       parentNode,
       conveyorTileId,
@@ -181,65 +181,58 @@ define([
     );
 
     // Add belts.
-    if (arity) {
-      // Left to right belt.
-      addLeftToRightBelt(conveyorTile);
-      // Left to left belt.
-      var xOffset = measurements.beltCenterOffsetInConveyorTile;
-      beltUtils.addStraightBelt(conveyorTile, {
-        xOffset: xOffset,
-      });
-    } else {
-      // Right to left belt.
-      var xOffset =
-        measurements.conveyorTileInnerWidth -
-        measurements.beltCenterOffsetInConveyorTile;
+    // "right" belt: moves from top right to bottom left.
+    // Present in cross, JoinerLeft, SplitterLeft.
+    if (
+      conveyorTileType == "Cross" ||
+      conveyorTileType == "JoinerLeft" ||
+      conveyorTileType == "SplitterLeft"
+    ) {
       addRightToLeftBelt(conveyorTile);
-      beltUtils.addStraightBelt(conveyorTile, {
-        xOffset: xOffset,
-      });
     }
 
-    return conveyorTile;
-  }
+    if (
+      conveyorTileType == "Cross" ||
+      conveyorTileType == "JoinerRight" ||
+      conveyorTileType == "SplitterRight"
+    ) {
+      addLeftToRightBelt(conveyorTile);
+    }
 
-  function addCrossTile(parentNode, conveyorTileId, opt_classArray) {
-    var conveyorTile = addEmptyConveyorTileElement(
-      parentNode,
-      conveyorTileId,
-      opt_classArray
-    );
+    // left hand straight belt: top left top bottom left.
+    // Presentin JoinerLeft and SplitterLeft.
+    if (
+      conveyorTileType == "Cross" ||
+      conveyorTileType == "JoinerLeft" ||
+      conveyorTileType == "SplitterRight"
+    ) {
+      addLeftToRightBelt(conveyorTile);
+    }
 
-    // Add belts.
-    // Left to right belt.
-    addLeftToRightBelt(conveyorTile);
-
-    // Right to left belt.
-    addRightToLeftBelt(conveyorTile);
-
+    // Add cro
     return conveyorTile;
   }
 
   function addConveyorTilesPage(
     bodyNode,
     numConveyorTiles,
-    opt_isSplitterJoiner
+    opt_leftSplitsJoiner
   ) {
     var pageNode = htmlUtils.addPageOfItems(bodyNode);
 
     for (let i = 0; i < numConveyorTiles; i++) {
       var tileId = "tileId" + i;
-      if (opt_isSplitterJoiner) {
+      if (opt_leftSplitsJoiner) {
         addSplitterJoinerTile(pageNode, tileId, i % 2 == 0);
       } else {
-        addCrossTile(pageNode, tileId);
+        addConveyorTile(pageNode, tileId);
       }
     }
 
     return pageNode;
   }
 
-  function createConveyorTiles(totalNumTiles, opt_isSplitterJoiner) {
+  function createConveyorTiles(totalNumTiles, opt_leftSplitsJoiner) {
     var bodyNode = dom.byId("body");
     var stripsPerPage = 12;
     var numPages = Math.ceil(totalNumTiles / stripsPerPage);
@@ -248,7 +241,7 @@ define([
         stripsPerPage,
         totalNumTiles - i * stripsPerPage
       );
-      addConveyorTilesPage(bodyNode, numStripsThisPage, opt_isSplitterJoiner);
+      addConveyorTilesPage(bodyNode, numStripsThisPage, opt_leftSplitsJoiner);
     }
   }
 

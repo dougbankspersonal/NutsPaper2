@@ -55,11 +55,9 @@
         "javascript/boxHolders",
         "javascript/gameBoard",
         "javascript/gameUtils",
-        "javascript/machines",
-        "javascript/machineTypes",
         "javascript/markers",
         "javascript/markerTypes",
-        "javascript/nutTypes",
+        "javascript/machineTypes",
         "javascript/rowTypes",
         "javascript/versionDetails",
       ], function (
@@ -69,11 +67,9 @@
         boxHolders,
         gameBoard,
         gameUtils,
-        machines,
-        machineTypes,
         markers,
         markerTypes,
-        nutTypes,
+        machineTypes,
         rowTypes,
         versionDetails
       ) {
@@ -86,16 +82,23 @@
         var totalNumColumns = versionDetails.getTotalNumColumns();
         debugLog.debugLog(
           "GameBoard",
-          "Doug: orderedRowTypes = " + orderedRowTypes
+          "Doug: orderedRowTypes = " + JSON.stringify(orderedRowTypes)
+        );
+        debugLog.debugLog(
+          "GameBoard",
+          "Doug: totalNumColumns = " + JSON.stringify(totalNumColumns)
         );
         gameBoard.addGameBoard({
           orderedRowTypes: orderedRowTypes,
           totalNumColumns: totalNumColumns,
         });
 
+        // Add nut dispensers
+        var quarterTurns = [2, 2, 1, 1, 0, 0, 2, 2];
         gameBoard.addNutDispensersAndBoxHolders(
           orderedRowTypes,
-          totalNumColumns
+          totalNumColumns,
+          quarterTurns
         );
 
         // Salters and Roasters
@@ -137,6 +140,22 @@
           rowTypes.RowTypes.Squirrel
         );
         gameBoard.addMarkerToBoard(squirrelRowIndex, 4, markerTypes.Squirrel);
+
+        // Add conveyor tiles.
+        // gameBoard.placeConveyorTileOnBoard(2, 6);
+        gameBoard.placeConveyorTileOnBoard(2, 5);
+        gameBoard.placeConveyorTileOnBoard(7, 4, conveyorTileTypes.Cross, [
+          "ghost",
+        ]);
+        // gameBoard.placeConveyorTileOnBoard(9, 1);
+        gameBoard.placeConveyorTileOnBoard(9, 5);
+        gameBoard.placeConveyorTileOnBoard(10, 0);
+
+        gameBoard.placeConveyorTileOnBoard(5, 1);
+        gameBoard.highlightConveyorTile(5, 1, gameUtils.blueHighlightColor);
+        gameBoard.highlightConveyorTile(7, 4, gameUtils.redHighlightColor);
+
+        connectingPath.highlightConnectingPaths();
       });
     </script>
   </body>

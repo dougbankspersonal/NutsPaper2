@@ -35,11 +35,12 @@ define([
     PistachioMachine: iconTypes.PistachioIcon,
   };
 
-  var machineTypesWithNoBeltTop = [];
-  for (var i = 0; i < orderedMachineTypes.length; i++) {
-    var machineType = orderedMachineTypes[i];
-    machineTypesWithNoBeltTop[machineType] = true;
-  }
+  var machineTypeToHasBeltTop = {
+    AlmondMachine: true,
+    CashewMachine: true,
+    PeanutMachine: true,
+    PistachioMachine: true,
+  };
 
   return {
     SalterMachine: SalterMachine,
@@ -52,6 +53,6 @@ define([
     orderedMachineTypes: orderedMachineTypes,
     orderedNutMachineTypes: orderedNutMachineTypes,
     machineTypeToIconType: machineTypeToIconType,
-    machineTypesWithNoBeltTop: machineTypesWithNoBeltTop,
+    machineTypeToHasBeltTop: machineTypeToHasBeltTop,
   };
 });

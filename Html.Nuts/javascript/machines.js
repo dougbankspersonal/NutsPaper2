@@ -45,8 +45,8 @@ define([
       "IconImage"
     );
 
-    var hideBeltTop = machineTypes.machineTypesWithNoBeltTop[machineType];
-    debugLog.debugLog("Belts", "addMachine: hideBeltTop = " + hideBeltTop);
+    var hideBeltTop = machineTypes.machineTypeToHasBeltTop[machineType];
+    debugLog.debugLog("Machines", "addMachine: hideBeltTop = " + hideBeltTop);
 
     // add Belt.
     var beltConfigs = {

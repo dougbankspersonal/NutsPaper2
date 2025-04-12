@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="../SharedWebBoardGame/css/image.css" />
     <link rel="stylesheet" href="../SharedWebBoardGame/css/main.css" />
     <link rel="stylesheet" href="../css/board_tile.css" />
-    <link rel="stylesheet" href="../css/box_robot.css" />
+    <link rel="stylesheet" href="../css/box_holder.css" />
     <link rel="stylesheet" href="../css/conveyor_tile.css" />
     <link rel="stylesheet" href="../css/nuts_card.css" />
     <link rel="stylesheet" href="../css/nuts_image.css" />
@@ -51,7 +51,7 @@
         "sharedJavascript/debugLog",
         "sharedJavascript/htmlUtils",
         "sharedJavascript/systemConfigs",
-        "javascript/boxRobots",
+        "javascript/boxHolders",
         "javascript/gameUtils",
         "javascript/measurements",
       ], function (
@@ -60,7 +60,7 @@
         debugLog,
         htmlUtils,
         systemConfigs,
-        boxRobots,
+        boxHolders,
         gameUtils,
         measurements
       ) {
@@ -73,10 +73,10 @@
         var sc = systemConfigs.getSystemConfigs();
 
         cards.addCards(
-          "Box Robot",
+          "Box Holder",
           "#f0d0d0",
-          boxRobots.getNumCards(),
-          boxRobots.addBoxRobotCard
+          boxHolders.getNumCards(),
+          boxHolders.addBoxHolderCard
         );
       });
     </script>

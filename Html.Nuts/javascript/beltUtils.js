@@ -39,7 +39,7 @@ define([
   var validBeltConfigKeys = {
     // Should we hide the top of the belt (used for top row, we don't want belt above dispensers)
     hideBeltTop: true,
-    // Should we hide the bottom of the belt (used for bottom row, we don't want belt below box robots)
+    // Should we hide the bottom of the belt (used for bottom row, we don't want belt below box holders)
     hideBeltBottom: true,
     // On big game board we want tiles to overlap row to row -> we need a global z-index.
     // On an individual tile we don't want/need that.

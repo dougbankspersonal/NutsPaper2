@@ -1,23 +1,12 @@
 define([
   "dojo/dom",
-  "dojo/dom-style",
   "dojo/query",
-  "javascript/measurements",
-  "sharedJavascript/genericMeasurements",
   "sharedJavascript/genericUtils",
   "sharedJavascript/htmlUtils",
   "sharedJavascript/systemConfigs",
+  "javascript/measurements",
   "dojo/domReady!",
-], function (
-  dom,
-  domStyle,
-  query,
-  measurements,
-  genericMeasurements,
-  genericUtils,
-  htmlUtils,
-  systemConfigs
-) {
+], function (dom, query, genericUtils, htmlUtils, systemConfigs, measurements) {
   var starImage = "images/Markers/Star.png";
   var squirrelImage = "images/Markers/Squirrel.png";
 
@@ -35,6 +24,11 @@ define([
   ];
 
   var wildImage = "images/Order/Order.Wild.png";
+
+  var redHighlightColor = "rgba(255, 128, 128, 1)";
+  var blueHighlightColor = "rgba(128, 128, 255, 1)";
+  var yellowHighlightColor = "rgba(255, 255, 128, 1)";
+  var greenHighlightColor = "rgba(128, 255, 128, 1)";
 
   function getSlotId(rowIndex, columnIndex) {
     var idPieces = ["slot", rowIndex.toString(), columnIndex.toString()];
@@ -57,13 +51,19 @@ define([
     return elementNodes[0];
   }
 
+  function getSlot(rowNode, columnIndex) {
+    var elementId = getSlotId(columnIndex);
+    var elementNodes = query(`#${elementId}`, rowNode);
+    return elementNodes[0];
+  }
+
   function addRow(parent, opt_classArray, rowIndex) {
     var sc = systemConfigs.getSystemConfigs();
     console.assert(parent, "parent is null");
     var classArray = genericUtils.growOptStringArray(opt_classArray, "row");
     var rowId = getRowId(rowIndex);
-    var row = htmlUtils.addDiv(parent, classArray, rowId);
-    return row;
+    var rowNode = htmlUtils.addDiv(parent, classArray, rowId);
+    return rowNode;
   }
 
   function getSlot(rowIndex, columnIndex) {
@@ -114,5 +114,10 @@ define([
     getElementFromRow: getElementFromRow,
     addDemoBoardSystemConfigs: addDemoBoardSystemConfigs,
     addGameBoardSystemConfigs: addGameBoardSystemConfigs,
+
+    redHighlightColor: redHighlightColor,
+    blueHighlightColor: blueHighlightColor,
+    yellowHighlightColor: yellowHighlightColor,
+    greenHighlightColor: greenHighlightColor,
   };
 });

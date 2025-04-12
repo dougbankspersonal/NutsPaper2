@@ -17,7 +17,7 @@ define([
   iconTypes,
   miscTypes
 ) {
-  var boxRobotCardConfigs = [
+  var boxHolderCardConfigs = [
     {
       orderOfNuts: [
         iconTypes.AlmondIcon,
@@ -84,19 +84,19 @@ define([
     },
   ];
 
-  function addBoxRobotCard(parent, index, opt_classArray) {
+  function addBoxHolderCard(parent, index, opt_classArray) {
     debugLog.debugLog(
-      "BoxRobotCards",
-      "Doug: addBoxRobotCard index = " + index
+      "BoxHolderCards",
+      "Doug: addBoxHolderCard index = " + index
     );
-    var config = cards.getCardConfigFromIndex(boxRobotCardConfigs, index);
+    var config = cards.getCardConfigFromIndex(boxHolderCardConfigs, index);
 
     var classArray = genericUtils.growOptStringArray(opt_classArray, [
-      "box_robot",
+      "box_holder",
       "board_tile",
     ]);
 
-    var cardId = "boxRobot_" + index;
+    var cardId = "boxHolder_" + index;
     var front = cards.addCardFront(parent, classArray, cardId);
 
     var crossBarNode = htmlUtils.addImage(
@@ -146,18 +146,21 @@ define([
   }
 
   function getNumCards() {
-    var numCards = cards.getNumCardsFromConfigs(boxRobotCardConfigs);
+    var numCards = cards.getNumCardsFromConfigs(boxHolderCardConfigs);
     debugLog.debugLog(
-      "BoxRobotCards",
-      "Doug: BoxRobotCards main numCards = " + numCards
+      "BoxHolderCards",
+      "Doug: BoxHolderCards main numCards = " + numCards
     );
     return numCards;
   }
 
-  function getTopNutType(columnIndex, numQuarterTurns) {
-    var config = cards.getCardConfigFromIndex(boxRobotCardConfigs, columnIndex);
-    // Minus because of turn right/turn left arity issue,
-    var nutIndex = numQuarterTurns % config.orderOfNuts.length;
+  function getTopNutType(columnIndex, numQuarterRightTurns) {
+    var config = cards.getCardConfigFromIndex(
+      boxHolderCardConfigs,
+      columnIndex
+    );
+    //
+    var nutIndex = numQuarterRightTurns % config.orderOfNuts.length;
     while (nutIndex < 0) {
       nutIndex += config.orderOfNuts.length;
     }
@@ -172,9 +175,10 @@ define([
 
   // This returned object becomes the defined value of this module
   return {
-    addBoxRobotCard: addBoxRobotCard,
+    addBoxHolderCard: addBoxHolderCard,
     getNumCards: getNumCards,
     getTopNutType: getTopNutType,
     setQuarterTurns: setQuarterTurns,
+    boxHolderCardConfigs: boxHolderCardConfigs,
   };
 });

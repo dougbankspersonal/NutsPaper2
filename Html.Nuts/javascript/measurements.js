@@ -113,21 +113,6 @@ define([
       "Layout",
       "getFactoryRowHeight 001 sc = " + JSON.stringify(sc)
     );
-    if (rowType == rowTypes.RowTypes.Boxes) {
-      debugLog.debugLog("Layout", "getFactoryRowHeight 002");
-      if (sc.demoBoard) {
-        debugLog.debugLog("Layout", "getFactoryRowHeight 003");
-        // card placed at some y offset in row, runs over bottom of board: show the whole card.
-        // Extra fudge factor seems necessasry to account for borders.
-        return (
-          smallCardHeight +
-          boxesRowMarginTop +
-          genericMeasurements.standardBorderWidth * 2
-        );
-      } else {
-        return boxesRowHeight;
-      }
-    }
     return standardRowHeight;
   }
 

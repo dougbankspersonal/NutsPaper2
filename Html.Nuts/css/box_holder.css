@@ -1,39 +1,41 @@
-.box_robot {
+.box_holder {
   position: relative;
 }
 
-.box_robot .CrossBar {
+.box_holder .CrossBar {
   background-size: 50% 50%;
 }
 
-.box_robot .quadrant {
+.box_holder .quadrant {
   position: absolute;
   width: 100%;
   height: 100%;
   z-index: 4;
 }
 
-.box_robot .quadrant .pseudo_image {
+.box_holder .quadrant .pseudo_image {
   position: absolute;
 }
 
-.box_robot .quadrant .openBox {
+.box_holder .quadrant .openBox {
   transform: rotate(-7deg);
   filter: drop-shadow(0 0 8px black);
 }
 
-.box_robot #quadrant_0 {
+.box_holder #quadrant_0 {
   transform: rotate(0deg);
 }
 
-.box_robot #quadrant_1 {
+.box_holder #quadrant_1 {
   transform: rotate(90deg);
 }
 
-.box_robot #quadrant_2 {
+.box_holder #quadrant_2 {
   transform: rotate(180deg);
 }
 
-.box_robot #quadrant_3 {
+.box_holder #quadrant_3 {
   transform: rotate(270deg);
 }
+
+/*# sourceMappingURL=box_holder.css.map */

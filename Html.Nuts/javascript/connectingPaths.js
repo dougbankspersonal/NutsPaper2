@@ -46,6 +46,10 @@ define([
     Cross: "Cross",
   };
 
+  function isConveyorTileType(conveyorTileType) {
+    return conveyorTileTypes[conveyorTileType] != null;
+  }
+
   var rowZUIndex = 20;
 
   // A tile hits two slots.
@@ -797,18 +801,16 @@ define([
   function placeConveyorTileOnBoard(
     rowIndex,
     columnIndex,
-    splitsToTheLeft,
-    conveyorTileType,
+    opt_conveyorTileType,
     opt_classArray
   ) {
+    var conveyorTileType = opt_conveyorTileType
+      ? opt_conveyorTileType
+      : conveyorTileTypes.Cross;
+
     console.assert(isConveyorTileType(conveyorTileType), "Invalid tile type");
 
     var extraClasses = [];
-    if (conveyorTileType == conveyorTileTypes.Joiner) {
-      extraClasses = ["joiner"];
-      conveyorTyppe = conveyorTileTypes.Joiner;
-    }
-
     var classArray = genericUtils.growOptStringArray(
       opt_classArray,
       extraClasses
@@ -825,11 +827,28 @@ define([
         conveyorTileId,
         classArray
       );
-    } else {
-      conveyorTile = conveyorTiles.addSplitterJoinerTile(
+    } else if (conveyorTileType == conveyorTileTypes.SplitterLeft) {
+      conveyorTile = conveyorTiles.addSplitterLeftTile(
         slot,
         conveyorTileId,
-        splitsToTheLeft,
+        classArray
+      );
+    } else if (conveyorTileType == conveyorTileTypes.SplitterRight) {
+      conveyorTile = conveyorTiles.addSplitterRightTile(
+        slot,
+        conveyorTileId,
+        classArray
+      );
+    } else if (conveyorTileType == conveyorTileTypes.JoinerLeft) {
+      conveyorTile = conveyorTiles.addSJoinerLeftTile(
+        slot,
+        conveyorTileId,
+        classArray
+      );
+    } else if (conveyorTileType == conveyorTileTypes.SplitterLeft) {
+      conveyorTile = conveyorTiles.addJoinerRightTile(
+        slot,
+        conveyorTileId,
         classArray
       );
     }
@@ -1054,6 +1073,424 @@ define([
     return slot;
   }
 
+  // conveyorTilesAndConfigs contains at most two tiles, left and right.
+  // At most one of these can be non-ghost.
+  // Find and return that one.
+  // Also return if we come into this tile on the left or right of the tile (2nd arg true = coming in on left)
+  function getNonGhostTileInConveyorTilesAndConfigs(conveyorTilesAndConfigs) {
+    if (!conveyorTilesAndConfigs) {
+      return [null, false];
+    }
+
+    var left = conveyorTilesAndConfigs.left;
+    var right = conveyorTilesAndConfigs.right;
+
+    if (left && left.tile && !left.configs.isGhost) {
+      return [left, true];
+    }
+
+    if (right && right.tile && !right.configs.isGhost) {
+      return [right, false];
+    }
+
+    return [null, false];
+  }
+
+  function highlightCrossTileBelts(conveyorTile, comingInOnLeft, color) {
+    // Cross is X.
+    // Highlight the belt that starts from where we came in.
+    // Note that .belt.left means it starts on left and exits right.
+    var beltQuery = comingInOnLeft ? ".belt.left" : ".belt.right";
+    var belts = query(beltQuery, conveyorTile);
+    var belt = belts[0];
+    highlightQueryResult(belt, ".beltSegment", color);
+  }
+
+  function highlightJoinerTileBelts(
+    conveyorTile,
+    comingInOnLeft,
+    splitsToTheLeft,
+    color
+  ) {
+    // Joiner is either |/ or \|.
+    // Highlight the belt that starts from where we came in.
+    // Remember joiner is upside down splitter so splitsToTheLeft is
+    // |/
+    // and not-splitsToTheLeft is
+    // \|
+    var beltQuery;
+    // Note that .belt.left means it starts on left and exits right.
+    if (comingInOnLeft) {
+      if (splitsToTheLeft) {
+        beltQuery = ".belt.straight";
+      } else {
+        beltQuery = ".belt.left";
+      }
+    } else {
+      if (splitsToTheLeft) {
+        beltQuery = ".belt.right";
+      } else {
+        beltQuery = ".belt.straight";
+      }
+    }
+    var belts = query(beltQuery, conveyorTile);
+    var belt = belts[0];
+    highlightQueryResult(belt, ".beltSegment", color);
+  }
+
+  function highlightSplitterTileBelts(
+    conveyorTile,
+    comingInOnLeft,
+    splitsToTheLeft,
+    color
+  ) {
+    // Splitter.  |\ or /|.
+    // Note that .belt.left means it starts on left and exits right.
+    if (!splitsToTheLeft && comingInOnLeft) {
+      var beltQuery = ".belt.left";
+      var belts = query(beltQuery, conveyorTile);
+      var belt = belts[0];
+      console.assert(belt, "Doug: belt is null");
+      debugLog.debugLog(
+        "Highlight",
+        "Doug: highlightSplitterTileBelts belts.length = " + belts.length
+      );
+      highlightQueryResult(belt, ".beltSegment", color);
+      beltQuery = ".belt.straight";
+      belts = query(beltQuery, conveyorTile);
+      belt = belts[0];
+      highlightQueryResult(belt, ".beltSegment", color);
+    }
+    if (splitsToTheLeft && !comingInOnLeft) {
+      var beltQuery = ".belt.right";
+      var belts = query(beltQuery, conveyorTile);
+      var belt = belts[0];
+      highlightQueryResult(belt, ".beltSegment", color);
+      beltQuery = ".belt.straight";
+      belts = query(beltQuery, conveyorTile);
+      belt = belts[0];
+      highlightQueryResult(belt, ".beltSegment", color);
+    }
+  }
+
+  function highlightPathThroughSlot(rowIndex, columnIndex, color) {
+    var slot = getSlotAndHighlightContents(rowIndex, columnIndex, color);
+    if (!slot) {
+      return false;
+    }
+
+    // Find the tiles that cross this spot.
+    var conveyorTilesAndConfigs = getConveyorTilesAndConfigsInSlot(
+      rowIndex,
+      columnIndex
+    );
+
+    // Find the non-ghost, if any, in results.
+    var result = getNonGhostTileInConveyorTilesAndConfigs(
+      conveyorTilesAndConfigs
+    );
+    var conveyorTileAndConfigs = result[0];
+    var comingInOnLeft = result[1];
+
+    if (conveyorTileAndConfigs && conveyorTileAndConfigs.tile) {
+      var conveyorTile = conveyorTileAndConfigs.tile;
+      var splitsToTheLeft = conveyorTileAndConfigs.configs.splitsToTheLeft;
+      var conveyorTileType = conveyorTileAndConfigs.configs.conveyorTileType;
+
+      // Highlight the tile itself.
+      highlightNode(conveyorTile, color, {
+        extra: true,
+      });
+
+      // Look at tile type to know what belts get highlighted.
+      if (conveyorTileType == conveyorTileTypes.Cross) {
+        highlightCrossTileBelts(conveyorTile, comingInOnLeft, color);
+      } else if (conveyorTileType == conveyorTileTypes.Joiner) {
+        highlightJoinerTileBelts(
+          conveyorTile,
+          comingInOnLeft,
+          splitsToTheLeft,
+          color
+        );
+      } else {
+        highlightSplitterTileBelts(
+          conveyorTile,
+          comingInOnLeft,
+          splitsToTheLeft,
+          color
+        );
+      }
+    } else {
+      // Find the belt embedded on board, if any, on this space.
+      var belts = query(".belt", slot);
+      if (belts) {
+        belt = belts[0];
+        highlightQueryResult(belt, ".beltSegment", color);
+      }
+    }
+    return true;
+  }
+
+  // The only thing path in does is come out one column to the right.
+  function pathInCrossesRightOnly(conveyorTileAndConfigs, comingInOnLeft) {
+    // If we are coming in on the right, never: no way to go up.
+    if (!comingInOnLeft) {
+      return false;
+    }
+
+    // No tile?  Then no, we don't move.
+    if (!conveyorTileAndConfigs) {
+      return false;
+    }
+
+    // So we are coming in on the left of some tile. When true that we only come out
+    // on the right?
+    // X  : yes.
+    if (
+      conveyorTileAndConfigs.configs.conveyorTileType == conveyorTileTypes.Cross
+    ) {
+      return true;
+    }
+    // |/ : no;
+    // \| : yes;
+    if (
+      conveyorTileAndConfigs.configs.conveyorTileType ==
+      conveyorTileTypes.Joiner
+    ) {
+      // Coming in to a joiner.  Depends on splitsToTheLeft comingInOnLeft.
+      // Remember joiner is upside down splitter so splits left means joins right.
+      return conveyorTileAndConfigs.configs.splitsToTheLeft;
+    }
+
+    // |\ : no;
+    // /| : no;
+    return false;
+  }
+
+  // The only thing path in does is come out one column to the left.
+  function pathInCrossesLeftOnly(conveyorTileAndConfigs, comingInOnLeft) {
+    // If we are coming in on the left, never: no way to go down.
+    if (comingInOnLeft) {
+      return false;
+    }
+
+    // No tile?  Then no, we don't move.
+    if (!conveyorTileAndConfigs) {
+      return false;
+    }
+
+    // So we are coming in on the right of some tile. When true that we only come out
+    // on the left?
+    // X  : yes.
+    if (
+      conveyorTileAndConfigs.configs.conveyorTileType == conveyorTileTypes.Cross
+    ) {
+      return true;
+    }
+    // |/ : yes;
+    // \| : no;
+    if (
+      conveyorTileAndConfigs.configs.conveyorTileType ==
+      conveyorTileTypes.Joiner
+    ) {
+      // Coming in to a joiner.  Depends on splitsToTheLeft and which comingInOnLeft.
+      // Remember joiner is upside down splitter so splits left means joins right.
+      return !conveyorTileAndConfigs.configs.splitsToTheLeft;
+    }
+
+    // |\ : no;
+    // /| : no;
+    return false;
+  }
+
+  // The only thing path in does dead end.
+  // Only possible with splitter tiles.
+  function pathInDeadEnds(conveyorTileAndConfigs, comingInOnLeft) {
+    // No tile?  Then no, we don't move.
+    if (!conveyorTileAndConfigs) {
+      return false;
+    }
+
+    if (
+      conveyorTileAndConfigs.configs.conveyorTileType !=
+      conveyorTileTypes.Splitter
+    ) {
+      return false;
+    }
+
+    // It's either |\ or /|.  So it depends where we come in and splits right or left.
+    // /|: yes if coming in on left.
+    if (comingInOnLeft && conveyorTileAndConfigs.configs.splitsToTheLeft) {
+      return true;
+    }
+    // |\ : yes if coming in on right.
+    if (!comingInOnLeft && !conveyorTileAndConfigs.configs.splitsToTheLeft) {
+      return true;
+    }
+
+    return false;
+  }
+
+  function pathInSplitsRight(conveyorTileAndConfigs, comingInOnLeft) {
+    // No tile?  Then no.
+    if (!conveyorTileAndConfigs) {
+      return false;
+    }
+
+    if (
+      conveyorTileAndConfigs.configs.conveyorTileType !=
+      conveyorTileTypes.Splitter
+    ) {
+      return false;
+    }
+
+    // Must be this: |\
+    if (comingInOnLeft && !conveyorTileAndConfigs.configs.splitsToTheLeft) {
+      return true;
+    }
+
+    return false;
+  }
+
+  function pathInSplitsLeft(conveyorTileAndConfigs, comingInOnLeft) {
+    debugLog.debugLog("Highlight", "Doug: pathInSplitsLeft 001");
+    // No tile?  Then no.
+    if (!conveyorTileAndConfigs) {
+      debugLog.debugLog("Highlight", "Doug: pathInSplitsLeft 002");
+      return false;
+    }
+
+    if (
+      conveyorTileAndConfigs.configs.conveyorTileType !=
+      conveyorTileTypes.Splitter
+    ) {
+      debugLog.debugLog("Highlight", "Doug: pathInSplitsLeft 003");
+      return false;
+    }
+
+    // Must be this: /|
+    if (!comingInOnLeft && conveyorTileAndConfigs.configs.splitsToTheLeft) {
+      debugLog.debugLog("Highlight", "Doug: pathInSplitsLeft 004");
+      return true;
+    }
+
+    debugLog.debugLog("Highlight", "Doug: pathInSplitsLeft 005");
+    return false;
+  }
+
+  // This row, this column: a path is coming in.  where does it come out?
+  // In light of splitter/joiner it might come out zero, one, or two places.
+  function getColumnIndicesNextRow(rowIndex, columnIndex) {
+    debugLog.debugLog(
+      "Highlight",
+      "Doug: getColumnIndicesNextRow rowIndex = " + rowIndex
+    );
+    debugLog.debugLog(
+      "Highlight",
+      "Doug: getColumnIndicesNextRow columnIndex = " + columnIndex
+    );
+    var conveyorTilesAndConfigs = getConveyorTilesAndConfigsInSlot(
+      rowIndex,
+      columnIndex
+    );
+    debugLog.debugLog(
+      "Highlight",
+      "Doug: getColumnIndicesNextRow conveyorTilesAndConfigs = " +
+        JSON.stringify(conveyorTilesAndConfigs)
+    );
+
+    var result = getNonGhostTileInConveyorTilesAndConfigs(
+      conveyorTilesAndConfigs
+    );
+    debugLog.debugLog(
+      "Highlight",
+      "Doug: getColumnIndicesNextRow result = " + JSON.stringify(result)
+    );
+
+    var conveyorTileAndConfigs = result[0];
+    var comingInOnLeft = result[1];
+
+    if (pathInCrossesRightOnly(conveyorTileAndConfigs, comingInOnLeft)) {
+      debugLog.debugLog(
+        "Highlight",
+        "Doug: getColumnIndicesNextRow pathInCrossesRight"
+      );
+      return [columnIndex + 1];
+    }
+    if (pathInCrossesLeftOnly(conveyorTileAndConfigs, comingInOnLeft)) {
+      debugLog.debugLog(
+        "Highlight",
+        "Doug: getColumnIndicesNextRow pathInCrossesLeft"
+      );
+      return [columnIndex - 1];
+    }
+    if (pathInDeadEnds(conveyorTileAndConfigs, comingInOnLeft)) {
+      debugLog.debugLog(
+        "Highlight",
+        "Doug: getColumnIndicesNextRow pathInDeadEnds"
+      );
+      return [];
+    }
+    if (pathInSplitsRight(conveyorTileAndConfigs, comingInOnLeft)) {
+      debugLog.debugLog(
+        "Highlight",
+        "Doug: getColumnIndicesNextRow pathInSplitsRight"
+      );
+      return [columnIndex, columnIndex + 1];
+    }
+    if (pathInSplitsLeft(conveyorTileAndConfigs, comingInOnLeft)) {
+      debugLog.debugLog(
+        "Highlight",
+        "Doug: getColumnIndicesNextRow pathInSplitsLeft"
+      );
+      return [columnIndex - 1, columnIndex];
+    }
+    debugLog.debugLog("Highlight", "Doug: getColumnIndicesNextRow base case");
+    return [columnIndex];
+  }
+
+  function highlightPathRecursive(rowIndex, columnIndex, color) {
+    debugLog.debugLog(
+      "Highlight",
+      "Doug: highlightPathRecursive rowIndex = " + rowIndex
+    );
+    debugLog.debugLog(
+      "Highlight",
+      "Doug: highlightPathRecursive columnIndex = " + columnIndex
+    );
+    var success = highlightPathThroughSlot(rowIndex, columnIndex, color);
+    debugLog.debugLog(
+      "Highlight",
+      "Doug: highlightPathRecursive success = " + success
+    );
+
+    if (!success) {
+      return;
+    }
+    var nextColumnIndices = getColumnIndicesNextRow(rowIndex, columnIndex);
+    debugLog.debugLog(
+      "Highlight",
+      "Doug: highlightPathRecursive nextColumnIndices = " +
+        JSON.stringify(nextColumnIndices)
+    );
+
+    rowIndex++;
+    for (var i = 0; i < nextColumnIndices.length; i++) {
+      var nextColumnIndex = nextColumnIndices[i];
+      highlightPathRecursive(rowIndex, nextColumnIndex, color);
+    }
+  }
+
+  function DEPRECATED_highlightPath(columnIndex, color) {
+    debugLog.debugLog(
+      "Highlight",
+      "Doug: DEPRECATED_highlightPath columnIndex = " + columnIndex
+    );
+    // First row is numbers, skip that.
+    var rowIndex = 1;
+    highlightPathRecursive(rowIndex, columnIndex, color);
+  }
+
   // columnnIndex is 0-based, ignoring the sidebar.
   function addBox(nutType, rowIndex, columnIndex, opt_classArray) {
     debugLog.debugLog("Cards", "Doug: addBox nutType = " + nutType);
@@ -1202,6 +1639,7 @@ define([
     addBox: addBox,
     placeConveyorTileOnBoard: placeConveyorTileOnBoard,
     placeSplitterJoinerTileOnBoard: placeSplitterJoinerTileOnBoard,
+    DEPRECATED_highlightPath: DEPRECATED_highlightPath,
     highlightQueryResult: highlightQueryResult,
     highlightConveyorTile: highlightConveyorTile,
     highlightBoxHolder: highlightBoxHolder,
