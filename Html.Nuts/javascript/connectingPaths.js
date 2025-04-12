@@ -820,38 +820,12 @@ define([
     var slot = dom.byId(slotId);
     var conveyorTileId = getNextConveyorTileId();
 
-    var conveyorTile;
-    if (conveyorTileType == conveyorTileTypes.Cross) {
-      conveyorTile = conveyorTiles.addCrossTile(
-        slot,
-        conveyorTileId,
-        classArray
-      );
-    } else if (conveyorTileType == conveyorTileTypes.SplitterLeft) {
-      conveyorTile = conveyorTiles.addSplitterLeftTile(
-        slot,
-        conveyorTileId,
-        classArray
-      );
-    } else if (conveyorTileType == conveyorTileTypes.SplitterRight) {
-      conveyorTile = conveyorTiles.addSplitterRightTile(
-        slot,
-        conveyorTileId,
-        classArray
-      );
-    } else if (conveyorTileType == conveyorTileTypes.JoinerLeft) {
-      conveyorTile = conveyorTiles.addSJoinerLeftTile(
-        slot,
-        conveyorTileId,
-        classArray
-      );
-    } else if (conveyorTileType == conveyorTileTypes.SplitterLeft) {
-      conveyorTile = conveyorTiles.addJoinerRightTile(
-        slot,
-        conveyorTileId,
-        classArray
-      );
-    }
+    var conveyorTile = conveyorTiles.addConveyorTile(
+      slot,
+      conveyorTileId,
+      conveyorTileType,
+      classArray
+    );
 
     domStyle.set(conveyorTile, {
       "margin-left": `${measurements.conveyorTileOnBoardLeftMargin}px`,

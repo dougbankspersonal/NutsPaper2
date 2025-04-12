@@ -804,10 +804,6 @@ define([
     console.assert(isConveyorTileType(conveyorTileType), "Invalid tile type");
 
     var extraClasses = [];
-    if (conveyorTileType == conveyorTileTypes.Joiner) {
-      extraClasses = ["joiner"];
-      conveyorTyppe = conveyorTileTypes.Joiner;
-    }
 
     var classArray = genericUtils.growOptStringArray(
       opt_classArray,
@@ -818,21 +814,12 @@ define([
     var slot = dom.byId(slotId);
     var conveyorTileId = getNextConveyorTileId();
 
-    var conveyorTile;
-    if (conveyorTileType == conveyorTileTypes.Cross) {
-      conveyorTile = conveyorTiles.addCrossTile(
-        slot,
-        conveyorTileId,
-        classArray
-      );
-    } else {
-      conveyorTile = conveyorTiles.addSplitterJoinerTile(
-        slot,
-        conveyorTileId,
-        splitsToTheLeft,
-        classArray
-      );
-    }
+    var conveyorTile = conveyorTiles.addConveyorTile(
+      slot,
+      conveyorTileId,
+      conveyorTileType,
+      classArray
+    );
 
     domStyle.set(conveyorTile, {
       "margin-left": `${measurements.conveyorTileOnBoardLeftMargin}px`,

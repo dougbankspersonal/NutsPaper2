@@ -5,6 +5,7 @@ define([
   "sharedJavascript/genericUtils",
   "sharedJavascript/htmlUtils",
   "javascript/beltUtils",
+  "javascript/conveyorTileTypes",
   "javascript/measurements",
   "dojo/domReady!",
 ], function (
@@ -14,6 +15,7 @@ define([
   genericUtils,
   htmlUtils,
   beltUtils,
+  conveyorTileTypes,
   measurements
 ) {
   function getCurvePoints() {
@@ -170,13 +172,18 @@ define([
 
   function addConveyorTile(
     parentNode,
-    conveyorTileId,
+    tileId,
     conveyorTileType,
     opt_classArray
   ) {
+    debugLog.debugLog("ConveyorTiles", "addConveyorTile: tileId = " + tileId);
+    debugLog.debugLog(
+      "ConveyorTiles",
+      "addConveyorTile: conveyorTileType = " + conveyorTileType
+    );
     var conveyorTile = addEmptyConveyorTileElement(
       parentNode,
-      conveyorTileId,
+      tileId,
       opt_classArray
     );
 
@@ -184,20 +191,28 @@ define([
     // "right" belt: moves from top right to bottom left: /
     // Present in cross X, JoinerLefr |/, SplitterLeft /|
     if (
-      conveyorTileType == "Cross" ||
-      conveyorTileType == "JoinerLeft" ||
-      conveyorTileType == "SplitterLeft"
+      conveyorTileType == conveyorTileTypes.Cross ||
+      conveyorTileType == conveyorTileTypes.JoinerLeft ||
+      conveyorTileType == conveyorTileTypes.SplitterLeft
     ) {
+      debugLog.debugLog(
+        "ConveyorTiles",
+        "addConveyorTile: addRightToLeftBelt."
+      );
       addRightToLeftBelt(conveyorTile);
     }
 
     // "left" belt: moves from top left to bottom right: \
     // Present in cross X, JoinerRight \|, SplitterRight |\
     if (
-      conveyorTileType == "Cross" ||
-      conveyorTileType == "JoinerRight" ||
-      conveyorTileType == "SplitterRight"
+      conveyorTileType == conveyorTileTypes.Cross ||
+      conveyorTileType == conveyorTileTypes.JoinerRight ||
+      conveyorTileType == conveyorTileTypes.SplitterRight
     ) {
+      debugLog.debugLog(
+        "ConveyorTiles",
+        "addConveyorTile: addLeftToRightBelt."
+      );
       addLeftToRightBelt(conveyorTile);
     }
 
@@ -207,14 +222,34 @@ define([
       conveyorTileType == "JoinerRight" ||
       conveyorTileType == "SplitterLeft"
     ) {
-      addLeftToRightBelt(conveyorTile);
+      debugLog.debugLog("ConveyorTiles", "addConveyorTile: addStraightBelt.");
+      // Right to Right belt.
+      var xOffset = -measurements.beltCenterOffsetInConveyorTile;
+      beltUtils.addStraightBelt(conveyorTile, {
+        isLeft: false,
+        xOffset: xOffset,
+      });
+    }
+
+    // left-side straight belt: top left to bottom left.
+    // Present in JoinerLeft and SplitterRight.
+    if (
+      conveyorTileType == "JoinerLeft" ||
+      conveyorTileType == "SplitterRight"
+    ) {
+      // Left to Left belt.
+      var xOffset = measurements.beltCenterOffsetInConveyorTile;
+      beltUtils.addStraightBelt(conveyorTile, {
+        isLeft: true,
+        xOffset: xOffset,
+      });
     }
 
     // Add cro
     return conveyorTile;
   }
 
-  function addConveyorTilesPage(bodyNode, numConveyorTiles, conveyorTileType) {
+  function addConveyorTilesPage(bodyNode, conveyorTileType, numConveyorTiles) {
     var pageNode = htmlUtils.addPageOfItems(bodyNode);
 
     for (let i = 0; i < numConveyorTiles; i++) {
@@ -225,7 +260,7 @@ define([
     return pageNode;
   }
 
-  function createConveyorTiles(totalNumTiles, conveyorTileType) {
+  function createConveyorTiles(conveyorTileType, totalNumTiles) {
     var bodyNode = dom.byId("body");
     var stripsPerPage = 12;
     var numPages = Math.ceil(totalNumTiles / stripsPerPage);
@@ -234,14 +269,15 @@ define([
         stripsPerPage,
         totalNumTiles - i * stripsPerPage
       );
-      addConveyorTilesPage(bodyNode, numStripsThisPage, conveyorTileType);
+      addConveyorTilesPage(bodyNode, conveyorTileType, numStripsThisPage);
     }
   }
 
   // This returned object becomes the defined value of this module
   return {
+    // Add just pone CT inside somme existing div.
+    addConveyorTile: addConveyorTile,
+    // Make a whole page pf all ct CVs.
     createConveyorTiles: createConveyorTiles,
-    addCrossTile: addCrossTile,
-    addSplitterJoinerTile: addSplitterJoinerTile,
   };
 });

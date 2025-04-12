@@ -36,7 +36,7 @@ define([
     return beltSegment;
   }
 
-  var validBeltConfigKeys = {
+  var validStraightBeltConfigKeys = {
     // Should we hide the top of the belt (used for top row, we don't want belt above dispensers)
     hideBeltTop: true,
     // Should we hide the bottom of the belt (used for bottom row, we don't want belt below box holders)
@@ -45,47 +45,42 @@ define([
     // On an individual tile we don't want/need that.
     useLocalZIndex: true,
     xOffset: true,
+    isLeft: true,
   };
 
-  function sanityCheckBeltConfigs(beltConfigs) {
-    genericUtils.sanityCheckTable(beltConfigs, validBeltConfigKeys);
-  }
-
-  function addStraightBelt(conveyorTile, isLeft) {
-    var belt = htmlUtils.addDiv(
-      conveyorTile,
-      ["belt", isLeft ? "left" : "right"],
-      isLeft ? "leftBelt" : "rightBelt"
+  function sanityCheckStraightBeltConfigs(straightBeltConfigs) {
+    genericUtils.sanityCheckTable(
+      straightBeltConfigs,
+      validStraightBeltConfigKeys
     );
-    var xOffset = isLeft
-      ? measurements.beltCenterOffsetInConveyorTile
-      : measurements.conveyorTileInnerWidth -
-        measurements.beltCenterOffsetInConveyorTile;
-    var zIndex = measurements.beltSegmentsPerRow + 1;
-    var configs = {
-      zIndex: zIndex,
-    };
-    for (let i = 0; i < measurements.beltSegmentsPerRow; i++) {
-      var yOffset =
-        measurements.beltSegmentOffset / 2 + i * measurements.beltSegmentOffset;
-      beltUtils.addBeltSegment(belt, xOffset, yOffset, configs);
-      configs.zIndex--;
-    }
   }
 
-  function addStraightBelt(parentNode, opt_beltConfigs) {
-    var beltConfigs = opt_beltConfigs ? opt_beltConfigs : {};
-    sanityCheckBeltConfigs(beltConfigs);
+  function addStraightBelt(parentNode, opt_straightBeltConfigs) {
+    var straightBeltConfigs = opt_straightBeltConfigs
+      ? opt_straightBeltConfigs
+      : {};
+    sanityCheckStraightBeltConfigs(straightBeltConfigs);
 
-    debugLog.debugLog("Belts", "addStraightBelt: beltConfigs = ", beltConfigs);
+    debugLog.debugLog(
+      "Belts",
+      "addStraightBelt: beltConfigs = ",
+      straightBeltConfigs
+    );
 
-    var hideBeltTop = beltConfigs.hideBeltTop ? true : false;
-    var hideBeltBottom = beltConfigs.hideBeltBottom ? true : false;
-    var xOffset = beltConfigs.xOffset
-      ? beltConfigs.xOffset
+    var hideBeltTop = straightBeltConfigs.hideBeltTop ? true : false;
+    var hideBeltBottom = straightBeltConfigs.hideBeltBottom ? true : false;
+    var xOffset = straightBeltConfigs.xOffset
+      ? straightBeltConfigs.xOffset
       : measurements.slotWidth / 2;
 
-    var belt = htmlUtils.addDiv(parentNode, ["belt", "straight"], "belt");
+    var classArray = ["belt", "straight"];
+    if (straightBeltConfigs.isLeft) {
+      classArray.push("leftStraight");
+    } else {
+      classArray.push("rightStraight");
+    }
+
+    var belt = htmlUtils.addDiv(parentNode, classArray, "belt");
     domStyle.set(belt, {
       "z-index": `${measurements.beltZIndex}`,
       left: `${xOffset}px`,
@@ -95,7 +90,7 @@ define([
     });
 
     var options = {};
-    if (beltConfigs.useLocalZIndex) {
+    if (straightBeltConfigs.useLocalZIndex) {
       options.zIndex = measurements.beltSegmentsPerRow + 1;
     }
 
@@ -109,7 +104,7 @@ define([
       var yOffset =
         measurements.beltSegmentOffset / 2 + i * measurements.beltSegmentOffset;
       addBeltSegment(belt, 0, yOffset, options);
-      if (beltConfigs.useLocalZIndex) {
+      if (straightBeltConfigs.useLocalZIndex) {
         options.zIndex--;
       }
     }

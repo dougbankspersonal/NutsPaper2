@@ -14,7 +14,7 @@ define([
   var orderedConveyorTileTypes = [
     Cross,
     JoinerLeft,
-    JoineRight,
+    JoinerRight,
     SplitterLeft,
     SplitterRight,
   ];

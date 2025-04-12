@@ -39,9 +39,16 @@
         "sharedJavascript/debugLog",
         "sharedJavascript/systemConfigs",
         "javascript/conveyorTiles",
+        "javascript/conveyorTileTypes",
         "javascript/measurements",
-      ], function (debugLog, systemConfigs, conveyorTiles, measurements) {
-        var numSplitterJoinerTiles = 8;
+      ], function (
+        debugLog,
+        systemConfigs,
+        conveyorTiles,
+        conveyorTileTypes,
+        measurements
+      ) {
+        var numTotalSplitterEachArity = 4;
         debugLog.debugLog(
           "Refactor",
           "Doug: systemConfigs = " + JSON.stringify(systemConfigs)
@@ -50,7 +57,22 @@
           systemConfigs.addTileSystemConfigs(measurements.conveyorTileGap)
         );
 
-        conveyorTiles.createConveyorTiles(numSplitterJoinerTiles, true);
+        debugLog.debugLog(
+          "Refactor",
+          "Doug: systemConfigs = " + JSON.stringify(systemConfigs)
+        );
+        systemConfigs.setSystemConfigs(
+          systemConfigs.addTileSystemConfigs(measurements.conveyorTileGap)
+        );
+        conveyorTiles.createConveyorTiles(
+          conveyorTileTypes.SplitterLeft,
+          numTotalSplitterEachArity
+        );
+
+        conveyorTiles.createConveyorTiles(
+          conveyorTileTypes.SplitterRight,
+          numTotalSplitterEachArity
+        );
       });
     </script>
   </body>

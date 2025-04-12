@@ -39,8 +39,15 @@
         "sharedJavascript/debugLog",
         "sharedJavascript/systemConfigs",
         "javascript/conveyorTiles",
+        "javascript/conveyorTileTypes",
         "javascript/measurements",
-      ], function (debugLog, systemConfigs, conveyorTiles, measurements) {
+      ], function (
+        debugLog,
+        systemConfigs,
+        conveyorTiles,
+        conveyorTileTypes,
+        measurements
+      ) {
         var numConveyorTiles = 48;
         debugLog.debugLog(
           "Refactor",
@@ -49,7 +56,10 @@
         systemConfigs.setSystemConfigs(
           systemConfigs.addTileSystemConfigs(measurements.conveyorTileGap)
         );
-        conveyorTiles.createConveyorTiles(numConveyorTiles);
+        conveyorTiles.createConveyorTiles(
+          conveyorTileTypes.Cross,
+          numConveyorTiles
+        );
       });
     </script>
   </body>
