@@ -181,8 +181,8 @@ define([
     );
 
     // Add belts.
-    // "right" belt: moves from top right to bottom left.
-    // Present in cross, JoinerLeft, SplitterLeft.
+    // "right" belt: moves from top right to bottom left: /
+    // Present in cross X, JoinerLefr |/, SplitterLeft /|
     if (
       conveyorTileType == "Cross" ||
       conveyorTileType == "JoinerLeft" ||
@@ -191,6 +191,8 @@ define([
       addRightToLeftBelt(conveyorTile);
     }
 
+    // "left" belt: moves from top left to bottom right: \
+    // Present in cross X, JoinerRight \|, SplitterRight |\
     if (
       conveyorTileType == "Cross" ||
       conveyorTileType == "JoinerRight" ||
@@ -199,12 +201,11 @@ define([
       addLeftToRightBelt(conveyorTile);
     }
 
-    // left hand straight belt: top left top bottom left.
-    // Presentin JoinerLeft and SplitterLeft.
+    // right-side straight belt: top right to bottom right.
+    // Present in JoinerRight and SplitterLeft.
     if (
-      conveyorTileType == "Cross" ||
-      conveyorTileType == "JoinerLeft" ||
-      conveyorTileType == "SplitterRight"
+      conveyorTileType == "JoinerRight" ||
+      conveyorTileType == "SplitterLeft"
     ) {
       addLeftToRightBelt(conveyorTile);
     }
@@ -213,26 +214,18 @@ define([
     return conveyorTile;
   }
 
-  function addConveyorTilesPage(
-    bodyNode,
-    numConveyorTiles,
-    opt_leftSplitsJoiner
-  ) {
+  function addConveyorTilesPage(bodyNode, numConveyorTiles, conveyorTileType) {
     var pageNode = htmlUtils.addPageOfItems(bodyNode);
 
     for (let i = 0; i < numConveyorTiles; i++) {
       var tileId = "tileId" + i;
-      if (opt_leftSplitsJoiner) {
-        addSplitterJoinerTile(pageNode, tileId, i % 2 == 0);
-      } else {
-        addConveyorTile(pageNode, tileId);
-      }
+      addConveyorTile(pageNode, tileId, conveyorTileType);
     }
 
     return pageNode;
   }
 
-  function createConveyorTiles(totalNumTiles, opt_leftSplitsJoiner) {
+  function createConveyorTiles(totalNumTiles, conveyorTileType) {
     var bodyNode = dom.byId("body");
     var stripsPerPage = 12;
     var numPages = Math.ceil(totalNumTiles / stripsPerPage);
@@ -241,7 +234,7 @@ define([
         stripsPerPage,
         totalNumTiles - i * stripsPerPage
       );
-      addConveyorTilesPage(bodyNode, numStripsThisPage, opt_leftSplitsJoiner);
+      addConveyorTilesPage(bodyNode, numStripsThisPage, conveyorTileType);
     }
   }
 
