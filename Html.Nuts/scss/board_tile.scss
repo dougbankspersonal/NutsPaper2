@@ -4,6 +4,10 @@
   flex-shrink: 0;
 }
 
+.demo_board .board_tile.box_holder {
+  box-shadow: 0px 0px 8px 4px rgba(0, 0, 0, 0.6);
+}
+
 .board_tile {
   background-image: url("../images/Factory/WholeFloorNoDebris.png");
   background-position: center center; /* Center the image horizontally and vertically */

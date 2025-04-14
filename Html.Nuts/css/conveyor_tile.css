@@ -21,8 +21,5 @@
   height: 100%;
   opacity: 0.4;
 }
-.demo_board .conveyor_tile.joiner {
-  transform: rotate(180deg);
-}
 
 /*# sourceMappingURL=conveyor_tile.css.map */

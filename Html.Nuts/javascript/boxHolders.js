@@ -19,7 +19,7 @@ define([
 ) {
   var boxHolderCardConfigs = [
     {
-      orderOfNuts: [
+      orderOfNutIconTypes: [
         iconTypes.AlmondIcon,
         iconTypes.CashewIcon,
         iconTypes.PeanutIcon,
@@ -27,7 +27,7 @@ define([
       ],
     },
     {
-      orderOfNuts: [
+      orderOfNutIconTypes: [
         iconTypes.AlmondIcon,
         iconTypes.CashewIcon,
         iconTypes.PistachioIcon,
@@ -35,7 +35,7 @@ define([
       ],
     },
     {
-      orderOfNuts: [
+      orderOfNutIconTypes: [
         iconTypes.AlmondIcon,
         iconTypes.PeanutIcon,
         iconTypes.CashewIcon,
@@ -43,7 +43,7 @@ define([
       ],
     },
     {
-      orderOfNuts: [
+      orderOfNutIconTypes: [
         iconTypes.AlmondIcon,
         iconTypes.PeanutIcon,
         iconTypes.PistachioIcon,
@@ -51,7 +51,7 @@ define([
       ],
     },
     {
-      orderOfNuts: [
+      orderOfNutIconTypes: [
         iconTypes.AlmondIcon,
         iconTypes.PistachioIcon,
         iconTypes.CashewIcon,
@@ -59,7 +59,7 @@ define([
       ],
     },
     {
-      orderOfNuts: [
+      orderOfNutIconTypes: [
         iconTypes.AlmondIcon,
         iconTypes.PistachioIcon,
         iconTypes.PeanutIcon,
@@ -67,7 +67,7 @@ define([
       ],
     },
     {
-      orderOfNuts: [
+      orderOfNutIconTypes: [
         iconTypes.AlmondIcon,
         iconTypes.CashewIcon,
         iconTypes.PeanutIcon,
@@ -75,7 +75,7 @@ define([
       ],
     },
     {
-      orderOfNuts: [
+      orderOfNutIconTypes: [
         iconTypes.AlmondIcon,
         iconTypes.PeanutIcon,
         iconTypes.CashewIcon,
@@ -105,8 +105,8 @@ define([
       miscTypes.CrossBar
     );
 
-    for (var i = 0; i < config.orderOfNuts.length; i++) {
-      var iconType = config.orderOfNuts[i];
+    for (var i = 0; i < config.orderOfNutIconTypes.length; i++) {
+      var iconType = config.orderOfNutIconTypes[i];
       var quadrantId = "quadrant_" + i;
       var classArray = ["quadrant"];
       var quadrant = htmlUtils.addDiv(crossBarNode, classArray, quadrantId);
@@ -160,16 +160,16 @@ define([
       columnIndex
     );
     //
-    var nutIndex = numQuarterRightTurns % config.orderOfNuts.length;
+    var nutIndex = numQuarterRightTurns % config.orderOfNutIconTypes.length;
     while (nutIndex < 0) {
-      nutIndex += config.orderOfNuts.length;
+      nutIndex += config.orderOfNutIconTypes.length;
     }
-    var nutType = config.orderOfNuts[nutIndex];
+    var nutType = config.orderOfNutIconTypes[nutIndex];
     return nutType;
   }
 
-  function setQuarterTurns(card, numQuarterTurns) {
-    var deg = -90 * numQuarterTurns;
+  function setQuarterRightTurns(card, numQuarterRightTurns) {
+    var deg = 90 * numQuarterRightTurns;
     domStyle.set(card, "transform", "rotate(" + deg + "deg)");
   }
 
@@ -178,7 +178,8 @@ define([
     addBoxHolderCard: addBoxHolderCard,
     getNumCards: getNumCards,
     getTopNutType: getTopNutType,
-    setQuarterTurns: setQuarterTurns,
+    setQuarterRightTurns: setQuarterRightTurns,
+
     boxHolderCardConfigs: boxHolderCardConfigs,
   };
 });

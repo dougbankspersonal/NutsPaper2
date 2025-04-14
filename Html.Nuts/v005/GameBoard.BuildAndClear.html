@@ -53,11 +53,13 @@
         "sharedJavascript/genericUtils",
         "sharedJavascript/systemConfigs",
         "javascript/boxHolders",
+        "javascript/conveyorTileTypes",
         "javascript/gameBoard",
         "javascript/gameUtils",
         "javascript/markers",
         "javascript/markerTypes",
         "javascript/machineTypes",
+        "javascript/placeConveyorTileOnBoard",
         "javascript/rowTypes",
         "javascript/versionDetails",
       ], function (
@@ -65,11 +67,13 @@
         genericUtils,
         systemConfigs,
         boxHolders,
+        conveyorTileTypes,
         gameBoard,
         gameUtils,
         markers,
         markerTypes,
         machineTypes,
+        placeConveyorTileOnBoard,
         rowTypes,
         versionDetails
       ) {
@@ -92,70 +96,6 @@
           orderedRowTypes: orderedRowTypes,
           totalNumColumns: totalNumColumns,
         });
-
-        // Add nut dispensers
-        var quarterTurns = [2, 2, 1, 1, 0, 0, 2, 2];
-        gameBoard.addNutDispensersAndBoxHolders(
-          orderedRowTypes,
-          totalNumColumns,
-          quarterTurns
-        );
-
-        // Salters and Roasters
-        // Add Salters.
-        var salterRowIndex = genericUtils.getIndexOfFirstInstanceInArray(
-          orderedRowTypes,
-          rowTypes.RowTypes.Salter
-        );
-        gameBoard.addMachineToBoard(
-          salterRowIndex,
-          1,
-          machineTypes.SalterMachine
-        );
-        gameBoard.addMachineToBoard(
-          salterRowIndex,
-          6,
-          machineTypes.SalterMachine
-        );
-
-        // Add Roasters.
-        var roasterRowIndex = genericUtils.getIndexOfFirstInstanceInArray(
-          orderedRowTypes,
-          rowTypes.RowTypes.Roaster
-        );
-        gameBoard.addMachineToBoard(
-          roasterRowIndex,
-          2,
-          machineTypes.RoasterMachine
-        );
-        gameBoard.addMachineToBoard(
-          roasterRowIndex,
-          5,
-          machineTypes.RoasterMachine
-        );
-
-        // Add Squirrel.
-        var squirrelRowIndex = genericUtils.getIndexOfFirstInstanceInArray(
-          orderedRowTypes,
-          rowTypes.RowTypes.Squirrel
-        );
-        gameBoard.addMarkerToBoard(squirrelRowIndex, 4, markerTypes.Squirrel);
-
-        // Add conveyor tiles.
-        // gameBoard.placeConveyorTileOnBoard(2, 6);
-        gameBoard.placeConveyorTileOnBoard(2, 5);
-        gameBoard.placeConveyorTileOnBoard(7, 4, conveyorTileTypes.Cross, [
-          "ghost",
-        ]);
-        // gameBoard.placeConveyorTileOnBoard(9, 1);
-        gameBoard.placeConveyorTileOnBoard(9, 5);
-        gameBoard.placeConveyorTileOnBoard(10, 0);
-
-        gameBoard.placeConveyorTileOnBoard(5, 1);
-        gameBoard.highlightConveyorTile(5, 1, gameUtils.blueHighlightColor);
-        gameBoard.highlightConveyorTile(7, 4, gameUtils.redHighlightColor);
-
-        connectingPath.highlightConnectingPaths();
       });
     </script>
   </body>

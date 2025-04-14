@@ -94,25 +94,26 @@
         });
 
         // Add nut dispensers
-        var quarterLeftTurns = [3, 2, 0, 0, 3, 1, 1, 2];
-        gameBoard.addNutDispensersAndBoxHolders(
+        var quarterRightTurns = [3, 2, 0, 0, 3, 1, 1, 2];
+        placeElementOnBoard.placeBoxHolders(orderedRowTypes, totalNumColumns);
+        placeElementOnBoard.placeNutDispensers(
           orderedRowTypes,
           totalNumColumns,
-          quarterLeftTurns
+          quarterRightTurns
         );
 
         // Salters and Roasters
         // Add Salters.
         var salterRowIndex = genericUtils.getIndexOfFirstInstanceInArray(
           orderedRowTypes,
-          rowTypes.RowTypes.Salter
+          rowTypes.Salter
         );
-        gameBoard.addMachineToBoard(
+        placeElementOnBoard.placeMachineOnBoard(
           salterRowIndex,
           1,
           machineTypes.SalterMachine
         );
-        gameBoard.addMachineToBoard(
+        placeElementOnBoard.placeMachineOnBoard(
           salterRowIndex,
           5,
           machineTypes.SalterMachine
@@ -121,14 +122,14 @@
         // Add Roasters.
         var roasterRowIndex = genericUtils.getIndexOfFirstInstanceInArray(
           orderedRowTypes,
-          rowTypes.RowTypes.Roaster
+          rowTypes.Roaster
         );
-        gameBoard.addMachineToBoard(
+        placeElementOnBoard.placeMachineOnBoard(
           roasterRowIndex,
           3,
           machineTypes.RoasterMachine
         );
-        gameBoard.addMachineToBoard(
+        placeElementOnBoard.placeMachineOnBoard(
           roasterRowIndex,
           6,
           machineTypes.RoasterMachine
@@ -137,32 +138,49 @@
         // Add Squirrel.
         var squirrelRowIndex = genericUtils.getIndexOfFirstInstanceInArray(
           orderedRowTypes,
-          rowTypes.RowTypes.Squirrel
+          rowTypes.Squirrel
         );
-        gameBoard.addMarkerToBoard(squirrelRowIndex, 2, markerTypes.Squirrel);
+        placeElementOnBoard.placeMarkerOnBoard(
+          squirrelRowIndex,
+          2,
+          markerTypes.Squirrel
+        );
 
         // Add conveyor tiles.
-        // gameBoard.placeConveyorTileOnBoard(2, 6);
-        gameBoard.placeConveyorTileOnBoard(2, 1);
-        gameBoard.placeConveyorTileOnBoard(5, 6);
-        gameBoard.placeConveyorTileOnBoard(7, 4, ["ghost"]);
-        gameBoard.placeConveyorTileOnBoard(7, 3);
-        // gameBoard.placeConveyorTileOnBoard(9, 1);
-        //  gameBoard.placeConveyorTileOnBoard(9, 5, onveyorTileTypes.Cross, ["ghost"]);
-        gameBoard.placeConveyorTileOnBoard(10, 0);
+        // placeConveyorTileOnBoard.placeConveyorTile(conveyorTileTypes.Cross, 2, 6);
+        placeConveyorTileOnBoard.placeConveyorTile(
+          conveyorTileTypes.Cross,
+          2,
+          1
+        );
+        placeConveyorTileOnBoard.placeConveyorTile(
+          conveyorTileTypes.Cross,
+          5,
+          6
+        );
+        placeConveyorTileOnBoard.placeConveyorTile(
+          conveyorTileTypes.Cross,
+          7,
+          4,
+          ["ghost"]
+        );
+        placeConveyorTileOnBoard.placeConveyorTile(
+          conveyorTileTypes.Cross,
+          7,
+          3
+        );
+        // placeConveyorTileOnBoard.placeConveyorTile(conveyorTileTypes.Cross, 9, 1);
+        //  placeConveyorTileOnBoard.placeConveyorTile(conveyorTileTypes.Cross, 9, 5, onveyorTileTypes.Cross, ["ghost"]);
+        placeConveyorTileOnBoard.placeConveyorTile(
+          conveyorTileTypes.Cross,
+          10,
+          0
+        );
 
-        gameBoard.highlightConveyorTile(7, 3, gameUtils.blueHighlightColor);
-        /*
-        gameBoard.placeConveyorTileOnBoard(5, 1);
-        gameBoard.DEPRECATED_highlightPath(2, gameUtils.yellowHighlightColor);
-        */
-        gameBoard.DEPRECATED_highlightPath(3, gameUtils.yellowHighlightColor);
-        gameBoard.DEPRECATED_highlightPath(4, gameUtils.yellowHighlightColor);
-        gameBoard.DEPRECATED_highlightPath(5, gameUtils.yellowHighlightColor);
+        highlights.highlightConveyorTile(7, 3, gameUtils.blueHighlightColor);
+        highlights.highlightAllConnectingPaths();
 
-        gameBoard.DEPRECATED_highlightPath(7, gameUtils.yellowHighlightColor);
-
-        gameBoard.highlightBoxHolder(6, gameUtils.greenHighlightColor);
+        highlights.highlightBoxHolder(6, gameUtils.greenHighlightColor);
       });
     </script>
   </body>

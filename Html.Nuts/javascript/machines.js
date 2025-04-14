@@ -52,7 +52,7 @@ define([
     var beltConfigs = {
       hideBeltTop: hideBeltTop,
       useLocalZIndex: true,
-      xOffset: measurements.elementWidth / 2,
+      leftPx: measurements.elementWidth / 2,
     };
     beltUtils.addStraightBelt(machineWrapperNode, beltConfigs);
 

@@ -46,7 +46,7 @@ define([
 
     var beltConfigs = {
       useLocalZIndex: true,
-      xOffset: width / 2,
+      leftPx: width / 2,
     };
     beltUtils.addStraightBelt(markerNode, beltConfigs);
 

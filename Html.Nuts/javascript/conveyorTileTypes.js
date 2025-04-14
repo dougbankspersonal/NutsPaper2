@@ -3,24 +3,40 @@ define([
   "javascript/nutTypes",
   "dojo/domReady!",
 ], function (iconTypes, nutTypes) {
-  var Cross = "Cross"; // X
-  // If type ends in left/right, and it's a joiner. that's the direction th diag moves top to bottom.
-  var JoinerLeft = "JoinerLeft"; // |/
-  var JoinerRight = "JoinerRight"; // \|
-  // If type ends in left/right, and it's a splitter. that's the direction th diag moves top to bottom.
-  var SplitterLeft = "SplitterLeft"; // /|
-  var SplitterRight = "SplitterRight"; // |\
+  /* "Left" and "Right" talk about what side the paths connect.
+  Cross: X
+  JoinerLeft: |/
+  JoinerRight: \|
+  SplitterLeft: |\
+  SplitterRight: /|
+   */
+  var Cross = "Cross";
+  var JoinerLeft = "JoinerLeft";
+  var JoinerRight = "JoinerRight";
+  var SplitterLeft = "SplitterLeft";
+  var SplitterRight = "SplitterRight";
 
+  // "Left" and "Right" talk about what side the paths connect.
   var orderedConveyorTileTypes = [
+    // X
     Cross,
+    // |/
     JoinerLeft,
+    // \|
     JoinerRight,
+    // |\
     SplitterLeft,
+    // /|
     SplitterRight,
   ];
 
   function isConveyorTileType(conveyorTileType) {
-    return conveyorTileTypes[conveyorTileType] != null;
+    for (var i = 0; i < orderedConveyorTileTypes.length; i++) {
+      if (conveyorTileType == orderedConveyorTileTypes[i]) {
+        return true;
+      }
+    }
+    return false;
   }
 
   return {

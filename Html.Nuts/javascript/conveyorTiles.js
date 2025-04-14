@@ -18,6 +18,8 @@ define([
   conveyorTileTypes,
   measurements
 ) {
+  // One set of curve points for an belt that crossees.
+  // This one cross top left to bottom right.
   function getCurvePoints() {
     var curvePoints = [];
 
@@ -36,22 +38,22 @@ define([
     var lastX = startX;
     var lastY = startY;
     curvePoints.push({
-      xOffset: lastX,
-      yOffset: lastY,
+      leftPx: lastX,
+      topPx: lastY,
     });
     // Down a step.
     lastX = lastX;
     lastY = lastY + offsetWhileTurning;
     curvePoints.push({
-      xOffset: lastX,
-      yOffset: lastY,
+      leftPx: lastX,
+      topPx: lastY,
     });
     // Down and over a bit, equal measures.
     lastX = lastX + (Math.sqrt(2) * offsetWhileTurning) / 2;
     lastY = lastY + (Math.sqrt(2) * offsetWhileTurning) / 2;
     curvePoints.push({
-      xOffset: lastX,
-      yOffset: lastY,
+      leftPx: lastX,
+      topPx: lastY,
     });
 
     // Now over to the middle.
@@ -67,8 +69,8 @@ define([
       lastX = lastX + xDelta;
       lastY = lastY + yDelta;
       curvePoints.push({
-        xOffset: lastX,
-        yOffset: lastY,
+        leftPx: lastX,
+        topPx: lastY,
       });
     }
 
@@ -77,8 +79,8 @@ define([
     for (let i = startIndex; i--; i >= 0) {
       var oldPoint = curvePoints[i];
       curvePoints.push({
-        xOffset: measurements.conveyorTileInnerWidth - oldPoint.xOffset,
-        yOffset: endY - oldPoint.yOffset,
+        leftPx: measurements.conveyorTileInnerWidth - oldPoint.leftPx,
+        topPx: endY - oldPoint.topPx,
       });
     }
 
@@ -97,9 +99,9 @@ define([
 
       thisCurvePoint.rads = 0;
       if (prevCurvePoint != null && nextCurvePoint != null) {
-        var xDelta = nextCurvePoint.xOffset - prevCurvePoint.xOffset;
-        var yDelta = nextCurvePoint.yOffset - prevCurvePoint.yOffset;
-        thisCurvePoint.rads = Math.PI / 2 + Math.atan2(yDelta, xDelta);
+        var xDelta = nextCurvePoint.leftPx - prevCurvePoint.leftPx;
+        var yDelta = nextCurvePoint.topPx - prevCurvePoint.topPx;
+        thisCurvePoint.rads = Math.atan2(xDelta, yDelta);
       }
     }
 
@@ -132,13 +134,25 @@ define([
     var configs = {
       zIndex: zIndex,
     };
+
+    debugLog.debugLog(
+      "Belts",
+      "Doug: addRightToLeftBelt: curvePoints = " + JSON.stringify(curvePoints)
+    );
     for (let index = 0; index < curvePoints.length; index++) {
+      // The original curve points decribe both left and top incresaing -> it's a dialogonal life from
+      // upper left to lower right.
+      // We are doing opposite, upper right to lower left.
+      // So we do some tweaking: x gets smaller as y gets higher,  So we are startingn upper
+      // right and going down and to the left.
+      //
       var curvePoint = curvePoints[index];
-      configs.rads = -curvePoint.rads;
+      configs.rads = curvePoint.rads;
+
       beltUtils.addBeltSegment(
         belt,
-        measurements.conveyorTileInnerWidth - curvePoint.xOffset,
-        curvePoint.yOffset,
+        measurements.conveyorTileInnerWidth - curvePoint.leftPx,
+        curvePoint.topPx,
         configs
       );
       configs.zIndex--;
@@ -158,11 +172,16 @@ define([
     };
     for (let index = 0; index < curvePoints.length; index++) {
       var curvePoint = curvePoints[index];
-      configs.rads = curvePoint.rads;
+      configs.rads = -curvePoint.rads;
+      debugLog.debugLog("Belts", "Doug: addLeftToRightBelt: index  = " + index);
+      debugLog.debugLog(
+        "Belts",
+        "Doug: addLeftToRightBelt: configs.rads  = " + configs.rads
+      );
       beltUtils.addBeltSegment(
         belt,
-        curvePoint.xOffset,
-        curvePoint.yOffset,
+        curvePoint.leftPx,
+        curvePoint.topPx,
         configs
       );
       configs.zIndex--;
@@ -181,6 +200,10 @@ define([
       "ConveyorTiles",
       "addConveyorTile: conveyorTileType = " + conveyorTileType
     );
+    debugLog.debugLog(
+      "ConveyorTiles",
+      "addConveyorTile: opt_classArray = " + JSON.stringify(opt_classArray)
+    );
     var conveyorTile = addEmptyConveyorTileElement(
       parentNode,
       tileId,
@@ -188,12 +211,12 @@ define([
     );
 
     // Add belts.
-    // "right" belt: moves from top right to bottom left: /
-    // Present in cross X, JoinerLefr |/, SplitterLeft /|
+    // Look at conveyorTileTypes pictures:
+    //
     if (
       conveyorTileType == conveyorTileTypes.Cross ||
       conveyorTileType == conveyorTileTypes.JoinerLeft ||
-      conveyorTileType == conveyorTileTypes.SplitterLeft
+      conveyorTileType == conveyorTileTypes.SplitterRight
     ) {
       debugLog.debugLog(
         "ConveyorTiles",
@@ -207,7 +230,7 @@ define([
     if (
       conveyorTileType == conveyorTileTypes.Cross ||
       conveyorTileType == conveyorTileTypes.JoinerRight ||
-      conveyorTileType == conveyorTileTypes.SplitterRight
+      conveyorTileType == conveyorTileTypes.SplitterLeft
     ) {
       debugLog.debugLog(
         "ConveyorTiles",
@@ -220,14 +243,16 @@ define([
     // Present in JoinerRight and SplitterLeft.
     if (
       conveyorTileType == "JoinerRight" ||
-      conveyorTileType == "SplitterLeft"
+      conveyorTileType == "SplitterRight"
     ) {
       debugLog.debugLog("ConveyorTiles", "addConveyorTile: addStraightBelt.");
       // Right to Right belt.
-      var xOffset = -measurements.beltCenterOffsetInConveyorTile;
+      var leftPx =
+        measurements.conveyorTileInnerWidth -
+        measurements.beltCenterOffsetInConveyorTile;
       beltUtils.addStraightBelt(conveyorTile, {
         isLeft: false,
-        xOffset: xOffset,
+        leftPx: leftPx,
       });
     }
 
@@ -235,17 +260,16 @@ define([
     // Present in JoinerLeft and SplitterRight.
     if (
       conveyorTileType == "JoinerLeft" ||
-      conveyorTileType == "SplitterRight"
+      conveyorTileType == "SplitterLeft"
     ) {
       // Left to Left belt.
-      var xOffset = measurements.beltCenterOffsetInConveyorTile;
+      var leftPx = measurements.beltCenterOffsetInConveyorTile;
       beltUtils.addStraightBelt(conveyorTile, {
         isLeft: true,
-        xOffset: xOffset,
+        leftPx: leftPx,
       });
     }
 
-    // Add cro
     return conveyorTile;
   }
 

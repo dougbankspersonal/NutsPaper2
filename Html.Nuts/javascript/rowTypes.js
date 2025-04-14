@@ -13,23 +13,6 @@ define(["dojo/domReady!"], function () {
   var Path = 12;
   var BoxHolders = 13;
 
-  var RowTypes = {
-    // Can be used to make a board in sections or a complete board.
-    Number: Number,
-    Dispenser: Dispenser,
-    Conveyor: Conveyor,
-    Squirrel: Squirrel,
-    Roaster: Roaster,
-    Salter: Salter,
-    Boxes: Boxes,
-    Heart: Heart,
-    Skull: Skull,
-    Start: Start,
-    End: End,
-    Path: Path,
-    BoxHolders: BoxHolders,
-  };
-
   function getRowTitle(rowType) {
     switch (rowType) {
       case BoxHolders:
@@ -79,7 +62,19 @@ define(["dojo/domReady!"], function () {
   }
 
   return {
-    RowTypes: RowTypes,
+    Number: Number,
+    Dispenser: Dispenser,
+    Conveyor: Conveyor,
+    Squirrel: Squirrel,
+    Roaster: Roaster,
+    Salter: Salter,
+    Boxes: Boxes,
+    Heart: Heart,
+    Skull: Skull,
+    Start: Start,
+    End: End,
+    Path: Path,
+    BoxHolders: BoxHolders,
 
     getRowTitle: getRowTitle,
     getRowEntityName: getRowEntityName,

@@ -1,4 +1,8 @@
-define(["javascript/nutTypes", "dojo/domReady!"], function (nutTypes) {
+define([
+  "sharedJavascript/debugLog",
+  "javascript/nutTypes",
+  "dojo/domReady!",
+], function (debugLog, nutTypes) {
   var AlmondIcon = nutTypes.Almond + "Icon";
   var CashewIcon = nutTypes.Cashew + "Icon";
   var PeanutIcon = nutTypes.Peanut + "Icon";
@@ -17,6 +21,29 @@ define(["javascript/nutTypes", "dojo/domReady!"], function (nutTypes) {
 
   var orderedNutIconTypes = [AlmondIcon, CashewIcon, PeanutIcon, PistachioIcon];
 
+  var iconTypeToNutTypeMap = {
+    [AlmondIcon]: nutTypes.Almond,
+    [CashewIcon]: nutTypes.Cashew,
+    [PeanutIcon]: nutTypes.Peanut,
+    [PistachioIcon]: nutTypes.Pistachio,
+  };
+
+  function getNutTypeFromIconType(iconType) {
+    debugLog.debugLog(
+      "Highlights",
+      "getNutTypeFromIconType: iconType = " + iconType
+    );
+    debugLog.debugLog(
+      "Highlights",
+      "getNutTypeFromIconType: iconTypeToNutTypeMap = " +
+        JSON.stringify(iconTypeToNutTypeMap)
+    );
+    if (iconTypeToNutTypeMap[iconType]) {
+      return iconTypeToNutTypeMap[iconType];
+    }
+    console.error("Invalid icon type: " + iconType);
+  }
+
   return {
     AlmondIcon: AlmondIcon,
     CashewIcon: CashewIcon,
@@ -27,5 +54,6 @@ define(["javascript/nutTypes", "dojo/domReady!"], function (nutTypes) {
 
     orderedIconTypes: orderedIconTypes,
     orderedNutIconTypes: orderedNutIconTypes,
+    getNutTypeFromIconType: getNutTypeFromIconType,
   };
 });

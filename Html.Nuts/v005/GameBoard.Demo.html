@@ -54,6 +54,8 @@
         "sharedJavascript/systemConfigs",
         "javascript/boxHolders",
         "javascript/conveyorTileTypes",
+        "javascript/demo",
+        "javascript/placeConveyorTileOnBoard",
         "javascript/gameBoard",
         "javascript/gameUtils",
         "javascript/markers",
@@ -67,6 +69,8 @@
         systemConfigs,
         boxHolders,
         conveyorTileTypes,
+        demo,
+        placeConveyorTileOnBoard,
         gameBoard,
         gameUtils,
         markers,
@@ -95,71 +99,7 @@
           totalNumColumns: totalNumColumns,
         });
 
-        // Add nut dispensers
-        var quarterLeftTurns = [3, 2, 0, 3, 0, 0, 1, 2];
-        gameBoard.addNutDispensersAndBoxHolders(
-          orderedRowTypes,
-          totalNumColumns,
-          quarterLeftTurns
-        );
-
-        // Salters and Roasters
-        // Add Salters.
-        var salterRowIndex = genericUtils.getIndexOfFirstInstanceInArray(
-          orderedRowTypes,
-          rowTypes.RowTypes.Salter
-        );
-        gameBoard.addMachineToBoard(
-          salterRowIndex,
-          1,
-          machineTypes.SalterMachine
-        );
-        gameBoard.addMachineToBoard(
-          salterRowIndex,
-          5,
-          machineTypes.SalterMachine
-        );
-
-        // Add Roasters.
-        var roasterRowIndex = genericUtils.getIndexOfFirstInstanceInArray(
-          orderedRowTypes,
-          rowTypes.RowTypes.Roaster
-        );
-        gameBoard.addMachineToBoard(
-          roasterRowIndex,
-          3,
-          machineTypes.RoasterMachine
-        );
-        gameBoard.addMachineToBoard(
-          roasterRowIndex,
-          6,
-          machineTypes.RoasterMachine
-        );
-
-        // Add Squirrel.
-        var squirrelRowIndex = genericUtils.getIndexOfFirstInstanceInArray(
-          orderedRowTypes,
-          rowTypes.RowTypes.Squirrel
-        );
-        gameBoard.addMarkerToBoard(squirrelRowIndex, 2, markerTypes.Squirrel);
-
-        // Add conveyor tiles.
-        // gameBoard.placeConveyorTileOnBoard(2, 6);
-        gameBoard.placeConveyorTileOnBoard(2, 1);
-        gameBoard.placeConveyorTileOnBoard(3, 2);
-        gameBoard.placeConveyorTileOnBoard(5, 6);
-        gameBoard.placeConveyorTileOnBoard(7, 4);
-        // gameBoard.placeConveyorTileOnBoard(9, 1);
-        gameBoard.placeConveyorTileOnBoard(9, 5, coonveyorTileTypes.Cross, [
-          "ghost",
-        ]);
-        gameBoard.placeConveyorTileOnBoard(10, 0);
-
-        gameBoard.highlightConveyorTile(9, 5, gameUtils.blueHighlightColor);
-        /*
-        gameBoard.placeConveyorTileOnBoard(5, 1);
-        gameBoard.DEPRECATED_highlightPath(2, gameUtils.yellowHighlightColor);
-        */
+        demo.addDemoConfig();
       });
     </script>
   </body>

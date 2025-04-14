@@ -53,6 +53,8 @@
         "sharedJavascript/genericUtils",
         "sharedJavascript/systemConfigs",
         "javascript/boxHolders",
+        "javascript/conveyorTileTypes",
+        "javascript/placeConveyorTileOnBoard",
         "javascript/gameBoard",
         "javascript/gameUtils",
         "javascript/markers",
@@ -65,6 +67,8 @@
         genericUtils,
         systemConfigs,
         boxHolders,
+        conveyorTileTypes,
+        placeConveyorTileOnBoard,
         gameBoard,
         gameUtils,
         markers,
@@ -94,7 +98,8 @@
         });
 
         // Add nut dispensers
-        gameBoard.addNutDispensersAndBoxHolders(
+        placeElementOnBoard.placeBoxHolders(orderedRowTypes, totalNumColumns);
+        placeElementOnBoard.placeNutDispensers(
           orderedRowTypes,
           totalNumColumns
         );
@@ -103,14 +108,14 @@
         // Add Salters.
         var salterRowIndex = genericUtils.getIndexOfFirstInstanceInArray(
           orderedRowTypes,
-          rowTypes.RowTypes.Salter
+          rowTypes.Salter
         );
-        gameBoard.addMachineToBoard(
+        placeElementOnBoard.placeMachineOnBoard(
           salterRowIndex,
           1,
           machineTypes.SalterMachine
         );
-        gameBoard.addMachineToBoard(
+        placeElementOnBoard.placeMachineOnBoard(
           salterRowIndex,
           6,
           machineTypes.SalterMachine
@@ -119,14 +124,14 @@
         // Add Roasters.
         var roasterRowIndex = genericUtils.getIndexOfFirstInstanceInArray(
           orderedRowTypes,
-          rowTypes.RowTypes.Roaster
+          rowTypes.Roaster
         );
-        gameBoard.addMachineToBoard(
+        placeElementOnBoard.placeMachineOnBoard(
           roasterRowIndex,
           2,
           machineTypes.RoasterMachine
         );
-        gameBoard.addMachineToBoard(
+        placeElementOnBoard.placeMachineOnBoard(
           roasterRowIndex,
           5,
           machineTypes.RoasterMachine
@@ -135,22 +140,47 @@
         // Add Squirrel.
         var squirrelRowIndex = genericUtils.getIndexOfFirstInstanceInArray(
           orderedRowTypes,
-          rowTypes.RowTypes.Squirrel
+          rowTypes.Squirrel
         );
-        gameBoard.addMarkerToBoard(squirrelRowIndex, 4, markerTypes.Squirrel);
+        placeElementOnBoard.placeMarkerOnBoard(
+          squirrelRowIndex,
+          4,
+          markerTypes.Squirrel
+        );
 
         // Add conveyor tiles.
-        gameBoard.placeConveyorTileOnBoard(2, 6);
-        gameBoard.placeConveyorTileOnBoard(5, 1);
-        gameBoard.placeConveyorTileOnBoard(7, 4);
-        gameBoard.placeConveyorTileOnBoard(9, 5);
-        gameBoard.placeConveyorTileOnBoard(9, 1);
-        gameBoard.placeConveyorTileOnBoard(10, 0);
+        placeConveyorTileOnBoard.placeConveyorTile(
+          conveyorTileTypes.Cross,
+          2,
+          6
+        );
+        placeConveyorTileOnBoard.placeConveyorTile(
+          conveyorTileTypes.Cross,
+          5,
+          1
+        );
+        placeConveyorTileOnBoard.placeConveyorTile(
+          conveyorTileTypes.Cross,
+          7,
+          4
+        );
+        placeConveyorTileOnBoard.placeConveyorTile(
+          conveyorTileTypes.Cross,
+          9,
+          5
+        );
+        placeConveyorTileOnBoard.placeConveyorTile(
+          conveyorTileTypes.Cross,
+          9,
+          1
+        );
+        placeConveyorTileOnBoard.placeConveyorTile(
+          conveyorTileTypes.Cross,
+          10,
+          0
+        );
 
-        gameBoard.DEPRECATED_highlightPath(1, gameUtils.yellowHighlightColor);
-        gameBoard.DEPRECATED_highlightPath(4, gameUtils.yellowHighlightColor);
-        gameBoard.DEPRECATED_highlightPath(6, gameUtils.yellowHighlightColor);
-        gameBoard.DEPRECATED_highlightPath(7, gameUtils.yellowHighlightColor);
+        highlights.highlightAllConnectingPaths();
       });
     </script>
   </body>

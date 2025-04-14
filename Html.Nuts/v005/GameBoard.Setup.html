@@ -93,7 +93,8 @@
           totalNumColumns: totalNumColumns,
         });
 
-        gameBoard.addNutDispensersAndBoxHolders(
+        placeElementOnBoard.placeBoxHolders(orderedRowTypes, totalNumColumns);
+        placeElementOnBoard.placeNutDispensers(
           orderedRowTypes,
           totalNumColumns
         );
@@ -102,14 +103,14 @@
         // Add Salters.
         var salterRowIndex = genericUtils.getIndexOfFirstInstanceInArray(
           orderedRowTypes,
-          rowTypes.RowTypes.Salter
+          rowTypes.Salter
         );
-        gameBoard.addMachineToBoard(
+        placeElementOnBoard.placeMachineOnBoard(
           salterRowIndex,
           1,
           machineTypes.SalterMachine
         );
-        gameBoard.addMachineToBoard(
+        placeElementOnBoard.placeMachineOnBoard(
           salterRowIndex,
           6,
           machineTypes.SalterMachine
@@ -118,14 +119,14 @@
         // Add Roasters.
         var roasterRowIndex = genericUtils.getIndexOfFirstInstanceInArray(
           orderedRowTypes,
-          rowTypes.RowTypes.Roaster
+          rowTypes.Roaster
         );
-        gameBoard.addMachineToBoard(
+        placeElementOnBoard.placeMachineOnBoard(
           roasterRowIndex,
           2,
           machineTypes.RoasterMachine
         );
-        gameBoard.addMachineToBoard(
+        placeElementOnBoard.placeMachineOnBoard(
           roasterRowIndex,
           5,
           machineTypes.RoasterMachine
@@ -134,9 +135,13 @@
         // Add Squirrel.
         var squirrelRowIndex = genericUtils.getIndexOfFirstInstanceInArray(
           orderedRowTypes,
-          rowTypes.RowTypes.Squirrel
+          rowTypes.Squirrel
         );
-        gameBoard.addMarkerToBoard(squirrelRowIndex, 4, markerTypes.Squirrel);
+        placeElementOnBoard.placeMarkerOnBoard(
+          squirrelRowIndex,
+          4,
+          markerTypes.Squirrel
+        );
       });
     </script>
   </body>

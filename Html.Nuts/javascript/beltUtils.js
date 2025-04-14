@@ -6,7 +6,7 @@ define([
   "javascript/measurements",
   "dojo/domReady!",
 ], function (domStyle, debugLog, genericUtils, htmlUtils, measurements) {
-  function addBeltSegment(parentNode, xOffset, yOffset, opt_options) {
+  function addBeltSegment(parentNode, leftPx, topPx, opt_options) {
     var options = opt_options ? opt_options : {};
     var beltSegment = htmlUtils.addDiv(
       parentNode,
@@ -22,8 +22,8 @@ define([
       measurements.beltSegmentGlobalZIndex--;
     }
     var style = {
-      left: `${xOffset}px`,
-      top: `${yOffset}px`,
+      left: `${leftPx}px`,
+      top: `${topPx}px`,
       "z-index": zIndex,
       height: `${measurements.beltSegmentHeight}px`,
       width: `${measurements.beltSegmentWidth}px`,
@@ -44,7 +44,7 @@ define([
     // On big game board we want tiles to overlap row to row -> we need a global z-index.
     // On an individual tile we don't want/need that.
     useLocalZIndex: true,
-    xOffset: true,
+    leftPx: true,
     isLeft: true,
   };
 
@@ -69,8 +69,8 @@ define([
 
     var hideBeltTop = straightBeltConfigs.hideBeltTop ? true : false;
     var hideBeltBottom = straightBeltConfigs.hideBeltBottom ? true : false;
-    var xOffset = straightBeltConfigs.xOffset
-      ? straightBeltConfigs.xOffset
+    var leftPx = straightBeltConfigs.leftPx
+      ? straightBeltConfigs.leftPx
       : measurements.slotWidth / 2;
 
     var classArray = ["belt", "straight"];
@@ -83,7 +83,7 @@ define([
     var belt = htmlUtils.addDiv(parentNode, classArray, "belt");
     domStyle.set(belt, {
       "z-index": `${measurements.beltZIndex}`,
-      left: `${xOffset}px`,
+      left: `${leftPx}px`,
     });
     domStyle.set(belt, {
       width: `${measurements.beltSegmentWidth}px`,
@@ -101,9 +101,9 @@ define([
       if (hideBeltBottom && i >= measurements.beltSegmentsPerRow / 2 - 1) {
         continue;
       }
-      var yOffset =
+      var topPx =
         measurements.beltSegmentOffset / 2 + i * measurements.beltSegmentOffset;
-      addBeltSegment(belt, 0, yOffset, options);
+      addBeltSegment(belt, 0, topPx, options);
       if (straightBeltConfigs.useLocalZIndex) {
         options.zIndex--;
       }

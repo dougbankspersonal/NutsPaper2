@@ -1,61 +1,38 @@
 define([
   "dojo/dom",
-  "dojo/query",
   "dojo/dom-style",
-  "dojo/dom-class",
   "sharedJavascript/debugLog",
   "sharedJavascript/genericUtils",
   "sharedJavascript/htmlUtils",
   "sharedJavascript/systemConfigs",
   "javascript/beltUtils",
-  "javascript/boxCards",
   "javascript/boxHolders",
-  "javascript/conveyorTiles",
   "javascript/gameUtils",
   "javascript/machines",
   "javascript/machineTypes",
   "javascript/markers",
   "javascript/measurements",
   "javascript/rowTypes",
-  "javascript/versionDetails",
   "dojo/domReady!",
 ], function (
   dom,
-  query,
   domStyle,
-  domClass,
   debugLog,
   genericUtils,
   htmlUtils,
   systemConfigs,
   beltUtils,
-  boxCards,
   boxHolders,
-  conveyorTiles,
   gameUtils,
   machines,
   machineTypes,
   markers,
   measurements,
-  rowTypes,
-  versionDetails
+  rowTypes
 ) {
-  var conveyorTileTypes = {
-    Splitter: "Splitter",
-    Joiner: "Joiner",
-    Cross: "Cross",
-  };
-
   var rowZUIndex = 20;
 
-  // A tile hits two slots.
-  // Say first slot is row i, column j.
-  // Then the tile is stored in conveyorTileDataByRowThenColumn[i][j]
-  var conveyorTileDataByRowThenColumn = {};
-
   var boxHolderTopMostNutTypeByColumn = [];
-
-  var addedConveyorTileIndex = 0;
 
   function addContent(parentNode) {
     var content = htmlUtils.addDiv(parentNode, ["content"], "content");
@@ -431,7 +408,7 @@ define([
       }
 
       switch (rowType) {
-        case rowTypes.RowTypes.Number:
+        case rowTypes.Number:
           addNColumnRowWithNumbers(
             currentPageNode,
             rowIndex,
@@ -443,7 +420,7 @@ define([
             }
           );
           break;
-        case rowTypes.RowTypes.Dispenser:
+        case rowTypes.Dispenser:
           addNColumnRowWithElements(
             currentPageNode,
             rowIndex,
@@ -460,8 +437,8 @@ define([
             }
           );
           break;
-        case rowTypes.RowTypes.Conveyor:
-        case rowTypes.RowTypes.Path:
+        case rowTypes.Conveyor:
+        case rowTypes.Path:
           addNColumnRowWithConveyors(
             currentPageNode,
             rowIndex,
@@ -473,14 +450,14 @@ define([
             }
           );
           break;
-        case rowTypes.RowTypes.Heart:
-        case rowTypes.RowTypes.Skull:
-        case rowTypes.RowTypes.Start:
-        case rowTypes.RowTypes.End:
-        case rowTypes.RowTypes.Salter:
-        case rowTypes.RowTypes.Roaster:
-        case rowTypes.RowTypes.Squirrel:
-        case rowTypes.RowTypes.BoxHolders:
+        case rowTypes.Heart:
+        case rowTypes.Skull:
+        case rowTypes.Start:
+        case rowTypes.End:
+        case rowTypes.Salter:
+        case rowTypes.Roaster:
+        case rowTypes.Squirrel:
+        case rowTypes.BoxHolders:
           addNColumnRowWithElements(
             currentPageNode,
             rowIndex,
@@ -489,9 +466,9 @@ define([
             numColumnsAlreadyHandled,
             {
               elementConfigs: {
-                isRound: rowType == rowTypes.RowTypes.Squirrel,
+                isRound: rowType == rowTypes.Squirrel,
                 beltConfigs: {
-                  hideBeltBottom: rowType == rowTypes.RowTypes.BoxHolders,
+                  hideBeltBottom: rowType == rowTypes.BoxHolders,
                 },
               },
             }
@@ -648,556 +625,9 @@ define([
     }
   }
 
-  function fixupMarkerStyling(marker) {
-    var style = {};
-    style["margin"] = "0px";
-    style["position"] = "absolute";
-    domStyle.set(marker, style);
-  }
-
-  function fixupMachineStyling(machine) {
-    var style = {};
-    style["margin"] = "0px";
-    style["position"] = "absolute";
-    domStyle.set(machine, style);
-  }
-
-  // columnnIndex is 0-based, ignoring the sidebar.
-  function addMarkerToBoard(
-    rowIndex,
-    columnIndex,
-    markerType,
-    opt_classArray,
-    opt_additionalConfig
-  ) {
-    debugLog.debugLog(
-      "Markers",
-      "Doug: addMarkerToBoard rowIndex = " + rowIndex
-    );
-    debugLog.debugLog(
-      "Markers",
-      "Doug: addMarkerToBoard columnIndex = " + columnIndex
-    );
-    var rowId = gameUtils.getRowId(rowIndex);
-    var rowNode = dom.byId(rowId);
-    console.assert(rowNode, "Doug: rowNode is null");
-    var elementNode = gameUtils.getElementFromRow(rowNode, columnIndex);
-    console.assert(elementNode, "Doug: elementNode is null");
-    // add marker here.
-    var marker = markers.addMarker(
-      elementNode,
-      markerType,
-      opt_classArray,
-      opt_additionalConfig
-    );
-    debugLog.debugLog("Markers", "Doug: addMarkerToBoard marker = " + marker);
-    fixupMarkerStyling(marker);
-    return marker;
-  }
-
-  // columnnIndex is 0-based, ignoring the sidebar.
-  function addMachineToBoard(rowIndex, columnIndex, machineType) {
-    var rowId = gameUtils.getRowId(rowIndex);
-    var rowNode = dom.byId(rowId);
-    debugLog.debugLog(
-      "Machines",
-      "Doug: addMachineToBoard rowNode = " + rowNode
-    );
-    // add a machine to this element.
-    var elementNode = gameUtils.getElementFromRow(rowNode, columnIndex);
-    debugLog.debugLog(
-      "Machines",
-      "Doug: addMachineToBoard elementNode = " + elementNode
-    );
-    // add machine here.
-    var machine = machines.addMachine(elementNode, machineType);
-    debugLog.debugLog(
-      "Machines",
-      "Doug: addMachineToBoard machine = " + machine
-    );
-    fixupMachineStyling(machine);
-    return machine;
-  }
-
-  /* Data is of the form:
-  {
-    conveyorTileId: conveyorTileId
-    configs: configs
-  }
-  */
-  function storeConveyorTileData(
-    rowIndex,
-    columnIndex,
-    conveyorTileId,
-    opt_configs
-  ) {
-    var configs = opt_configs ? opt_configs : {};
-    debugLog.debugLog(
-      "Highlight",
-      "Doug: storeConveyorTileData rowIndex = " + rowIndex
-    );
-    debugLog.debugLog(
-      "Highlight",
-      "Doug: storeConveyorTileData columnIndex = " + columnIndex
-    );
-    debugLog.debugLog(
-      "Highlight",
-      "Doug: storeConveyorTileData configs = " + JSON.stringify(configs)
-    );
-
-    var rowIndexString = "X_" + rowIndex.toString();
-    var columnIndexString = "X_" + columnIndex.toString();
-
-    if (!conveyorTileDataByRowThenColumn[rowIndexString]) {
-      conveyorTileDataByRowThenColumn[rowIndexString] = {};
-    }
-    conveyorTileDataByRowThenColumn[rowIndexString][columnIndexString] = {
-      conveyorTileId: conveyorTileId,
-      configs: configs,
-    };
-  }
-
-  /* Data is of the form:
-  {
-    conveyorTileId: conveyorTileId
-    configs: configs
-  }
-
-  Get the data for the tile who's left half covers the given cell.
-  */
-  function getStoredConveyorData(rowIndex, columnIndex) {
-    var rowIndexString = "X_" + rowIndex.toString();
-    var columnIndexString = "X_" + columnIndex.toString();
-    if (!conveyorTileDataByRowThenColumn[rowIndexString]) {
-      return null;
-    }
-    return conveyorTileDataByRowThenColumn[rowIndexString][columnIndexString];
-  }
-
-  // Get the conveyor tile plus configs.
-  function getStoredConveyorTileAndConfigs(rowIndex, columnIndex) {
-    var conveyorData = getStoredConveyorData(rowIndex, columnIndex);
-    if (!conveyorData) {
-      return null;
-    }
-
-    var conveyorTileId = conveyorData.conveyorTileId;
-    var conveyorTiles = query(`#${conveyorTileId}`);
-    var tile = conveyorTiles[0];
-    return {
-      tile: tile,
-      configs: conveyorData.configs,
-    };
-  }
-
-  function getNextConveyorTileId() {
-    return `conveyorTile_${addedConveyorTileIndex++}`;
-  }
-
-  function placeConveyorTileOnBoard(
-    rowIndex,
-    columnIndex,
-    splitsToTheLeft,
-    conveyorTileType,
-    opt_classArray
-  ) {
-    console.assert(isConveyorTileType(conveyorTileType), "Invalid tile type");
-
-    var extraClasses = [];
-
-    var classArray = genericUtils.growOptStringArray(
-      opt_classArray,
-      extraClasses
-    );
-
-    var slotId = gameUtils.getSlotId(rowIndex, columnIndex);
-    var slot = dom.byId(slotId);
-    var conveyorTileId = getNextConveyorTileId();
-
-    var conveyorTile = conveyorTiles.addConveyorTile(
-      slot,
-      conveyorTileId,
-      conveyorTileType,
-      classArray
-    );
-
-    domStyle.set(conveyorTile, {
-      "margin-left": `${measurements.conveyorTileOnBoardLeftMargin}px`,
-      "margin-top": `${measurements.conveyorTileOnBoardTopMargin}px`,
-      "z-index": `${measurements.conveyorTileZIndex}`,
-    });
-
-    var isGhost = false;
-    if (domClass.contains(conveyorTile, "ghost")) {
-      isGhost = true;
-    }
-
-    storeConveyorTileData(rowIndex, columnIndex, conveyorTileId, {
-      isGhost: isGhost,
-      splitsToTheLeft: splitsToTheLeft,
-      conveyorTileType: conveyorTileType,
-    });
-
-    return conveyorTile;
-  }
-
-  function placeSplitterJoinerTileOnBoard(
-    rowIndex,
-    columnIndex,
-    splitsToTheLeft,
-    conveyorTileType,
-    opt_classArray
-  ) {
-    return placeConveyorTileOnBoard(
-      rowIndex,
-      columnIndex,
-      splitsToTheLeft,
-      conveyorTileType,
-      opt_classArray
-    );
-  }
-
-  function placeConveyorTileOnBoard(rowIndex, columnIndex, opt_classArray) {
-    return placeConveyorTileOnBoard(
-      rowIndex,
-      columnIndex,
-      false,
-      conveyorTileTypes.Cross,
-      opt_classArray
-    );
-  }
-
-  // Which tiles hit this slot?
-  // Only one normal tile.
-  // Possible that ghost tiles hit too.
-  // returns {
-  //   left: left
-  //   right: right
-  // }
-  // Where left and right are both of the form
-  // {
-  //   tile: tile
-  //   configs: configs
-  // }
-  // Left or right or both may be null.
-  function getConveyorTilesAndConfigsInSlot(rowIndex, columnIndex) {
-    var leftConveyorTileAndConfigs = getStoredConveyorTileAndConfigs(
-      rowIndex,
-      columnIndex
-    );
-
-    // Try right side.
-    var rightConveyorTileAndConfigs = getStoredConveyorTileAndConfigs(
-      rowIndex,
-      columnIndex - 1
-    );
-
-    return {
-      left: leftConveyorTileAndConfigs,
-      right: rightConveyorTileAndConfigs,
-    };
-  }
-
-  function highlightNode(node, color, opt_options) {
-    var options = opt_options ? opt_options : {};
-    var extra = options.extra ? options.extra : false;
-    var noShadow = options.noShadow ? options.noShadow : false;
-
-    var blurRadius = extra ? "20px" : "10px";
-    var spreadRadius = extra ? "10px" : "5px";
-    if (noShadow) {
-      domStyle.set(node, {
-        "background-color": color,
-      });
-    } else {
-      domStyle.set(node, {
-        "box-shadow": `0 0 ${blurRadius} ${spreadRadius} ${color}`,
-      });
-    }
-  }
-
-  function highlightQueryResult(node, queryArg, color, opt_options) {
-    debugLog.debugLog(
-      "Highlight",
-      "Doug: highlightQueryResult queryArg = " + queryArg
-    );
-    var nodes = query(queryArg, node);
-    for (var i = 0; i < nodes.length; i++) {
-      var element = nodes[i];
-      highlightNode(element, color, opt_options);
-    }
-    return nodes.length;
-  }
-
-  function getIndexOfFirstRowOfType(rowType) {
-    var orderedRowTypes = versionDetails.getOrderedRowTypes();
-    var boxHolderRowIndex = 0;
-    for (var i = 0; i < orderedRowTypes.length; i++) {
-      debugLog.debugLog("Highlight", "Doug: getIndexOfFirstRowOfType i = " + i);
-      debugLog.debugLog(
-        "Highlight",
-        "Doug: orderedRowTypes[i] = " + orderedRowTypes[i]
-      );
-      debugLog.debugLog(
-        "Highlight",
-        "Doug: rowTypes.RowTypes.BoxHolders = " + rowTypes.RowTypes.BoxHolders
-      );
-
-      if (orderedRowTypes[i] == rowTypes.RowTypes.BoxHolders) {
-        debugLog.debugLog(
-          "Highlight",
-          "Doug: orderedRowTypes[i] matches rowType = " + rowType
-        );
-        return i;
-      }
-    }
-    return null;
-  }
-
-  function highlightBoxHolder(columnIndex, highlightColor) {
-    var orderedRowTypes = versionDetails.getOrderedRowTypes();
-    debugLog.debugLog(
-      "Highlight",
-      "Doug: highlightBoxHolder orderedRowTypes = " +
-        JSON.stringify(orderedRowTypes)
-    );
-
-    var boxHolderRowIndex = getIndexOfFirstRowOfType(
-      rowTypes.RowTypes.BxoHolders
-    );
-    console.assert(
-      boxHolderRowIndex !== null,
-      "Doug: highlightBoxHolder boxHolderRowIndex is null"
-    );
-
-    var boxHolderRowId = gameUtils.getRowId(boxHolderRowIndex);
-    debugLog.debugLog(
-      "Highlight",
-      "Doug: highlightBoxHolder boxHolderRowId = " + boxHolderRowId
-    );
-    var boxHolderRowNode = dom.byId(boxHolderRowId);
-
-    debugLog.debugLog(
-      "Highlight",
-      "Doug: highlightBoxHolder boxHolderRowNode = " + boxHolderRowNode
-    );
-    console.assert(boxHolderRowNode, "Row node should not be null");
-    var queryTerm = "#boxHolder_" + columnIndex;
-    debugLog.debugLog(
-      "Highlight",
-      "Doug: highlightBoxHolder queryTerm = " + queryTerm
-    );
-    highlightQueryResult(boxHolderRowNode, queryTerm, highlightColor);
-  }
-
-  // Find the tile whose left half is in this slot.
-  // Highlight it.
-  // Note this does not highlight the PATH in the tile: we are just putting a halo around
-  // the tile.
-  function highlightConveyorTile(rowIndex, columnIndex, color) {
-    debugLog.debugLog(
-      "Highlight",
-      "Doug: highlightConveyorTile: rowIndex = " + rowIndex
-    );
-    debugLog.debugLog(
-      "Highlight",
-      "Doug: highlightConveyorTile: columnIndex = " + columnIndex
-    );
-    var conveyorTileAndConfigs = getStoredConveyorTileAndConfigs(
-      rowIndex,
-      columnIndex
-    );
-    debugLog.debugLog(
-      "Highlight",
-      "Doug: highlightConveyorTile: conveyorTileAndConfigs = " +
-        JSON.stringify(conveyorTileAndConfigs)
-    );
-
-    // No tile, we're done.
-    if (!conveyorTileAndConfigs) {
-      return;
-    }
-
-    // Get the tile.
-    var conveyorTile = conveyorTileAndConfigs.tile;
-
-    console.assert(conveyorTile);
-
-    highlightNode(conveyorTile, color, {
-      extra: true,
-    });
-  }
-
-  function getSlotAndHighlightContents(rowIndex, columnIndex, color) {
-    var slot = gameUtils.getSlot(rowIndex, columnIndex);
-    if (!slot) {
-      return null;
-    }
-    // highlight elements, markers, box cards in this slot.
-    var elementId = gameUtils.getElementId(columnIndex);
-    highlightQueryResult(slot, ".marker", color, {});
-    highlightQueryResult(slot, ".box_holder", color, {});
-    highlightQueryResult(slot, ".box", color);
-    return slot;
-  }
-
-  // columnnIndex is 0-based, ignoring the sidebar.
-  function addBox(nutType, rowIndex, columnIndex, opt_classArray) {
-    debugLog.debugLog("Cards", "Doug: addBox nutType = " + nutType);
-    var boxesRowId = gameUtils.getRowId(rowIndex);
-    var boxesRow = dom.byId(boxesRowId);
-    var element = gameUtils.getElementFromRow(boxesRow, columnIndex);
-    // add an order card to this element.
-    return boxCards.addBoxCardSingleNut(
-      element,
-      nutType,
-      columnIndex,
-      opt_classArray
-    );
-  }
-
-  function addBoxHolderWithNumQuarterRightTurns(
-    rowIndex,
-    columnIndex,
-    numQuarterRightTurns,
-    opt_classArray
-  ) {
-    var boxesRowId = gameUtils.getRowId(rowIndex);
-    var boxesRow = dom.byId(boxesRowId);
-    var element = gameUtils.getElementFromRow(boxesRow, columnIndex);
-
-    // add an order card to this element.
-    var card = boxHolders.addBoxHolderCard(
-      element,
-      columnIndex,
-      opt_classArray
-    );
-
-    debugLog.debugLog(
-      "GameBoard",
-      "Doug: addBoxHolderWithNumQuarterRightTurns columnIndex = " + columnIndex
-    );
-
-    debugLog.debugLog(
-      "GameBoard",
-      "Doug: addBoxHolderWithNumQuarterRightTurns final numQuarterTurns = " +
-        numQuarterRightTurns
-    );
-
-    boxHolders.setQuarterTurns(card, numQuarterRightTurns);
-
-    // Record the type of nut on top of the box holder.
-    var boxHolderCardConfig = boxHolders.boxHolderCardConfigs[columnIndex];
-    var boxHolderTopMostNutType =
-      boxHolderCardConfig.orderOfNuts[numQuarterRightTurns];
-    boxHolderTopMostNutTypeByColumn[columnIndex] = boxHolderTopMostNutType;
-
-    return card;
-  }
-
-  function addBoxHolderNotMatching(
-    rowIndex,
-    columnIndex,
-    nutType,
-    opt_classArray
-  ) {
-    // Start with some random index.
-    var numQuarterRightTurns = (columnIndex * columnIndex) % 4;
-    debugLog.debugLog(
-      "GameBoard",
-      "Doug: addBoxHolderNotMatching numQuarterRightTurns = " +
-        numQuarterRightTurns
-    );
-
-    // Now spin until the top nut is notNutType.
-    var originalTopNutType = boxHolders.getTopNutType(columnIndex, 0);
-    debugLog.debugLog(
-      "GameBoard",
-      "Doug: addBoxHolderNotMatching originalTopNutType = " + originalTopNutType
-    );
-    var newTopNutType = boxHolders.getTopNutType(
-      columnIndex,
-      numQuarterRightTurns
-    );
-    debugLog.debugLog(
-      "GameBoard",
-      "Doug: addBoxHolderNotMatching newTopNutType = " + newTopNutType
-    );
-
-    while (
-      boxHolders.getTopNutType(columnIndex, numQuarterRightTurns) == nutType
-    ) {
-      numQuarterRightTurns++;
-      numQuarterRightTurns = numQuarterRightTurns % 4;
-    }
-
-    var card = addBoxHolderWithNumQuarterRightTurns(
-      rowIndex,
-      columnIndex,
-      numQuarterRightTurns,
-      opt_classArray
-    );
-
-    return card;
-  }
-
-  function addNutDispensersAndBoxHolders(
-    orderedRowTypes,
-    totalNumColumns,
-    opt_numQuarterRightTurns
-  ) {
-    // Add nut dispensers
-    var dispenserRowIndex = genericUtils.getIndexOfFirstInstanceInArray(
-      orderedRowTypes,
-      rowTypes.RowTypes.Dispenser
-    );
-    var boxHolderRowIndex = genericUtils.getIndexOfFirstInstanceInArray(
-      orderedRowTypes,
-      rowTypes.RowTypes.BoxHolders
-    );
-
-    var numNutMachineTypes = machineTypes.orderedNutMachineTypes.length;
-    for (var i = 0; i < totalNumColumns; i++) {
-      var machineType =
-        machineTypes.orderedNutMachineTypes[i % numNutMachineTypes];
-      addMachineToBoard(dispenserRowIndex, i, machineType);
-
-      if (opt_numQuarterRightTurns) {
-        console.assert(
-          opt_numQuarterRightTurns.length == totalNumColumns,
-          "should match"
-        );
-        var numQuarterRightTurns = opt_numQuarterRightTurns[i];
-        addBoxHolderWithNumQuarterRightTurns(
-          boxHolderRowIndex,
-          i,
-          numQuarterRightTurns
-        );
-      } else {
-        addBoxHolderNotMatching(boxHolderRowIndex, i, machineType);
-      }
-    }
-  }
-
   // This returned object becomes the defined value of this module
   return {
     // Can be used to make a board in sections or a complete board.
     addGameBoard: addGameBoard,
-
-    addMarkerToBoard: addMarkerToBoard,
-    addMachineToBoard: addMachineToBoard,
-    addBox: addBox,
-    placeConveyorTileOnBoard: placeConveyorTileOnBoard,
-    placeSplitterJoinerTileOnBoard: placeSplitterJoinerTileOnBoard,
-    highlightQueryResult: highlightQueryResult,
-    highlightConveyorTile: highlightConveyorTile,
-    highlightBoxHolder: highlightBoxHolder,
-
-    getSlotAndHighlightContents: getSlotAndHighlightContents,
-    addBoxHolderWithNumQuarterRightTurns: addBoxHolderWithNumQuarterRightTurns,
-    addBoxHolderNotMatching: addBoxHolderNotMatching,
-    addNutDispensersAndBoxHolders: addNutDispensersAndBoxHolders,
-
-    conveyorTileTypes: conveyorTileTypes,
   };
 });
