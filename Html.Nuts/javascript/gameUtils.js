@@ -25,10 +25,13 @@ define([
 
   var wildImage = "images/Order/Order.Wild.png";
 
+  var highlightAlpha = 0.4;
   var redHighlightColor = "rgba(255, 128, 128, 0.6)";
   var blueHighlightColor = "rgba(128, 128, 255, 0.6)";
-  var yellowHighlightColor = "rgba(255, 255, 128, 0.6)";
-  var greenHighlightColor = "rgba(128, 255, 128, 0.6)";
+  var yellowHighlightColor = "rgba(255, 255, 128, " + highlightAlpha + ")";
+  var greenHighlightColor = "rgba(128, 255, 128, " + highlightAlpha + ")";
+
+  var yellowBeltHighlightColor = "rgba(255, 255, 128, 0.6)";
 
   function getSlotId(rowIndex, columnIndex) {
     var idPieces = ["slot", rowIndex.toString(), columnIndex.toString()];
@@ -119,5 +122,6 @@ define([
     blueHighlightColor: blueHighlightColor,
     yellowHighlightColor: yellowHighlightColor,
     greenHighlightColor: greenHighlightColor,
+    yellowBeltHighlightColor: yellowBeltHighlightColor,
   };
 });

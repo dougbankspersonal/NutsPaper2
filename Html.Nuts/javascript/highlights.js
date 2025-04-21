@@ -239,7 +239,14 @@ define([
     console.assert(node, "Node should not be null");
     console.assert(color, "color should not be null");
 
-    var childNode = htmlUtils.addDiv(node, ["highlight"]);
+    // If there are any previous highlights on the node, remove them.
+    var previousHighlightNodes = query(".highlight", node);
+    for (var i = 0; i < previousHighlightNodes.length; i++) {
+      var previousHighlightNode = previousHighlightNodes[i];
+      previousHighlightNode.parentNode.removeChild(previousHighlightNode);
+    }
+
+    var childNode = htmlUtils.addDiv(node, ["highlight"], "highlight");
     domStyle.set(childNode, {
       "background-color": color,
     });
@@ -799,7 +806,13 @@ define([
         );
         var belts = query(step.conveyorTileBeltQuery, conveyorTile);
         var belt = belts[0];
-        highlightQueryResult(belt, ".beltSegment", color);
+        // Dumb hack: belts are always yellow.
+        // Darker yellow than we use for other things.
+        highlightQueryResult(
+          belt,
+          ".beltSegment",
+          gameUtils.yellowBeltHighlightColor
+        );
       } else {
         // 1. There is no non-ghost conveyor tile on the board, just a slot which may or may not have some element
         // (like the squirrel) on it.
@@ -813,7 +826,13 @@ define([
         var belts = query(".belt", slot);
         if (belts) {
           belt = belts[0];
-          highlightQueryResult(belt, ".beltSegment", color);
+          // Dumb hack: belts are always yellow.
+          // Darker yellow than we use for other things.
+          highlightQueryResult(
+            belt,
+            ".beltSegment",
+            gameUtils.yellowBeltHighlightColor
+          );
         }
         // Find any elements in the slot.
         var elements = query(".element", slot);

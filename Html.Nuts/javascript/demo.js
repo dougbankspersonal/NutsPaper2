@@ -1,4 +1,5 @@
 define([
+  "dojo/dom-style",
   "sharedJavascript/genericUtils",
   "javascript/conveyorTileTypes",
   "javascript/gameUtils",
@@ -11,6 +12,7 @@ define([
   "javascript/versionDetails",
   "dojo/domReady!",
 ], function (
+  domStyle,
   genericUtils,
   conveyorTileTypes,
   gameUtils,
@@ -90,8 +92,7 @@ define([
   }
 
   function demoBuildAndClear() {
-    // Add nut dispensers
-    var quarterRightTurns = [2, 2, 0, 3, 3, 0, 2, 3];
+    var quarterRightTurns = [2, 2, 1, 1, 0, 0, 2, 2];
 
     doStandardBoardSetup(quarterRightTurns);
 
@@ -111,7 +112,6 @@ define([
   }
 
   function demoSplitterJoiner() {
-    // Add nut dispensers
     var quarterRightTurns = [2, 2, 0, 3, 3, 2, 2, 3];
 
     doStandardBoardSetup(quarterRightTurns);
@@ -138,10 +138,26 @@ define([
     placeConveyorTileOnBoard.placeConveyorTile(conveyorTileTypes.Cross, 10, 0);
 
     highlights.highlightAllConnectingPaths(gameUtils.yellowHighlightColor);
+
+    highlights.highlightConveyorTile(5, 1, gameUtils.blueHighlightColor);
+  }
+
+  function demoKeyConcepts() {
+    var quarterRightTurns = [2, 2, 3, 1, 0, 0, 0, 2];
+
+    doStandardBoardSetup(quarterRightTurns, {});
+
+    // Add conveyor tiles.
+    placeConveyorTileOnBoard.placeConveyorTile(conveyorTileTypes.Cross, 2, 5);
+    placeConveyorTileOnBoard.placeConveyorTile(conveyorTileTypes.Cross, 5, 1);
+    placeConveyorTileOnBoard.placeConveyorTile(conveyorTileTypes.Cross, 7, 4);
+    placeConveyorTileOnBoard.placeConveyorTile(conveyorTileTypes.Cross, 9, 5);
+    placeConveyorTileOnBoard.placeConveyorTile(conveyorTileTypes.Cross, 10, 0);
+
+    highlights.highlightAllConnectingPaths(gameUtils.yellowHighlightColor);
   }
 
   function demoProduction() {
-    // Add nut dispensers
     var quarterRightTurns = [0, 1, 1, 3, 1, 1, 2, 3];
 
     doStandardBoardSetup(quarterRightTurns, {
@@ -159,19 +175,85 @@ define([
     highlights.highlightAllConnectingPaths(gameUtils.yellowHighlightColor);
   }
 
+  function demoSlideAndSpin() {
+    var quarterRightTurns = [3, 2, 0, 0, 3, 1, 1, 2];
+
+    doStandardBoardSetup(quarterRightTurns, {
+      squirrelColumn: 2,
+      salter1Column: 1,
+      salter2Column: 5,
+      roaster1Column: 3,
+      roaster2Column: 6,
+    });
+
+    // Add conveyor tiles.
+    placeConveyorTileOnBoard.placeConveyorTile(conveyorTileTypes.Cross, 2, 1);
+    placeConveyorTileOnBoard.placeConveyorTile(conveyorTileTypes.Cross, 5, 6);
+    var tile = placeConveyorTileOnBoard.placeConveyorTile(
+      conveyorTileTypes.Cross,
+      7,
+      3
+    );
+    domStyle.set(tile, {
+      "z-index": 10,
+    });
+    placeConveyorTileOnBoard.placeConveyorTile(conveyorTileTypes.Cross, 7, 4, [
+      "ghost",
+    ]);
+    placeConveyorTileOnBoard.placeConveyorTile(conveyorTileTypes.Cross, 10, 0);
+
+    highlights.highlightAllConnectingPaths(gameUtils.yellowHighlightColor);
+    highlights.highlightConveyorTile(7, 3, gameUtils.blueHighlightColor);
+    highlights.highlightBoxHolder(6, gameUtils.greenHighlightColor);
+  }
+
+  function demoSquirrel() {
+    var quarterRightTurns = [2, 2, 0, 1, 3, 0, 2, 2];
+
+    doStandardBoardSetup(quarterRightTurns, {
+      squirrelColumn: 1,
+      salter1Column: 1,
+      salter2Column: 5,
+      roaster1Column: 3,
+      roaster2Column: 6,
+    });
+
+    // Add conveyor tiles.
+    placeConveyorTileOnBoard.placeConveyorTile(conveyorTileTypes.Cross, 2, 1);
+    placeConveyorTileOnBoard.placeConveyorTile(conveyorTileTypes.Cross, 5, 6);
+    var tile = placeConveyorTileOnBoard.placeConveyorTile(
+      conveyorTileTypes.Cross,
+      7,
+      3
+    );
+    placeConveyorTileOnBoard.placeConveyorTile(conveyorTileTypes.Cross, 10, 0);
+    placeElementOnBoard.placeMarkerOnBoard(6, 2, markerTypes.Squirrel, [
+      "ghost",
+    ]);
+
+    highlights.highlightAllConnectingPaths(gameUtils.yellowHighlightColor);
+    var slot = gameUtils.getSlot(6, 1);
+    highlights.highlightQueryResult(
+      slot,
+      ".marker",
+      gameUtils.blueHighlightColor
+    );
+  }
+
   addDemoConfig = function () {
     orderedRowTypes = versionDetails.getOrderedRowTypes();
     totalNumColumns = versionDetails.getTotalNumColumns();
 
     var configFunctions = [
+      demoKeyConcepts,
       demoBuildAndClear,
-      demoSplitterJoiner,
+      demoSlideAndSpin,
+      demoSquirrel,
       demoProduction,
+      demoSplitterJoiner,
     ];
-    // Set index to the one you want.
-    var configIndex = 0;
 
-    configFunctions[configIndex]();
+    demoSplitterJoiner();
   };
 
   return {
