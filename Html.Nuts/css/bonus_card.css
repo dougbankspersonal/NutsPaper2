@@ -1,12 +1,10 @@
-.card.front .formatted_wrapper .rulestext .clause {
+.card.front .formatted_wrapper .rules_text .clause {
   font-size: 16px;
 }
-
-.card.front .formatted_wrapper .rulestext .clause.first {
+.card.front .formatted_wrapper .rules_text .clause.first {
   margin-top: 40px;
 }
-
-.card.front .formatted_wrapper .rulestext .or {
+.card.front .formatted_wrapper .rules_text .or {
   font-size: 12px;
   font-style: italic;
   padding-top: 10px;

@@ -25,10 +25,10 @@ define([
 
   var wildImage = "images/Order/Order.Wild.png";
 
-  var redHighlightColor = "rgba(255, 128, 128, 1)";
-  var blueHighlightColor = "rgba(128, 128, 255, 1)";
-  var yellowHighlightColor = "rgba(255, 255, 128, 1)";
-  var greenHighlightColor = "rgba(128, 255, 128, 1)";
+  var redHighlightColor = "rgba(255, 128, 128, 0.6)";
+  var blueHighlightColor = "rgba(128, 128, 255, 0.6)";
+  var yellowHighlightColor = "rgba(255, 255, 128, 0.6)";
+  var greenHighlightColor = "rgba(128, 255, 128, 0.6)";
 
   function getSlotId(rowIndex, columnIndex) {
     var idPieces = ["slot", rowIndex.toString(), columnIndex.toString()];

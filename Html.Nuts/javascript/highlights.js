@@ -3,6 +3,7 @@ define([
   "dojo/query",
   "dojo/dom-style",
   "sharedJavascript/debugLog",
+  "sharedJavascript/htmlUtils",
   "javascript/boxHolders",
   "javascript/conveyorTileTypes",
   "javascript/gameUtils",
@@ -16,6 +17,7 @@ define([
   query,
   domStyle,
   debugLog,
+  htmlUtils,
   boxHolders,
   conveyorTileTypes,
   gameUtils,
@@ -233,26 +235,35 @@ define([
     return [leftConveyorTileAndData, true];
   }
 
-  function highlightNode(node, color, opt_options) {
+  function highlightNode(node, color) {
     console.assert(node, "Node should not be null");
-    var options = opt_options ? opt_options : {};
-    var extra = options.extra ? options.extra : false;
-    var noShadow = options.noShadow ? options.noShadow : false;
+    console.assert(color, "color should not be null");
 
-    var blurRadius = extra ? "20px" : "10px";
-    var spreadRadius = extra ? "10px" : "5px";
+    var childNode = htmlUtils.addDiv(node, ["highlight"]);
+    domStyle.set(childNode, {
+      "background-color": color,
+    });
+
+    /*
+
+    var blurRadius = "10px";
+    var spreadRadius = "5px";
     if (noShadow) {
       domStyle.set(node, {
         "background-color": color,
       });
     } else {
       domStyle.set(node, {
+        "background-color": color,
+        border: `2px solid rgb(255, 255, 128)`,
         "box-shadow": `0 0 ${blurRadius} ${spreadRadius} ${color}`,
+        // "box-shadow": `0 0 ${blurRadius} ${spreadRadius} ${color}, 0 0 3px 1px rgba(0, 0, 0, 0.3)`,
       });
     }
+     */
   }
 
-  function highlightQueryResult(node, queryArg, color, opt_options) {
+  function highlightQueryResult(node, queryArg, color) {
     debugLog.debugLog(
       "Highlight",
       "Doug: highlightQueryResult node.id = " + node.id
@@ -268,7 +279,7 @@ define([
     );
     for (var i = 0; i < nodes.length; i++) {
       var element = nodes[i];
-      highlightNode(element, color, opt_options);
+      highlightNode(element, color);
     }
     return nodes.length;
   }
@@ -790,7 +801,8 @@ define([
         var belt = belts[0];
         highlightQueryResult(belt, ".beltSegment", color);
       } else {
-        // 1. There is no non-ghost conveyor tile on the board, just a slot which may or may not have some element (like the squirrel) on it.
+        // 1. There is no non-ghost conveyor tile on the board, just a slot which may or may not have some element
+        // (like the squirrel) on it.
         // Highlight the belt path on in that slot or the elements in the slot.
         console.assert(slot, "Slot should not be null");
         debugLog.debugLog(
@@ -802,6 +814,30 @@ define([
         if (belts) {
           belt = belts[0];
           highlightQueryResult(belt, ".beltSegment", color);
+        }
+        // Find any elements in the slot.
+        var elements = query(".element", slot);
+        if (elements && elements.length == 1) {
+          // Look for first element.
+          var element = elements[0];
+          // If something in the element, highlight that, else highlight the element itself.
+          var machineWrapperSuccess = highlightQueryResult(
+            element,
+            ".machine_wrapper",
+            color
+          );
+          var markerSuccess = highlightQueryResult(element, ".marker", color);
+          var boxHolderSuccess = highlightQueryResult(
+            element,
+            ".box_holder",
+            color
+          );
+          if (!machineWrapperSuccess && !markerSuccess && !boxHolderSuccess) {
+            domStyle.set(element, {
+              overflow: "hidden",
+            });
+            highlightNode(element, color);
+          }
         }
       }
     }
