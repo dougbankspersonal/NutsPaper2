@@ -4,10 +4,33 @@ define([
   "sharedJavascript/genericUtils",
   "sharedJavascript/htmlUtils",
   "javascript/beltUtils",
+  "javascript/markerTypes",
   "javascript/measurements",
   "dojo/domReady!",
-], function (dom, domStyle, genericUtils, htmlUtils, beltUtils, measurements) {
+], function (
+  dom,
+  domStyle,
+  genericUtils,
+  htmlUtils,
+  beltUtils,
+  markerTypes,
+  measurements
+) {
   var markersPerPage = 42;
+
+  var markerConfigs = [
+    {
+      markerType: markerTypes.Squirrel,
+      count: 1,
+    },
+  ];
+
+  var numMarkerCards = 0;
+  for (var i = 0; i < markerConfigs.length; i++) {
+    numMarkerCards += markerConfigs[i].count;
+  }
+
+  console.assert(numMarkerCards <= markersPerPage, "Too many markers");
 
   function addMarker(parent, markerType, opt_classArray, opt_additionalConfig) {
     if (opt_classArray) {
@@ -65,18 +88,19 @@ define([
     return markerNode;
   }
 
+  function addMarkers(pageOfItems) {
+    for (var i = 0; i < markerConfigs.length; i++) {
+      var markerConfig = markerConfigs[i];
+      var count = markerConfig.count;
+      for (var j = 0; j < count; j++) {
+        addMarker(pageOfItems, markerConfig.markerType, null, markerConfig);
+      }
+    }
+  }
+
   // This returned object becomes the defined value of this module
   return {
     addMarker: addMarker,
-    addMarkers: function (numMarkers, contentCallback) {
-      var bodyNode = dom.byId("body");
-      var pageOfMarkers = null;
-      for (var i = 0; i < numMarkers; i++) {
-        if (i % markersPerPage == 0) {
-          pageOfMarkers = htmlUtils.addPageOfItems(bodyNode);
-        }
-        contentCallback(pageOfMarkers, i);
-      }
-    },
+    addMarkers: addMarkers,
   };
 });

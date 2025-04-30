@@ -1,30 +1,21 @@
 define([
   "dojo/dom",
   "dojo/query",
+  "sharedJavascript/debugLog",
   "sharedJavascript/genericUtils",
   "sharedJavascript/htmlUtils",
   "sharedJavascript/systemConfigs",
   "javascript/measurements",
   "dojo/domReady!",
-], function (dom, query, genericUtils, htmlUtils, systemConfigs, measurements) {
-  var starImage = "images/Markers/Star.png";
-  var squirrelImage = "images/Markers/Squirrel.png";
-
-  var saltedTypes = ["Salted", "Unsalted"];
-
-  var roastedTypes = ["Roasted", "Raw"];
-
-  var saltedTypeImages = [
-    "images/NutProps/Salted.Y.png",
-    "images/NutProps/Salted.N.png",
-  ];
-  var roastedTypeImages = [
-    "images/NutProps/Roasted.Y.png",
-    "images/NutProps/Roasted.N.png",
-  ];
-
-  var wildImage = "images/Order/Order.Wild.png";
-
+], function (
+  dom,
+  query,
+  debugLog,
+  genericUtils,
+  htmlUtils,
+  systemConfigs,
+  measurements
+) {
   var highlightAlpha = 0.4;
   var redHighlightColor = "rgba(255, 128, 128, 0.6)";
   var blueHighlightColor = "rgba(128, 128, 255, 0.6)";
@@ -32,6 +23,9 @@ define([
   var greenHighlightColor = "rgba(128, 255, 128, " + highlightAlpha + ")";
 
   var yellowBeltHighlightColor = "rgba(255, 255, 128, 0.6)";
+
+  var minPlayers = 2;
+  var maxPlayers = 5;
 
   function getSlotId(rowIndex, columnIndex) {
     var idPieces = ["slot", rowIndex.toString(), columnIndex.toString()];
@@ -75,6 +69,7 @@ define([
   }
 
   function addDemoBoardSystemConfigs(opt_scInput) {
+    debugLog.debugLog("Layout", "Doug: addDemoBoardSystemConfigs 001");
     var sc = opt_scInput ? opt_scInput : {};
     sc.cardHeight = measurements.smallCardWidth;
     sc.cardWidth = measurements.smallCardWidth;
@@ -96,19 +91,6 @@ define([
 
   // This returned object becomes the defined value of this module
   return {
-    starImage: starImage,
-    squirrelImage: squirrelImage,
-
-    saltedTypes: saltedTypes,
-    numSaltedTypes: saltedTypes.length,
-    saltedTypeImages: saltedTypeImages,
-
-    roastedTypes: roastedTypes,
-    numRoastedTypes: roastedTypes.length,
-    roastedTypeImages: roastedTypeImages,
-
-    wildImage: wildImage,
-
     addRow: addRow,
     getSlot: getSlot,
     getSlotId: getSlotId,
@@ -123,5 +105,7 @@ define([
     yellowHighlightColor: yellowHighlightColor,
     greenHighlightColor: greenHighlightColor,
     yellowBeltHighlightColor: yellowBeltHighlightColor,
+    minPlayers: minPlayers,
+    maxPlayers: maxPlayers,
   };
 });

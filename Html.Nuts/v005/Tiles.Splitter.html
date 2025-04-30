@@ -53,17 +53,13 @@
           "Refactor",
           "Doug: systemConfigs = " + JSON.stringify(systemConfigs)
         );
-        systemConfigs.setSystemConfigs(
-          systemConfigs.addTileSystemConfigs(measurements.conveyorTileGap)
-        );
+        systemConfigs.setSystemConfigs(systemConfigs.addTileSystemConfigs());
 
         debugLog.debugLog(
           "Refactor",
           "Doug: systemConfigs = " + JSON.stringify(systemConfigs)
         );
-        systemConfigs.setSystemConfigs(
-          systemConfigs.addTileSystemConfigs(measurements.conveyorTileGap)
-        );
+        systemConfigs.setSystemConfigs(systemConfigs.addTileSystemConfigs());
         conveyorTiles.createConveyorTiles(
           conveyorTileTypes.SplitterLeft,
           numTotalSplitterEachArity

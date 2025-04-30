@@ -4,18 +4,9 @@ define([
   "sharedJavascript/debugLog",
   "sharedJavascript/genericMeasurements",
   "sharedJavascript/systemConfigs",
-  "javascript/rowTypes",
   "javascript/versionDetails",
   "dojo/domReady!",
-], function (
-  debugLog,
-  genericMeasurements,
-  systemConfigs,
-  rowTypes,
-  versionDetails
-) {
-  var sidebarWidth = 360;
-
+], function (debugLog, genericMeasurements, systemConfigs, versionDetails) {
   var standardRowHeight = 180;
   var boxesRowHeight = standardRowHeight * 0.5;
 
@@ -36,13 +27,12 @@ define([
   // So...
   var conveyorTileWidth = 2 * (slotWidth - conveyorTileOnBoardLeftMargin);
   var conveyorTileHeight = standardRowHeight - 2 * conveyorTileOnBoardTopMargin;
-  var conveyorTileGap = 4;
 
   var conveyorColumnsPerPage =
     genericMeasurements.getNumberThatFitAccountingForGap(
       genericMeasurements.adjustedPageWidth,
       conveyorTileWidth,
-      conveyorTileGap
+      genericMeasurements.standardPageGap
     );
 
   var totalBoardPadding = 50;
@@ -117,7 +107,6 @@ define([
   }
 
   return {
-    sidebarWidth: sidebarWidth,
     standardRowHeight: standardRowHeight,
     boxesRowHeight: boxesRowHeight,
 
@@ -131,7 +120,6 @@ define([
     conveyorTileWidth: conveyorTileWidth,
     conveyorTileHeight: conveyorTileHeight,
     conveyorTileBorder: conveyorTileBorder,
-    conveyorTileGap: conveyorTileGap,
     conveyorColumnsPerPage: conveyorColumnsPerPage,
 
     conveyorTileInnerWidth: conveyorTileInnerWidth,

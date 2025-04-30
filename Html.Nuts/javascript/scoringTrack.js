@@ -119,10 +119,6 @@ define([
 
   function makeScoringTrack(dom) {
     debugLog.debugLog("ScoringTrack", "Doug: makeScoringTrack");
-    console.log("Doug: makeScoringTrack not debugLog");
-    console.log(
-      "Doug: debugLog.debugFlags = " + JSON.stringify(debugLog.debugFlags)
-    );
 
     // Make the body node.
     var bodyNode = dom.byId("body");

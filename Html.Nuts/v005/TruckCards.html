@@ -54,15 +54,15 @@
         // Config setup
         //
         //-------------------------------------------------
-        var tts = true;
+        var tts = false;
         if (tts) {
           systemConfigs.setSystemConfigs(
             systemConfigs.addTTSCardSystemConfigs()
           );
         } else {
-          systemConfigs.setSystemConfigs(
-            systemConfigs.addCardSizingSystemConfigs()
-          );
+          var sc = systemConfigs.addCardSizingSystemConfigs();
+          sc.skipCardBacks = true;
+          systemConfigs.setSystemConfigs(sc);
         }
 
         //-------------------------------------------------

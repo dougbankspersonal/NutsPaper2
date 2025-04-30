@@ -1,0 +1,48 @@
+.outer_frame {
+  padding: 20px;
+  width: fit-content;
+  height: fit-content;
+  border: 4px solid black;
+  border-radius: 10px;
+}
+
+.outer_frame.player0 {
+  background-color: rgb(200, 170, 50);
+}
+
+.outer_frame.player1 {
+  background-color: rgb(50, 200, 50);
+}
+
+.outer_frame.player2 {
+  background-color: rgb(50, 50, 200);
+}
+
+.outer_frame.player3 {
+  background-color: rgb(200, 50, 50);
+}
+
+.bordered_square {
+  background-color: white;
+  border-radius: 10px;
+  border: 4px solid black;
+
+  .title_text {
+    padding: 10px;
+    font-size: 40px;
+    font-weight: bold;
+  }
+
+  .warehouse_text {
+    padding: 10px;
+    font-size: 24px;
+    color: #444444;
+  }
+
+  .warehouse_subtext {
+    padding: 10px;
+    font-size: 18px;
+    color: #666666;
+    font-style: italic;
+  }
+}

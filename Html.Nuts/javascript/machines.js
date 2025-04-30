@@ -59,21 +59,14 @@ define([
     return machineWrapperNode;
   }
 
-  function addMachines() {
-    var bodyNode = dom.byId("body");
-    var pageOfItems = htmlUtils.addPageOfItems(bodyNode);
-
-    var machineContainer = htmlUtils.addDiv(
-      pageOfItems,
-      ["machines_container"],
-      "machinesContainer"
-    );
-
+  function addMachines(pageOfItems, singleInstance) {
+    var instanceCount = singleInstance ? 1 : 2;
     for (var i = 0; i < machineTypes.orderedMachineTypes.length; i++) {
-      var machineType = machineTypes.orderedMachineTypes[i];
-      addMachine(machineContainer, machineType);
+      for (var j = 0; j < instanceCount; j++) {
+        var machineType = machineTypes.orderedMachineTypes[i];
+        addMachine(pageOfItems, machineType);
+      }
     }
-    return bodyNode;
   }
 
   // This returned object becomes the defined value of this module

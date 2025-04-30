@@ -2,4 +2,18 @@ div {
   font-family: "DynaPuff", serif;
 }
 
+.page_of_tiles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1px;
+}
+.page_of_tiles .marker {
+  left: 0px;
+  top: 0px;
+  transform: none;
+  position: relative;
+}
+
 /*# sourceMappingURL=nuts_main.css.map */

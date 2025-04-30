@@ -36,18 +36,21 @@ define(["sharedJavascript/dieUtils", "dojo/domReady!"], function (dieUtils) {
   }
 
   function addHuntAndRollFace(parent) {
+    var imageOffset = 15;
     return dieUtils.addDieFace(parent, [
       {
-        img: huntImage,
-        transform: `scale(${scale}) translateY(15%)`,
-        "max-width": `${scale * 100}%`,
-        "z-index": 2,
-      },
-      {
         img: rollImage,
-        transform: `scale(${scale}) translateY(-15%)`,
+        transform: `scale(${scale}) translateY(${-imageOffset}%)`,
         "max-width": `${scale * 100}%`,
         "z-index": 1,
+        position: "absolute",
+      },
+      {
+        img: huntImage,
+        transform: `scale(${scale}) translateY(${imageOffset}%)`,
+        "max-width": `${scale * 100}%`,
+        "z-index": 2,
+        position: "absolute",
       },
     ]);
   }
