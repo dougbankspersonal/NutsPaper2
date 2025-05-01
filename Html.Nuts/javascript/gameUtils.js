@@ -71,8 +71,8 @@ define([
   function addDemoBoardSystemConfigs(opt_scInput) {
     debugLog.debugLog("Layout", "Doug: addDemoBoardSystemConfigs 001");
     var sc = opt_scInput ? opt_scInput : {};
-    sc.cardHeight = measurements.smallCardWidth;
-    sc.cardWidth = measurements.smallCardWidth;
+    sc.cardHeightPx = measurements.smallCardWidth;
+    sc.cardWidthPx = measurements.smallCardWidth;
     sc.cardBackFontSize = measurements.smallCardBackFontSize;
     sc.pageless = true;
     sc.demoBoard = true;

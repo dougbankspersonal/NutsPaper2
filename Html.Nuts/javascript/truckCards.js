@@ -23,13 +23,12 @@ define([
   // Global vars
   //
   //-------------------------------------------------
-  var requirementsHeight = 90;
-  var requirementsWidth = 110;
-  var requirementsTop = 31;
-  var requirementsLeft = 145;
-  var requirementPuffMultiple = 1.0;
+  var requirementsHeightPercent = 51;
+  var requirementsWidthPercent = 42;
+  var requirementsTopPercent = 15;
+  var requirementsLeftPercent = 52;
 
-  function requirementSizeForNutCount(totalNutCount) {
+  function requirementSizePercentForNutCount(totalNutCount) {
     var layoutByRow = layoutByRowByNumNuts[totalNutCount];
     var numRows = layoutByRow.length;
     var maxNumColumns = 0;
@@ -39,10 +38,10 @@ define([
       }
     }
 
+    // return percent widths and heights.
     return {
-      width:
-        requirementPuffMultiple * Math.ceil(requirementsWidth / maxNumColumns),
-      height: requirementPuffMultiple * Math.ceil(requirementsHeight / numRows),
+      widthPercent: Math.ceil(100 / maxNumColumns),
+      heightPercent: 100,
     };
   }
 
@@ -333,7 +332,7 @@ define([
     return null;
   }
 
-  function addRequirement(parentNode, iconType, requirementSize) {
+  function addRequirement(parentNode, iconType, requirementSizePercent) {
     var requirementNode = htmlUtils.addDiv(
       parentNode,
       ["requirement"],
@@ -341,8 +340,8 @@ define([
     );
 
     domStyle.set(requirementNode, {
-      width: requirementSize.width + "px",
-      height: requirementSize.height + "px",
+      width: requirementSizePercent.widthPercent + "%",
+      height: requirementSizePercent.heightPercent + "%",
     });
 
     var closedBoxNode = htmlUtils.addImage(
@@ -371,9 +370,11 @@ define([
     var wrapper = htmlUtils.addDiv(parentNode, ["wrapper"], "wrapper");
 
     var innerCardWidth =
-      genericMeasurements.cardWidth - 2 * genericMeasurements.cardBorderWidth;
+      genericMeasurements.standardCardWidthPx -
+      2 * genericMeasurements.cardBorderWidthPx;
     var innerCardHeight =
-      genericMeasurements.cardHeight - 2 * genericMeasurements.cardBorderWidth;
+      genericMeasurements.standardCardHeightPx -
+      2 * genericMeasurements.cardBorderWidthPx;
     domStyle.set(wrapper, {
       width: innerCardHeight + "px",
       height: innerCardWidth + "px",
@@ -388,10 +389,10 @@ define([
     );
 
     domStyle.set(requirementsNode, {
-      width: requirementsWidth + "px",
-      height: requirementsHeight + "px",
-      top: requirementsTop + "px",
-      left: requirementsLeft + "px",
+      width: requirementsWidthPercent + "%",
+      height: requirementsHeightPercent + "%",
+      top: requirementsTopPercent + "%",
+      left: requirementsLeftPercent + "%",
     });
 
     var totalNutCount = getTotalNutCount(distribution);
@@ -404,7 +405,8 @@ define([
     );
     var numRows = layoutByRow.length;
 
-    var requirementSize = requirementSizeForNutCount(totalNutCount);
+    var requirementSizePercent =
+      requirementSizePercentForNutCount(totalNutCount);
 
     var nutsAdded = 0;
     for (var i = 0; i < numRows; i++) {
@@ -419,7 +421,7 @@ define([
       var numNutsInRow = layoutByRow[i];
       for (var j = 0; j < numNutsInRow; j++) {
         var iconType = getNthIconType(distribution, nutsAdded);
-        addRequirement(requirementsRowNode, iconType, requirementSize);
+        addRequirement(requirementsRowNode, iconType, requirementSizePercent);
         nutsAdded++;
       }
     }
