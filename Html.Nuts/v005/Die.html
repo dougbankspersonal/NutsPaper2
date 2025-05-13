@@ -36,10 +36,15 @@
       require([
         "sharedJavascript/dieUtils",
         "javascript/gameUtils",
-        "javascript/squirrelDie",
+        "sharedJavascript/squirrelDie",
         "sharedJavascript/systemConfigs",
       ], function (dieUtils, gameUtils, squirrelDie, systemConfigs) {
-        systemConfigs.setSystemConfigs(systemConfigs.addTTSDieSystemConfigs());
+        var sc = systemConfigs.addTTSDieSystemConfigs();
+        var usePhysicalDieSize = true;
+        if (usePhysicalDieSize) {
+          sc.usePhysicalDieSize = true;
+        }
+        systemConfigs.setSystemConfigs(sc);
         dieUtils.createDieTemplate(squirrelDie.addNthFace);
       });
     </script>
