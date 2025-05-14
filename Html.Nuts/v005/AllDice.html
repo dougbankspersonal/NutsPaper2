@@ -1,7 +1,8 @@
 <html>
   <head>
-    <link rel="stylesheet" href="../SharedWebBoardGame/css/main.css" />
     <link rel="stylesheet" href="../SharedWebBoardGame/css/die.css" />
+    <link rel="stylesheet" href="../SharedWebBoardGame/css/main.css" />
+    <link rel="stylesheet" href="../SharedWebBoardGame/css/pricing_die.css" />
     <link rel="stylesheet" href="../css/nuts_main.css" />
     <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
     <style type="text/css"></style>
@@ -37,14 +38,18 @@
         "dojo/dom",
         "dojo/dom-style",
         "sharedJavascript/dieUtils",
+        "sharedJavascript/genericMeasurements",
         "sharedJavascript/htmlUtils",
+        "sharedJavascript/pricingDie",
         "sharedJavascript/squirrelDie",
         "sharedJavascript/systemConfigs",
       ], function (
         dom,
         domStyle,
         dieUtils,
+        genericMeasurements,
         htmlUtils,
+        pricingDie,
         squirrelDie,
         systemConfigs
       ) {
@@ -54,10 +59,25 @@
         var bodyNode = dom.byId("body");
         var pageOfItems = htmlUtils.addPageOfItems(bodyNode);
 
-        var wrapper = dieUtils.createDieTemplate(
+        var wrapperScale =
+          genericMeasurements.physicalDieWidthPx /
+          genericMeasurements.dieWidthPx;
+        var wrapperNode = dieUtils.createDieTemplate(
           pageOfItems,
           squirrelDie.addNthFace
         );
+        console.assert(wrapperNode, "wrapperNode is not null");
+        domStyle.set(wrapperNode, {
+          transform: `scale(${wrapperScale})`,
+        });
+
+        wrapperNode = dieUtils.createDieTemplate(
+          pageOfItems,
+          pricingDie.addNthFace
+        );
+        domStyle.set(wrapperNode, {
+          transform: `scale(${wrapperScale})`,
+        });
       });
     </script>
   </body>

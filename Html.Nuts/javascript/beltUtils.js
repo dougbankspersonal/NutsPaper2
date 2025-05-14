@@ -1,4 +1,4 @@
-define([
+`define([
   "dojo/dom-style",
   "sharedJavascript/debugLog",
   "sharedJavascript/genericUtils",
